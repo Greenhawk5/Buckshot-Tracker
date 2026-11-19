@@ -1,35 +1,40 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './app.css';
 import { useTelegram } from '../hooks/useTelegram';
-import { trackerReducer, initialTrackerState } from '../features/tracker/tracker.reducer';
+import { useTrackerSession } from '../hooks/useTrackerSession';
 import { ShellType } from '../features/tracker/tracker.types';
 import { SetupScreen } from '../components/SetupScreen';
 import { TrackerScreen } from '../components/TrackerScreen';
 import { CompletedScreen } from '../components/CompletedScreen';
 import { ConfirmModal } from '../components/ConfirmModal';
+import { SyncStatus } from '../components/SyncStatus';
 
 export const App: React.FC = () => {
   const { user, isTelegram, haptics } = useTelegram();
-  const [state, dispatch] = useReducer(trackerReducer, initialTrackerState);
+  const userId = user ? String(user.id) : 'anonymous';
+
+  const {
+    session,
+    syncState,
+    startLoad,
+    shoot,
+    undo,
+    reset,
+    retrySync,
+  } = useTrackerSession(userId);
+
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
   // Trigger haptic when status transitions to completed
   useEffect(() => {
-    if (state.session?.status === 'completed') {
+    if (session?.status === 'completed') {
       haptics.success();
     }
-  }, [state.session?.status, haptics]);
+  }, [session?.status, haptics]);
 
   const handleStartLoad = (live: number, blank: number) => {
     haptics.medium();
-    dispatch({
-      type: 'CREATE_SESSION',
-      payload: {
-        initialLive: live,
-        initialBlank: blank,
-        telegramUserId: user ? String(user.id) : 'anonymous',
-      },
-    });
+    startLoad(live, blank);
   };
 
   const handleShot = (shell: ShellType) => {
@@ -38,29 +43,26 @@ export const App: React.FC = () => {
     } else {
       haptics.medium();
     }
-    dispatch({
-      type: 'RECORD_SHOT',
-      payload: { shell },
-    });
+    shoot(shell);
   };
 
   const handleUndo = () => {
     haptics.light();
-    dispatch({ type: 'UNDO_ACTION' });
+    undo();
   };
 
   const handleRequestNewLoad = () => {
-    if (state.session && state.session.status === 'active' && (state.session.liveRemaining > 0 || state.session.blankRemaining > 0)) {
+    if (session && session.status === 'active' && (session.liveRemaining > 0 || session.blankRemaining > 0)) {
       setShowConfirmReset(true);
     } else {
-      dispatch({ type: 'RESET_SESSION' });
+      reset();
     }
   };
 
   const handleConfirmReset = () => {
     setShowConfirmReset(false);
     haptics.warning();
-    dispatch({ type: 'RESET_SESSION' });
+    reset();
   };
 
   return (
@@ -75,41 +77,44 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span
-            style={{
-              fontSize: '0.68rem',
-              padding: '2px 8px',
-              borderRadius: 'var(--radius-pill)',
-              background: 'var(--color-surface)',
-              color: isTelegram ? 'var(--color-success)' : 'var(--color-text-dim)',
-              border: '1px solid var(--color-border)',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
-            {user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}
-          </span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span
+              style={{
+                fontSize: '0.68rem',
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-pill)',
+                background: 'var(--color-surface)',
+                color: isTelegram ? 'var(--color-success)' : 'var(--color-text-dim)',
+                border: '1px solid var(--color-border)',
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}
+            </span>
+          </div>
+          <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>
       </header>
 
       {/* Main Screens */}
       <main className="app-main">
-        {!state.session && (
+        {!session && (
           <SetupScreen onStartLoad={handleStartLoad} />
         )}
 
-        {state.session && state.session.status === 'active' && (
+        {session && session.status === 'active' && (
           <TrackerScreen
-            session={state.session}
+            session={session}
             onShot={handleShot}
             onUndo={handleUndo}
             onNewLoad={handleRequestNewLoad}
           />
         )}
 
-        {state.session && state.session.status === 'completed' && (
+        {session && session.status === 'completed' && (
           <CompletedScreen
-            session={state.session}
+            session={session}
             onNewLoad={handleRequestNewLoad}
             onUndo={handleUndo}
           />

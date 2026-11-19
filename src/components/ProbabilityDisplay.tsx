@@ -14,77 +14,127 @@ export const ProbabilityDisplay: React.FC<ProbabilityDisplayProps> = ({ probabil
 
   return (
     <div
+      className="inst-panel"
       style={{
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
+        gap: 'var(--space-3)',
       }}
     >
+      {/* Header bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.8rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-dim)',
-          }}
-        >
-          COMPOSITION ODDS
+        <span className="inst-label" style={{ color: 'var(--text-secondary)' }}>
+          DISCHARGE PROBABILITY
         </span>
-        <span
-          style={{
-            fontSize: '0.68rem',
-            color: 'var(--color-text-muted)',
-            fontStyle: 'italic',
-          }}
-        >
-          Statistical distribution, not next shell
+        <span className="inst-label" style={{ fontSize: '9px', opacity: 0.6 }}>
+          ODDS PER CYCLE
         </span>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px' }}>
+      {/* Probability Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
         {/* Live Probability */}
         <div
+          className="inst-panel inst-panel--recessed"
           style={{
-            flex: 1,
-            background: 'var(--color-live-soft)',
-            border: '1px solid var(--color-live-border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '10px 14px',
+            borderColor: 'var(--primitive-crimson-800)',
+            padding: 'var(--space-3)',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            flexDirection: 'column',
+            gap: 'var(--space-1)',
           }}
         >
-          <span style={{ fontSize: '0.78rem', color: 'var(--color-live)', fontWeight: 600 }}>LIVE</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-live)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 'var(--text-2xs)',
+                fontWeight: 700,
+                color: 'var(--primitive-crimson-400)',
+                letterSpacing: '0.08em',
+              }}
+            >
+              LIVE
+            </span>
+            <span className="inst-led inst-led--error" style={{ width: '5px', height: '5px' }} />
+          </div>
+          <span
+            className="inst-readout"
+            style={{
+              fontSize: '1.6rem',
+              fontWeight: 800,
+              color: 'var(--primitive-crimson-300)',
+              lineHeight: 1.1,
+            }}
+          >
             {livePercentage}%
           </span>
         </div>
 
         {/* Blank Probability */}
         <div
+          className="inst-panel inst-panel--recessed"
           style={{
-            flex: 1,
-            background: 'var(--color-blank-soft)',
-            border: '1px solid var(--color-blank-border)',
-            borderRadius: 'var(--radius-md)',
-            padding: '10px 14px',
+            borderColor: 'var(--primitive-cobalt-800)',
+            padding: 'var(--space-3)',
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            flexDirection: 'column',
+            gap: 'var(--space-1)',
           }}
         >
-          <span style={{ fontSize: '0.78rem', color: 'var(--color-blank)', fontWeight: 600 }}>BLANK</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-blank)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 'var(--text-2xs)',
+                fontWeight: 700,
+                color: 'var(--primitive-cobalt-400)',
+                letterSpacing: '0.08em',
+              }}
+            >
+              BLANK
+            </span>
+            <span className="inst-led inst-led--active" style={{ width: '5px', height: '5px' }} />
+          </div>
+          <span
+            className="inst-readout"
+            style={{
+              fontSize: '1.6rem',
+              fontWeight: 800,
+              color: 'var(--primitive-cobalt-300)',
+              lineHeight: 1.1,
+            }}
+          >
             {blankPercentage}%
           </span>
         </div>
+      </div>
+
+      {/* Proportional Split Indicator Bar */}
+      <div
+        style={{
+          width: '100%',
+          height: '4px',
+          borderRadius: 'var(--radius-pill)',
+          display: 'flex',
+          overflow: 'hidden',
+          backgroundColor: 'var(--primitive-neutral-800)',
+        }}
+      >
+        <div
+          style={{
+            width: `${livePercentage}%`,
+            backgroundColor: 'var(--primitive-crimson-500)',
+            transition: 'width var(--duration-fast) var(--ease-tactile)',
+          }}
+        />
+        <div
+          style={{
+            width: `${blankPercentage}%`,
+            backgroundColor: 'var(--primitive-cobalt-500)',
+            transition: 'width var(--duration-fast) var(--ease-tactile)',
+          }}
+        />
       </div>
     </div>
   );

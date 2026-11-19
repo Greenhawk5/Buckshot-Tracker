@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ShellType } from '../features/tracker/tracker.types';
 
 interface ShotButtonProps {
@@ -14,22 +14,12 @@ export const ShotButton: React.FC<ShotButtonProps> = ({
   onShot,
   disabled = false,
 }) => {
-  const [isPressing, setIsPressing] = useState(false);
   const isLive = shell === 'live';
-
   const isDisabled = disabled || remaining <= 0;
-
-  const bgNormal = isLive ? 'linear-gradient(180deg, #2b1115 0%, #1c0b0e 100%)' : 'linear-gradient(180deg, #0e1e30 0%, #081320 100%)';
-  const bgActive = isLive ? 'linear-gradient(180deg, #42181e 0%, #290e12 100%)' : 'linear-gradient(180deg, #163252 0%, #0d2138 100%)';
-  const borderNormal = isLive ? 'var(--color-live-border)' : 'var(--color-blank-border)';
-  const borderHighlight = isLive ? 'var(--color-live)' : 'var(--color-blank)';
-  const textColor = isLive ? 'var(--color-live)' : 'var(--color-blank)';
-  const glow = isLive ? 'var(--color-live-glow)' : 'var(--color-blank-glow)';
+  const triggerClass = isLive ? 'inst-trigger--live' : 'inst-trigger--blank';
 
   const handleClick = () => {
     if (isDisabled) return;
-    setIsPressing(true);
-    setTimeout(() => setIsPressing(false), 150);
     onShot(shell);
   };
 
@@ -38,76 +28,36 @@ export const ShotButton: React.FC<ShotButtonProps> = ({
       type="button"
       onClick={handleClick}
       disabled={isDisabled}
-      aria-label={`Shoot ${isLive ? 'Live' : 'Blank'} shell. ${remaining} remaining.`}
-      style={{
-        flex: 1,
-        minHeight: '130px',
-        background: isPressing ? bgActive : bgNormal,
-        border: `2px solid ${isPressing ? borderHighlight : borderNormal}`,
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px 12px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        cursor: isDisabled ? 'not-allowed' : 'pointer',
-        opacity: isDisabled ? 0.35 : 1,
-        transform: isPressing ? 'scale(0.97)' : 'scale(1)',
-        transition: 'transform 0.1s ease, border-color 0.15s ease, background 0.15s ease',
-        boxShadow: !isDisabled ? `0 4px 16px ${glow}` : 'none',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
+      aria-label={`Shoot ${isLive ? 'Live' : 'Blank'} round. ${remaining} remaining.`}
+      className={`inst-trigger ${triggerClass}`}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      {/* Top Header Badge */}
+      <div className="inst-trigger__badge" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <span
-          style={{
-            width: '10px',
-            height: '10px',
-            borderRadius: '50%',
-            backgroundColor: textColor,
-            boxShadow: `0 0 10px ${textColor}`,
-          }}
+          className={`inst-led ${isLive ? 'inst-led--error' : 'inst-led--active'}`}
+          style={{ width: '6px', height: '6px' }}
         />
-        <span
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '1rem',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: textColor,
-          }}
-        >
-          {isLive ? 'LIVE SHOT' : 'BLANK SHOT'}
-        </span>
+        <span>{isLive ? 'LIVE DISCHARGE' : 'BLANK DISCHARGE'}</span>
       </div>
 
-      <div style={{ margin: '4px 0' }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '2.8rem',
-            fontWeight: 800,
-            lineHeight: 1,
-            color: '#ffffff',
-            textShadow: `0 2px 10px rgba(0,0,0,0.8)`,
-          }}
-        >
-          {remaining}
-        </span>
-      </div>
+      {/* Primary Readout */}
+      <span className="inst-trigger__count inst-readout">
+        {remaining}
+      </span>
 
+      {/* Subtitle / Status */}
       <span
+        className="inst-label"
         style={{
-          fontSize: '0.72rem',
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-          color: 'var(--color-text-muted)',
-          fontFamily: 'var(--font-mono)',
+          marginTop: 'var(--space-1)',
+          color: isDisabled ? 'var(--text-dim)' : 'var(--text-secondary)',
         }}
       >
-        {remaining === 1 ? '1 SHELL LEFT' : `${remaining} SHELLS LEFT`}
+        {remaining === 0
+          ? 'EXHAUSTED'
+          : remaining === 1
+          ? '1 ROUND IN CHAMBER'
+          : `${remaining} ROUNDS IN CHAMBER`}
       </span>
     </button>
   );

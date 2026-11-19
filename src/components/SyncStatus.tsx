@@ -9,51 +9,31 @@ interface SyncStatusProps {
 export const SyncStatus: React.FC<SyncStatusProps> = ({ syncState, onRetry }) => {
   const { status, pendingOperations, errorMessage } = syncState;
 
-  let color = 'var(--color-success)';
-  let text = 'CLOUD SYNCED';
+  let ledClass = 'inst-led--active';
+  let label = 'PERSISTENCE: ONLINE';
 
   if (status === 'syncing') {
-    color = 'var(--color-blank)';
-    text = pendingOperations > 0 ? `SYNCING (${pendingOperations})...` : 'SYNCING...';
+    ledClass = 'inst-led--warning';
+    label = pendingOperations > 0 ? `SYNCING (${pendingOperations})` : 'SYNCING';
   } else if (status === 'offline') {
-    color = 'var(--color-warning)';
-    text = 'OFFLINE (SAVED LOCALLY)';
+    ledClass = 'inst-led--warning';
+    label = 'LOCAL CACHE (OFFLINE)';
   } else if (status === 'error') {
-    color = 'var(--color-danger)';
-    text = errorMessage || 'SYNC ERROR';
+    ledClass = 'inst-led--error';
+    label = errorMessage || 'SYNC FAULT (RETRY)';
   }
 
   return (
     <div
       onClick={status === 'error' ? onRetry : undefined}
+      className="inst-telemetry-badge"
       style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: '4px 10px',
-        borderRadius: 'var(--radius-pill)',
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        fontSize: '0.68rem',
-        fontFamily: 'var(--font-mono)',
-        color: 'var(--color-text-dim)',
         cursor: status === 'error' ? 'pointer' : 'default',
       }}
-      title={errorMessage || text}
+      title={errorMessage || label}
     >
-      <span
-        style={{
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          backgroundColor: color,
-          boxShadow: `0 0 6px ${color}`,
-        }}
-      />
-      <span>{text}</span>
-      {status === 'error' && onRetry && (
-        <span style={{ textDecoration: 'underline', color: 'var(--color-text)' }}>RETRY</span>
-      )}
+      <span className={`inst-led ${ledClass}`} />
+      <span>{label}</span>
     </div>
   );
 };

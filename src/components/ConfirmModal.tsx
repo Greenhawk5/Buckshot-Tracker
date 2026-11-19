@@ -28,66 +28,59 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(4px)',
+        backgroundColor: 'rgba(5, 7, 10, 0.85)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '20px',
+        padding: 'var(--space-4)',
       }}
     >
       <div
+        className="inst-panel inst-panel--raised"
         style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '24px',
-          maxWidth: '360px',
+          maxWidth: '380px',
           width: '100%',
-          boxShadow: '0 12px 36px rgba(0,0,0,0.8)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: 'var(--space-4)',
+          border: '1px solid var(--border-highlight)',
         }}
       >
-        <h3
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.1rem',
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            color: isDestructive ? 'var(--color-live)' : 'var(--color-text)',
-          }}
-        >
-          {title}
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <span className={`inst-led ${isDestructive ? 'inst-led--error' : 'inst-led--warning'}`} />
+          <h3
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-md)',
+              fontWeight: 700,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              color: isDestructive ? 'var(--primitive-crimson-400)' : 'var(--text-primary)',
+            }}
+          >
+            {title}
+          </h3>
+        </div>
 
         <p
           style={{
-            fontSize: '0.85rem',
-            color: 'var(--color-text-dim)',
+            fontSize: 'var(--text-sm)',
+            color: 'var(--text-secondary)',
             lineHeight: 1.5,
           }}
         >
           {message}
         </p>
 
-        <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
           <button
             type="button"
             onClick={onCancel}
-            style={{
-              flex: 1,
-              padding: '12px',
-              borderRadius: 'var(--radius-md)',
-              background: 'var(--color-surface-raised)',
-              border: '1px solid var(--color-border)',
-              color: 'var(--color-text-dim)',
-              fontWeight: 600,
-              fontSize: '0.85rem',
-              cursor: 'pointer',
-            }}
+            className="inst-button"
+            style={{ flex: 1, minHeight: '44px' }}
           >
             {cancelLabel}
           </button>
@@ -95,19 +88,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <button
             type="button"
             onClick={onConfirm}
-            style={{
-              flex: 1,
-              padding: '12px',
-              borderRadius: 'var(--radius-md)',
-              background: isDestructive ? 'var(--color-live)' : 'var(--color-success)',
-              border: 'none',
-              color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              fontFamily: 'var(--font-display)',
-              letterSpacing: '0.05em',
-              cursor: 'pointer',
-            }}
+            className={`inst-button ${isDestructive ? 'inst-button--danger' : 'inst-button--primary'}`}
+            style={{ flex: 1, minHeight: '44px' }}
           >
             {confirmLabel}
           </button>

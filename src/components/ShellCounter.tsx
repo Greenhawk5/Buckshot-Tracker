@@ -21,9 +21,9 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
   onIncrementFeedback,
 }) => {
   const isLive = type === 'live';
-  const colorVar = isLive ? 'var(--color-live)' : 'var(--color-blank)';
-  const bgSoft = isLive ? 'var(--color-live-soft)' : 'var(--color-blank-soft)';
-  const borderVar = isLive ? 'var(--color-live-border)' : 'var(--color-blank-border)';
+  const accentColor = isLive ? 'var(--primitive-crimson-400)' : 'var(--primitive-cobalt-400)';
+  const borderColor = isLive ? 'var(--primitive-crimson-800)' : 'var(--primitive-cobalt-800)';
+  const ledClass = isLive ? 'inst-led--error' : 'inst-led--active';
 
   const handleDecrement = () => {
     if (count > min) {
@@ -41,114 +41,87 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
 
   return (
     <div
+      className="inst-panel inst-panel--recessed"
       style={{
-        background: bgSoft,
-        border: `1px solid ${borderVar}`,
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px',
+        borderColor: borderColor,
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px',
-        position: 'relative',
-        overflow: 'hidden',
+        gap: 'var(--space-3)',
       }}
     >
+      {/* Header bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: colorVar,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <span className={`inst-led ${ledClass}`} />
           <span
             style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: colorVar,
-              boxShadow: isLive ? '0 0 8px var(--color-live)' : '0 0 8px var(--color-blank)',
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-xs)',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              color: accentColor,
             }}
-          />
-          {label}
-        </span>
-        <span
-          style={{
-            fontSize: '0.7rem',
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--color-text-muted)',
-          }}
-        >
+          >
+            {label}
+          </span>
+        </div>
+        <span className="inst-label">
           MAX {max}
         </span>
       </div>
 
+      {/* Stepper controls and large readout */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button
           type="button"
           onClick={handleDecrement}
           disabled={count <= min}
           aria-label={`Decrease ${label}`}
+          className="inst-button"
           style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            color: count <= min ? 'var(--color-text-muted)' : 'var(--color-text)',
+            width: '48px',
+            minHeight: '48px',
+            padding: 0,
             fontSize: '1.4rem',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: count <= min ? 'not-allowed' : 'pointer',
-            opacity: count <= min ? 0.4 : 1,
-            transition: 'all 0.15s ease',
+            lineHeight: 1,
           }}
         >
           −
         </button>
 
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '2.5rem',
-            fontWeight: 700,
-            color: colorVar,
-            minWidth: '60px',
-            textAlign: 'center',
-            lineHeight: 1,
-          }}
-        >
-          {count}
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span
+            className="inst-readout"
+            style={{
+              fontSize: '2.6rem',
+              fontWeight: 800,
+              color: accentColor,
+              lineHeight: 1,
+            }}
+          >
+            {count}
+          </span>
+          <span
+            className="inst-label"
+            style={{ marginTop: '2px', fontSize: '9px', opacity: 0.7 }}
+          >
+            ROUNDS
+          </span>
+        </div>
 
         <button
           type="button"
           onClick={handleIncrement}
           disabled={count >= max}
           aria-label={`Increase ${label}`}
+          className="inst-button"
           style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            color: count >= max ? 'var(--color-text-muted)' : 'var(--color-text)',
+            width: '48px',
+            minHeight: '48px',
+            padding: 0,
             fontSize: '1.4rem',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: count >= max ? 'not-allowed' : 'pointer',
-            opacity: count >= max ? 0.4 : 1,
-            transition: 'all 0.15s ease',
+            lineHeight: 1,
           }}
         >
           +

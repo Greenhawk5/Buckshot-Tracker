@@ -10,7 +10,7 @@ import { ConfirmModal } from '../components/ConfirmModal';
 import { SyncStatus } from '../components/SyncStatus';
 
 export const App: React.FC = () => {
-  const { user, isTelegram, haptics } = useTelegram();
+  const { user, isTelegram, haptics, setClosingConfirmation } = useTelegram();
   const userId = user ? String(user.id) : 'anonymous';
 
   const {
@@ -24,6 +24,11 @@ export const App: React.FC = () => {
   } = useTrackerSession(userId);
 
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+
+  // Enable swipe-away confirmation when a game is in progress
+  useEffect(() => {
+    setClosingConfirmation(session?.status === 'active');
+  }, [session?.status, setClosingConfirmation]);
 
   // Trigger haptic when status transitions to completed
   useEffect(() => {

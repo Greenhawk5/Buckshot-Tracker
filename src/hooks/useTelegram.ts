@@ -50,6 +50,18 @@ export function useTelegram() {
     };
   }, []);
 
+  const setClosingConfirmation = useCallback((enabled: boolean) => {
+    try {
+      if (enabled) {
+        window.Telegram?.WebApp?.enableClosingConfirmation();
+      } else {
+        window.Telegram?.WebApp?.disableClosingConfirmation();
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
   const close = useCallback(() => {
     try {
       window.Telegram?.WebApp?.close();
@@ -63,6 +75,7 @@ export function useTelegram() {
     webApp: window.Telegram?.WebApp,
     user,
     haptics,
+    setClosingConfirmation,
     close,
   };
 }

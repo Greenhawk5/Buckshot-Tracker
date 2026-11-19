@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './preset-selector.css';
 import { ShellCounter } from './ShellCounter';
 import { validateInitialCounts } from '../features/tracker/tracker.validation';
 
@@ -21,16 +22,21 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
   };
 
   const setPreset = (live: number, blank: number) => {
+    try {
+      window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();
+    } catch {
+      // safe fallback outside Telegram
+    }
     setLiveCount(live);
     setBlankCount(blank);
   };
 
   const presets = [
-    { label: '1L • 1B', live: 1, blank: 1 },
-    { label: '2L • 2B', live: 2, blank: 2 },
-    { label: '3L • 2B', live: 3, blank: 2 },
-    { label: '3L • 3B', live: 3, blank: 3 },
-    { label: '4L • 4B', live: 4, blank: 4 },
+    { label: '1L · 1B', live: 1, blank: 1 },
+    { label: '2L · 2B', live: 2, blank: 2 },
+    { label: '3L · 2B', live: 3, blank: 2 },
+    { label: '3L · 3B', live: 3, blank: 3 },
+    { label: '4L · 4B', live: 4, blank: 4 },
   ];
 
   return (
@@ -55,40 +61,49 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
       </div>
 
       {/* Preset Quick Select */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '6px',
-          width: '100%',
-        }}
-      >
-        {presets.map((p) => {
-          const isActive = liveCount === p.live && blankCount === p.blank;
-          return (
-            <button
-              key={p.label}
-              type="button"
-              onClick={() => setPreset(p.live, p.blank)}
-              style={{
-                flex: 1,
-                padding: '8px 4px',
-                borderRadius: 'var(--radius-sm)',
-                background: isActive ? 'var(--color-surface-hover)' : 'var(--color-surface)',
-                border: `1px solid ${isActive ? 'var(--color-border-highlight)' : 'var(--color-border)'}`,
-                color: isActive ? 'var(--color-text)' : 'var(--color-text-dim)',
-                fontSize: '0.72rem',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: isActive ? 700 : 500,
-                textAlign: 'center',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                boxShadow: isActive ? '0 0 10px rgba(255, 255, 255, 0.08)' : 'none',
-              }}
-            >
-              {p.label}
-            </button>
-          );
-        })}
+      <div className="preset-container">
+        <div className="preset-header">
+          <span className="preset-title">QUICK LOAD PRESETS</span>
+          <span className="preset-hint">Tap to configure</span>
+        </div>
+
+        <div className="preset-dock" role="radiogroup" aria-label="Quick load presets">
+          {presets.map((p) => {
+            const isActive = liveCount === p.live && blankCount === p.blank;
+            return (
+              <button
+                key={p.label}
+                type="button"
+                role="radio"
+                aria-checked={isActive}
+                aria-label={`${p.live} live, ${p.blank} blank preset`}
+                onClick={() => setPreset(p.live, p.blank)}
+                className={`preset-item ${isActive ? 'preset-item--active' : ''}`}
+              >
+                {/* Visual ammunition composition pips */}
+                <div className="preset-pips" aria-hidden="true">
+                  {Array.from({ length: p.live }).map((_, i) => (
+                    <span key={`l-${i}`} className="preset-pip preset-pip--live" />
+                  ))}
+                  <span className="preset-pips-divider" />
+                  {Array.from({ length: p.blank }).map((_, i) => (
+                    <span key={`b-${i}`} className="preset-pip preset-pip--blank" />
+                  ))}
+                </div>
+
+                {/* Live & Blank quantities with distinct semantic identities */}
+                <div className="preset-label">
+                  <span className="preset-qty preset-qty--live">{p.live}L</span>
+                  <span className="preset-sep">·</span>
+                  <span className="preset-qty preset-qty--blank">{p.blank}B</span>
+                </div>
+
+                {/* Active selection accent line */}
+                {isActive && <span className="preset-active-indicator" aria-hidden="true" />}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Shell Counters */}

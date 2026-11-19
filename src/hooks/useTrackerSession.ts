@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { TrackerSession, ShellType, SyncState } from '../features/tracker/tracker.types';
+import { TrackerSession, ShellType, AddIntelParams, SyncState } from '../features/tracker/tracker.types';
 import {
   createNewSession,
   recordShot,
+  ejectShell,
+  addShellIntel,
+  removeShellIntel,
   undoLastAction,
   generateOperationId,
 } from '../features/tracker/tracker.logic';
@@ -19,6 +22,9 @@ import {
   fetchActiveSession,
   createRemoteSession,
   recordRemoteShot,
+  ejectRemoteShell,
+  addRemoteShellIntel,
+  removeRemoteShellIntel,
   undoRemoteAction,
   abandonRemoteSession,
 } from '../services/session.api';
@@ -64,8 +70,31 @@ export function useTrackerSession(telegramUserId: string = 'anonymous') {
         if (op.type === 'create' && op.initialLive !== undefined && op.initialBlank !== undefined) {
           activeSession = await createRemoteSession(op.initialLive, op.initialBlank, op.id);
           updateSessionLocally(activeSession);
-        } else if (op.type === 'shot' && op.shell && activeSession) {
-          activeSession = await recordRemoteShot(activeSession.id, op.shell, op.expectedVersion ?? activeSession.version, op.id);
+        } else if (op.type === 'shot' && op.shell && activeSession && op.shell !== 'unknown') {
+          activeSession = await recordRemoteShot(activeSession.id, op.shell as ShellType, op.expectedVersion ?? activeSession.version, op.id);
+          updateSessionLocally(activeSession);
+        } else if (op.type === 'eject' && op.shell && activeSession) {
+          activeSession = await ejectRemoteShell(activeSession.id, op.shell, op.expectedVersion ?? activeSession.version, op.id);
+          updateSessionLocally(activeSession);
+        } else if (op.type === 'intel_add' && activeSession && op.intelPosition && op.intelShellType) {
+          activeSession = await addRemoteShellIntel(
+            activeSession.id,
+            {
+              positionFromCurrent: op.intelPosition,
+              shellType: op.intelShellType,
+              source: op.intelSource || 'burner_phone',
+            },
+            op.expectedVersion ?? activeSession.version,
+            op.id
+          );
+          updateSessionLocally(activeSession);
+        } else if (op.type === 'intel_remove' && activeSession && op.intelId) {
+          activeSession = await removeRemoteShellIntel(
+            activeSession.id,
+            op.intelId,
+            op.expectedVersion ?? activeSession.version,
+            op.id
+          );
           updateSessionLocally(activeSession);
         } else if (op.type === 'undo' && activeSession) {
           activeSession = await undoRemoteAction(activeSession.id, op.expectedVersion ?? activeSession.version, op.id);
@@ -150,7 +179,7 @@ export function useTrackerSession(telegramUserId: string = 'anonymous') {
     };
   }, [flushPendingQueue, updateSessionLocally]);
 
-  // Actions with optimistic UI updates
+  // User Actions
   const startLoad = useCallback(async (live: number, blank: number) => {
     const opId = generateOperationId();
     const newSession = createNewSession({
@@ -206,6 +235,110 @@ export function useTrackerSession(telegramUserId: string = 'anonymous') {
           type: 'shot',
           sessionId: current.id,
           shell,
+          expectedVersion: expectedVer,
+          timestamp: Date.now(),
+        });
+        setSyncState((s) => ({ ...s, status: 'offline', pendingOperations: s.pendingOperations + 1 }));
+      }
+    }
+  }, [updateSessionLocally]);
+
+  const eject = useCallback(async (shell: ShellType | 'unknown') => {
+    const current = sessionRef.current;
+    if (!current) return;
+
+    const opId = generateOperationId();
+    const expectedVer = current.version;
+    const updated = ejectShell(current, shell, opId);
+
+    updateSessionLocally(updated);
+
+    // Sync with remote
+    setSyncState((s) => ({ ...s, status: 'syncing' }));
+    try {
+      const remote = await ejectRemoteShell(current.id, shell, expectedVer, opId);
+      updateSessionLocally(remote);
+      setSyncState({ status: 'synced', pendingOperations: 0, lastSyncedAt: Date.now() });
+    } catch (err) {
+      if (err instanceof ServerlessError && err.code === 'VERSION_CONFLICT' && err.parameters?.latestSession) {
+        updateSessionLocally(err.parameters.latestSession as TrackerSession);
+        setSyncState({ status: 'synced', pendingOperations: 0 });
+      } else {
+        appendPendingOperation({
+          id: opId,
+          type: 'eject',
+          sessionId: current.id,
+          shell,
+          expectedVersion: expectedVer,
+          timestamp: Date.now(),
+        });
+        setSyncState((s) => ({ ...s, status: 'offline', pendingOperations: s.pendingOperations + 1 }));
+      }
+    }
+  }, [updateSessionLocally]);
+
+  const addIntel = useCallback(async (params: AddIntelParams) => {
+    const current = sessionRef.current;
+    if (!current) return;
+
+    const opId = generateOperationId();
+    const expectedVer = current.version;
+    const updated = addShellIntel(current, params, opId);
+
+    updateSessionLocally(updated);
+
+    // Sync with remote
+    setSyncState((s) => ({ ...s, status: 'syncing' }));
+    try {
+      const remote = await addRemoteShellIntel(current.id, params, expectedVer, opId);
+      updateSessionLocally(remote);
+      setSyncState({ status: 'synced', pendingOperations: 0, lastSyncedAt: Date.now() });
+    } catch (err) {
+      if (err instanceof ServerlessError && err.code === 'VERSION_CONFLICT' && err.parameters?.latestSession) {
+        updateSessionLocally(err.parameters.latestSession as TrackerSession);
+        setSyncState({ status: 'synced', pendingOperations: 0 });
+      } else {
+        appendPendingOperation({
+          id: opId,
+          type: 'intel_add',
+          sessionId: current.id,
+          intelPosition: params.positionFromCurrent,
+          intelShellType: params.shellType,
+          intelSource: params.source || 'burner_phone',
+          expectedVersion: expectedVer,
+          timestamp: Date.now(),
+        });
+        setSyncState((s) => ({ ...s, status: 'offline', pendingOperations: s.pendingOperations + 1 }));
+      }
+    }
+  }, [updateSessionLocally]);
+
+  const removeIntel = useCallback(async (intelId: string) => {
+    const current = sessionRef.current;
+    if (!current) return;
+
+    const opId = generateOperationId();
+    const expectedVer = current.version;
+    const updated = removeShellIntel(current, intelId);
+
+    updateSessionLocally(updated);
+
+    // Sync with remote
+    setSyncState((s) => ({ ...s, status: 'syncing' }));
+    try {
+      const remote = await removeRemoteShellIntel(current.id, intelId, expectedVer, opId);
+      updateSessionLocally(remote);
+      setSyncState({ status: 'synced', pendingOperations: 0, lastSyncedAt: Date.now() });
+    } catch (err) {
+      if (err instanceof ServerlessError && err.code === 'VERSION_CONFLICT' && err.parameters?.latestSession) {
+        updateSessionLocally(err.parameters.latestSession as TrackerSession);
+        setSyncState({ status: 'synced', pendingOperations: 0 });
+      } else {
+        appendPendingOperation({
+          id: opId,
+          type: 'intel_remove',
+          sessionId: current.id,
+          intelId,
           expectedVersion: expectedVer,
           timestamp: Date.now(),
         });
@@ -271,6 +404,9 @@ export function useTrackerSession(telegramUserId: string = 'anonymous') {
     syncState,
     startLoad,
     shoot,
+    eject,
+    addIntel,
+    removeIntel,
     undo,
     reset,
     retrySync,

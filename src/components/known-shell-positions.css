@@ -1,0 +1,263 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — KNOWN SHELL POSITIONS
+   Soft Industrial Gaming UI
+   ========================================================================== */
+
+.known-shells-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Header */
+.known-shells-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.known-shells-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.known-shells-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.78rem, 2.5vw, 0.84rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.known-shells-subtitle {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.known-shells-count-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* List of Known Shells */
+.known-shells-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Individual Known Shell Item */
+.known-shell-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  width: 100%;
+  gap: 10px;
+  transition: all 0.15s ease;
+}
+
+/* Current Chambered Shell (Position 1) */
+.known-shell-item--current {
+  background: var(--color-surface-raised);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.12);
+}
+
+/* Upcoming Shells (Position 2+) */
+.known-shell-item--upcoming {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+}
+
+/* Left Group: Position Badge + Details */
+.known-shell-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+/* Position Badge [ 1 ], [ 2 ], etc. */
+.known-shell-pos-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.known-shell-item--current .known-shell-pos-badge {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #f59e0b;
+}
+
+.known-shell-item--upcoming .known-shell-pos-badge {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+}
+
+/* Content Details */
+.known-shell-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.known-shell-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.known-shell-ordinal {
+  font-family: var(--font-display);
+  font-size: clamp(0.74rem, 2.2vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* Status Pill */
+.known-shell-state-pill {
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.60rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.known-shell-state-pill--current {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+}
+
+.known-shell-state-pill--upcoming {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text-muted);
+}
+
+/* Type & Source Meta */
+.known-shell-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: clamp(0.66rem, 2vw, 0.72rem);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.known-shell-type--live {
+  color: var(--color-live);
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.known-shell-type--blank {
+  color: var(--color-blank);
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.known-shell-source {
+  color: var(--color-text-muted);
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Remove Button */
+.btn-remove-intel {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-remove-intel:hover,
+.btn-remove-intel:active {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--color-danger);
+}
+
+/* Empty State */
+.known-shells-empty {
+  padding: 14px 12px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+  background: rgba(20, 22, 27, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.74rem;
+  user-select: none;
+}
+
+.known-shells-empty-icon {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}

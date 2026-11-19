@@ -3,7 +3,7 @@ import './app.css';
 import botLogo from '../assets/logo.png';
 import { useTelegram } from '../hooks/useTelegram';
 import { useTrackerSession } from '../hooks/useTrackerSession';
-import { ShellType } from '../features/tracker/tracker.types';
+import { ShellType, AddIntelParams } from '../features/tracker/tracker.types';
 import { SetupScreen } from '../components/SetupScreen';
 import { TrackerScreen } from '../components/TrackerScreen';
 import { CompletedScreen } from '../components/CompletedScreen';
@@ -19,6 +19,9 @@ export const App: React.FC = () => {
     syncState,
     startLoad,
     shoot,
+    eject,
+    addIntel,
+    removeIntel,
     undo,
     reset,
     retrySync,
@@ -50,6 +53,21 @@ export const App: React.FC = () => {
       haptics.medium();
     }
     shoot(shell);
+  };
+
+  const handleEject = (shell: ShellType) => {
+    haptics.medium();
+    eject(shell);
+  };
+
+  const handleAddIntel = (params: AddIntelParams) => {
+    haptics.medium();
+    addIntel(params);
+  };
+
+  const handleRemoveIntel = (id: string) => {
+    haptics.light();
+    removeIntel(id);
   };
 
   const handleUndo = () => {
@@ -105,6 +123,9 @@ export const App: React.FC = () => {
           <TrackerScreen
             session={session}
             onShot={handleShot}
+            onEject={handleEject}
+            onAddIntel={handleAddIntel}
+            onRemoveIntel={handleRemoveIntel}
             onUndo={handleUndo}
             onNewLoad={handleRequestNewLoad}
           />

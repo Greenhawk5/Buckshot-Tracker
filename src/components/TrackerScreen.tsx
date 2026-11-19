@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './tracker-status.css';
 import './tracker-actions.css';
-import { TrackerSession, ShellType } from '../features/tracker/tracker.types';
+import { TrackerSession, ShellType, AddIntelParams } from '../features/tracker/tracker.types';
 import { ShotButton } from './ShotButton';
 import { AmmoIndicator } from './AmmoIndicator';
 import { ProbabilityDisplay } from './ProbabilityDisplay';
+import { KnownShellPositions } from './KnownShellPositions';
+import { BurnerPhoneModal } from './BurnerPhoneModal';
+import { BeerEjectModal } from './BeerEjectModal';
 import { UndoButton } from './UndoButton';
 import { calculateProbability } from '../features/tracker/tracker.logic';
 import { canUndo } from '../features/tracker/tracker.validation';
@@ -12,6 +15,9 @@ import { canUndo } from '../features/tracker/tracker.validation';
 interface TrackerScreenProps {
   session: TrackerSession;
   onShot: (shell: ShellType) => void;
+  onEject: (shell: ShellType) => void;
+  onAddIntel: (params: AddIntelParams) => void;
+  onRemoveIntel: (id: string) => void;
   onUndo: () => void;
   onNewLoad: () => void;
 }
@@ -19,9 +25,15 @@ interface TrackerScreenProps {
 export const TrackerScreen: React.FC<TrackerScreenProps> = ({
   session,
   onShot,
+  onEject,
+  onAddIntel,
+  onRemoveIntel,
   onUndo,
   onNewLoad,
 }) => {
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [showBeerModal, setShowBeerModal] = useState(false);
+
   const probability = calculateProbability(session);
   const undoAllowed = canUndo(session);
 
@@ -98,6 +110,35 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         />
       </div>
 
+      {/* Secondary Utility Actions (Burner Phone & Beer) */}
+      <div className="tracker-utility-actions">
+        <button
+          type="button"
+          onClick={() => setShowPhoneModal(true)}
+          className="btn-utility-action btn-utility-phone"
+          aria-label="Add Burner Phone intelligence"
+        >
+          <span aria-hidden="true">📞</span>
+          <span>ADD PHONE INTEL</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setShowBeerModal(true)}
+          className="btn-utility-action btn-utility-beer"
+          aria-label="Eject shell using Beer"
+        >
+          <span aria-hidden="true">🍺</span>
+          <span>EJECT (BEER)</span>
+        </button>
+      </div>
+
+      {/* Known Shell Positions Section */}
+      <KnownShellPositions
+        intelList={session.shellIntel}
+        onRemoveIntel={onRemoveIntel}
+      />
+
       {/* Composition Odds */}
       <ProbabilityDisplay probability={probability} />
 
@@ -118,6 +159,27 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
           RESET / NEW LOAD
         </button>
       </div>
+
+      {/* Modals */}
+      <BurnerPhoneModal
+        isOpen={showPhoneModal}
+        session={session}
+        onConfirm={(params) => {
+          onAddIntel(params);
+          setShowPhoneModal(false);
+        }}
+        onCancel={() => setShowPhoneModal(false)}
+      />
+
+      <BeerEjectModal
+        isOpen={showBeerModal}
+        session={session}
+        onConfirmEject={(shell) => {
+          onEject(shell);
+          setShowBeerModal(false);
+        }}
+        onCancel={() => setShowBeerModal(false)}
+      />
     </div>
   );
 };

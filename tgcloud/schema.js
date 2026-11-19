@@ -9,6 +9,7 @@ export const trackerSessions = table('tracker_sessions', {
   blankRemaining: integer('blank_remaining').notNull(),
   status: text('status').notNull(),
   eventsJson: text('events_json').notNull(),
+  intelJson: text('intel_json'),
   version: integer('version').default(1).notNull(),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),

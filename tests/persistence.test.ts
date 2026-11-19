@@ -102,4 +102,63 @@ describe('Local Persistence & Offline Recovery Tests — Phase 5', () => {
     clearPendingOperations();
     expect(loadPendingOperations()).toHaveLength(0);
   });
+
+  it('correctly persists and restores ShellIntel records in TrackerSession', () => {
+    const mockSession: TrackerSession = {
+      id: 'sess_103',
+      telegramUserId: 'user_42',
+      initialLive: 4,
+      initialBlank: 4,
+      liveRemaining: 3,
+      blankRemaining: 4,
+      status: 'active',
+      events: [{ id: 'shot_1', type: 'shot', shell: 'live', createdAt: Date.now() }],
+      shellIntel: [
+        { id: 'intel_1', source: 'burner_phone', positionFromCurrent: 2, shellType: 'blank', createdAt: 1000 },
+        { id: 'intel_2', source: 'burner_phone', positionFromCurrent: 4, shellType: 'live', createdAt: 1001 },
+      ],
+      version: 3,
+      createdAt: 1000,
+      updatedAt: 1060,
+    };
+
+    saveLocalSession(mockSession);
+    const restored = loadLocalSession();
+
+    expect(restored).not.toBeNull();
+    expect(restored?.shellIntel).toHaveLength(2);
+    expect(restored?.shellIntel[0].positionFromCurrent).toBe(2);
+    expect(restored?.shellIntel[0].shellType).toBe('blank');
+    expect(restored?.shellIntel[1].positionFromCurrent).toBe(4);
+    expect(restored?.shellIntel[1].shellType).toBe('live');
+  });
+
+  it('manages pending intel_add, intel_remove, and eject operations', () => {
+    appendPendingOperation({
+      id: 'op_intel_1',
+      type: 'intel_add',
+      sessionId: 'sess_1',
+      intelPosition: 3,
+      intelShellType: 'live',
+      intelSource: 'burner_phone',
+      expectedVersion: 1,
+      timestamp: 1000,
+    });
+
+    appendPendingOperation({
+      id: 'op_eject_1',
+      type: 'eject',
+      sessionId: 'sess_1',
+      shell: 'blank',
+      expectedVersion: 2,
+      timestamp: 2000,
+    });
+
+    const pending = loadPendingOperations();
+    expect(pending).toHaveLength(2);
+    expect(pending[0].type).toBe('intel_add');
+    expect(pending[0].intelPosition).toBe(3);
+    expect(pending[1].type).toBe('eject');
+    expect(pending[1].shell).toBe('blank');
+  });
 });

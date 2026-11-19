@@ -2,11 +2,22 @@ export type SessionStatus = 'active' | 'completed';
 
 export type ShellType = 'live' | 'blank';
 
+export type IntelSource = 'burner_phone';
+
+export interface ShellIntel {
+  id: string;
+  source: IntelSource;
+  positionFromCurrent: number; // 1 = currently chambered shell, 2 = one shell after, etc.
+  shellType: ShellType;
+  createdAt: number;
+}
+
 export interface ShotEvent {
   id: string;
   type: 'shot';
   shell: ShellType;
   createdAt: number;
+  previousIntel?: ShellIntel[];
 }
 
 export interface EjectEvent {
@@ -14,6 +25,7 @@ export interface EjectEvent {
   type: 'eject';
   shell: ShellType | 'unknown';
   createdAt: number;
+  previousIntel?: ShellIntel[];
 }
 
 export type SessionEvent = ShotEvent | EjectEvent;
@@ -27,6 +39,7 @@ export interface TrackerSession {
   blankRemaining: number;
   status: SessionStatus;
   events: SessionEvent[];
+  shellIntel: ShellIntel[];
   version: number;
   createdAt: number;
   updatedAt: number;
@@ -47,6 +60,18 @@ export interface CreateSessionParams {
 
 export interface RecordShotParams {
   shell: ShellType;
+  operationId?: string;
+}
+
+export interface AddIntelParams {
+  positionFromCurrent: number;
+  shellType: ShellType;
+  source?: IntelSource;
+  mode?: 'singleplayer' | 'multiplayer';
+}
+
+export interface EjectShellParams {
+  shell: ShellType | 'unknown';
   operationId?: string;
 }
 

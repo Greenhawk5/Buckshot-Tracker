@@ -36,3 +36,4 @@ To suggest an enhancement or gameplay feature:
 ## 4. Security Concerns
 
 For sensitive or security-related vulnerabilities, follow the private disclosure process documented in [SECURITY.md](SECURITY.md).
+

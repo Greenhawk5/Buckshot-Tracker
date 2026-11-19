@@ -40,7 +40,7 @@ A precision tactical companion for **Buckshot Roulette** running on the **Telegr
   <img src="https://img.shields.io/badge/Database-SQLite%20WAL-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite Database" />
   <img src="https://img.shields.io/badge/Tests-53%20Passed-brightgreen?style=for-the-badge" alt="53 Tests Passed" />
   <img src="https://img.shields.io/badge/License-MIT-36d97e?style=for-the-badge" alt="MIT License" />
-  ![Visits](https://badges.pufler.dev/visits/Greenhawk5/Buckshot-Tracker)
+  <img src="https://badges.pufler.dev/visits/Greenhawk5/Buckshot-Tracker" />
 </p>
 
 </div>

@@ -101,3 +101,4 @@ When modifying code in `tgcloud/`:
 2. **Platform SDK:** Import platform capabilities directly by name: `import { db, api, fetch, EndpointError } from 'sdk'`.
 3. **No npm Dependencies at Runtime:** Runtime dependencies in `tgcloud/` are restricted to the serverless SDK and local project files.
 4. **Foreign Keys:** SQLite runs with foreign keys disabled in the isolate; enforce referential integrity within application logic.
+

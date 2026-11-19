@@ -20,3 +20,4 @@ Unacceptable behaviors include harassment, offensive comments, personal attacks,
 Project maintainers are responsible for clarifying and enforcing our standards of acceptable behavior.
 
 If you experience or witness unacceptable behavior, please contact the repository maintainers via GitHub issues or project communication channels. All reports will be reviewed promptly and treated with discretion.
+

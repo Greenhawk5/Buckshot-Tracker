@@ -1,55 +1,54 @@
-# Buckshot Roulette Tracker — Telegram Mini App
+# Buckshot Counter
 
-A lightweight, tactile, industrial-grade Telegram Mini App companion designed for players of **Buckshot Roulette** to track live and blank shotgun shells remaining in the chamber during gameplay.
+A fast, tactile, mobile-first utility application built as a Telegram Mini App. Designed for precision tracking of binary two-state inventory counts, real-time statistical composition ratios, and reversible event histories.
 
-Powered natively by the **Telegram Serverless** platform (`@tgcloud/cli`), with built-in SQLite persistence and Telegram-native Mini App hosting.
-
----
-
-## 🎮 Features
-
-- **Accurate Live & Blank Ammunition Tracking:** Large, tactile, color-coded shot controls (Red for Live, Blue for Blank) designed for quick single-tap gameplay.
-- **Statistical Composition Odds:** Real-time percentage indicator of remaining chamber composition.
-- **Visual Chamber Inventory:** Pill indicator displaying remaining live vs blank rounds.
-- **Fast Undo Support:** Reverses accidental taps and restores exact shell counts without corrupting session history.
-- **Serverless SQLite Persistence:** Automatically syncs active game loads with Telegram Serverless SQLite database (`tracker_sessions`).
-- **Resilient Offline Mode & Local Recovery:** Instant hydration from local storage; caches and queues actions during network drops, with idempotent replay.
-- **Optimistic Concurrency Control:** Version-checked mutations prevent race conditions across multiple open clients.
-- **Telegram Native Integration:** Full support for Telegram WebApp theme params, viewport expansion, swipe-away closing confirmation, and haptic feedback.
+Powered natively by the **Telegram Serverless** platform (`@tgcloud/cli`), with built-in SQLite persistence, offline recovery, and native cloud hosting.
 
 ---
 
-## 🏗️ Architecture
+## Features
+
+- **Precision Binary Counter:** Ergonomic, high-contrast controls for primary (Type A) and secondary (Type B) counts.
+- **Statistical Composition Ratios:** Real-time percentage breakdowns of remaining inventory.
+- **Visual Inventory Readout:** Segmented inventory status bar displaying remaining item composition.
+- **Deterministic Event Reversal:** Fully reversible event log supporting reliable single-step undo.
+- **Serverless SQLite Persistence:** Authoritative cross-device persistence using Telegram Serverless SQLite database tables (`tracker_sessions`).
+- **Resilient Offline Cache & Queue:** Immediate local storage hydration; queues and replays mutations upon network reconnection.
+- **Optimistic Concurrency Protection:** Version-checked updates prevent state collision and race conditions.
+- **Telegram Mini App Integration:** Native support for viewport expansion, theme adaptation, haptic feedback, and closing confirmations.
+
+---
+
+## Architecture
 
 ```text
 Telegram Client
       │
       │ Launches Mini App
       ▼
-Telegram Mini App (React + TypeScript + Vite)
+Mini App Frontend (React 19 + TypeScript + Vite)
       │
       │ Telegram.WebApp.Serverless.call
       ▼
-Telegram Serverless Endpoints (V8 Sandboxes at cloud.telegram.org)
+Serverless Endpoints (Isolated V8 runtime on Telegram Cloud)
       │
-      │ Authenticated ctx.initData.user & parameterized queries
+      │ Verified ctx.initData.user & parameterized SQL
       ▼
-Telegram Serverless SQLite Database (tracker_sessions & processed_operations)
+SQLite Database (tracker_sessions & processed_operations tables)
 ```
 
-### Directory Layout
+### Directory Structure
 
 ```text
 Buckshot Counter/
 ├── dist/                     # Production static build hosted as Mini App
-├── note/                     # Original product & technical specification
 ├── src/
 │   ├── app/                  # Application root and layout
 │   ├── components/           # UI components (ShellCounter, ShotButton, AmmoIndicator, etc.)
 │   ├── features/tracker/     # Pure deterministic counting engine, types, and logic
 │   ├── hooks/                # React hooks (useTelegram, useTrackerSession)
 │   ├── services/             # Telegram Serverless client & local persistence
-│   └── styles/               # CSS tokens and global dark theme styles
+│   └── styles/               # CSS design tokens and theme styling
 ├── tgcloud/                  # Telegram Serverless backend modules (deployed to cloud)
 │   ├── endpoints/            # Mini App endpoints (createSession, recordShot, etc.)
 │   ├── handlers/             # Telegram bot update handlers (message.js)
@@ -58,75 +57,71 @@ Buckshot Counter/
 ├── tests/                    # Vitest unit, backend, and persistence tests
 ├── tgcloud.jsonc             # Platform configuration
 ├── vite.config.ts            # Vite bundler configuration
+├── LICENSE                   # MIT License
 └── package.json
 ```
 
 ---
 
-## 🚀 Commands & Development Workflow
+## Local Development & Testing
 
 ### Prerequisites
-- Node.js 20+ (Verified on `v22.17.0`)
-- npm 10+ (Verified on `11.4.2`)
+- Node.js 20+
+- npm 10+
 
-### 1. Install Dependencies
+### Setup
 ```bash
 npm install
 ```
 
-### 2. Local Frontend Development
+### Development Server
 ```bash
 npm run dev
 ```
 
-### 3. Run Test Suite
+### Automated Tests & Type Checking
 ```bash
-# Run all unit, backend, and persistence tests
+# Run unit and integration tests
 npm test
 
 # Run TypeScript type check
 npm run typecheck
 ```
 
-### 4. Build Production Frontend
+### Production Build
 ```bash
 npm run build
 ```
 
-### 5. Link Bot & Deploy to Telegram Cloud
+---
+
+## Deployment to Telegram Serverless
+
 ```bash
-# Link CLI to Telegram Serverless Bot Token (interactive)
+# Link project to Telegram Serverless bot token (interactive terminal)
 npx tgcloud login
 
-# Deploy backend modules and Mini App frontend build
+# Deploy backend modules and Mini App build
 npm run deploy
 
-# Apply pending SQLite schema migrations
+# Apply SQLite database migrations
 npm run migrate
 
-# Inspect deployment status
+# Inspect deployment and webhook status
 npm run status
 ```
 
 ---
 
-## 📡 Backend Endpoints
+## Security & Privacy
 
-Every endpoint verifies the Telegram caller identity via `ctx.initData.user`:
-
-| Endpoint | Method / Input | Description |
-| :--- | :--- | :--- |
-| `getActiveSession` | `{}` | Retrieves active session for the authenticated user. |
-| `createSession` | `{ initialLive, initialBlank, operationId }` | Starts a new shotgun load with idempotency protection. |
-| `recordShot` | `{ sessionId, shell, expectedVersion, operationId }` | Records a live/blank shot with version checking. |
-| `undoLastAction` | `{ sessionId, expectedVersion, operationId }` | Reverses the last recorded shot event. |
-| `abandonSession` | `{ sessionId, expectedVersion }` | Discards the current active load. |
-| `ping` | `{}` | Diagnostic endpoint returning server time and verified user context. |
+- **No Stored Secrets:** No bot tokens or private credentials are included in the repository or client bundles.
+- **Cryptographic Launch Validation:** Endpoints are invoked only after platform validation of Telegram Mini App `initData`.
+- **Strict Data Isolation:** All database records and queries are strictly scoped to the authenticated caller's user identifier.
 
 ---
 
-## 🔒 Security & Privacy
+## License
 
-- **No Exposed Secrets:** No Bot API tokens or signing secrets are packaged in the frontend bundle or Git repository.
-- **Server-Side Identity Verification:** The Telegram Serverless platform verifies `initData` cryptographically before endpoint invocation; unauthenticated calls are rejected with HTTP 401.
-- **Strict User Isolation:** All database reads, writes, and mutations are strictly scoped to `ctx.initData.user.id`.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Copyright (c) 2026 Greenhawk5.

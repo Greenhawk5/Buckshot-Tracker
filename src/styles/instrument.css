@@ -1,0 +1,446 @@
+/* ==========================================================================
+   BUCKSHOT COUNTER — INSTRUMENT UTILITY & COMPONENT STYLES
+   Industrial Tactical Instrument Design Language
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CHASSIS & SURFACES
+   -------------------------------------------------------------------------- */
+
+.inst-chassis {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--surface-canvas);
+  color: var(--text-primary);
+  position: relative;
+}
+
+.inst-panel {
+  background-color: var(--surface-panel);
+  border: 1px solid var(--border-default);
+  border-radius: var(--panel-radius);
+  padding: var(--panel-padding);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.inst-panel--recessed {
+  background-color: var(--surface-recessed);
+  border-color: rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-inset);
+}
+
+.inst-panel--raised {
+  background-color: var(--surface-raised);
+  border-color: var(--border-highlight);
+  box-shadow: var(--shadow-md);
+}
+
+/* --------------------------------------------------------------------------
+   TYPOGRAPHY & TECHNICAL LABELS
+   -------------------------------------------------------------------------- */
+
+.inst-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.inst-subtitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.inst-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.inst-readout {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* --------------------------------------------------------------------------
+   TELEMETRY HEADER & STATUS
+   -------------------------------------------------------------------------- */
+
+.inst-telemetry-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--surface-canvas-sub);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.inst-telemetry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  background-color: var(--surface-recessed);
+  border: 1px solid var(--border-default);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Hardware Status LED */
+.inst-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: var(--primitive-neutral-500);
+  transition: background-color var(--duration-fast) var(--ease-tactile),
+              box-shadow var(--duration-fast) var(--ease-tactile);
+}
+
+.inst-led--active {
+  background-color: var(--primitive-emerald-500);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.inst-led--warning {
+  background-color: var(--primitive-amber-500);
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+.inst-led--error {
+  background-color: var(--primitive-ruby-500);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   TACTILE SHOT TRIGGERS
+   -------------------------------------------------------------------------- */
+
+.inst-trigger-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.inst-trigger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--trigger-min-height);
+  padding: var(--space-4) var(--space-3);
+  border-radius: var(--trigger-radius);
+  border: 1px solid var(--border-default);
+  background-color: var(--surface-panel);
+  color: var(--text-primary);
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--duration-instant) var(--ease-depress),
+              background-color var(--duration-fast) var(--ease-tactile),
+              border-color var(--duration-fast) var(--ease-tactile),
+              box-shadow var(--duration-instant) var(--ease-depress);
+}
+
+.inst-trigger:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.inst-trigger:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  background-color: var(--surface-recessed);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Live Trigger (Crimson Heat) */
+.inst-trigger--live {
+  background: linear-gradient(180deg, #320c13 0%, #1f070b 100%);
+  border-color: var(--primitive-crimson-700);
+  box-shadow: 0 4px 0 #120306, 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.inst-trigger--live:hover:not(:disabled) {
+  border-color: var(--primitive-crimson-500);
+  box-shadow: 0 4px 0 #120306, 0 0 16px rgba(230, 57, 70, 0.25);
+}
+
+.inst-trigger--live:active:not(:disabled) {
+  box-shadow: 0 1px 0 #120306;
+}
+
+.inst-trigger--live .inst-trigger__badge {
+  background-color: rgba(230, 57, 70, 0.18);
+  border: 1px solid var(--primitive-crimson-700);
+  color: var(--primitive-crimson-300);
+}
+
+.inst-trigger--live .inst-trigger__count {
+  color: var(--primitive-crimson-400);
+  text-shadow: 0 0 12px rgba(230, 57, 70, 0.35);
+}
+
+/* Blank Trigger (Cobalt Ice) */
+.inst-trigger--blank {
+  background: linear-gradient(180deg, #0c2035 0%, #071320 100%);
+  border-color: var(--primitive-cobalt-700);
+  box-shadow: 0 4px 0 #03080e, 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.inst-trigger--blank:hover:not(:disabled) {
+  border-color: var(--primitive-cobalt-500);
+  box-shadow: 0 4px 0 #03080e, 0 0 16px rgba(41, 133, 214, 0.25);
+}
+
+.inst-trigger--blank:active:not(:disabled) {
+  box-shadow: 0 1px 0 #03080e;
+}
+
+.inst-trigger--blank .inst-trigger__badge {
+  background-color: rgba(56, 189, 248, 0.15);
+  border: 1px solid var(--primitive-cobalt-700);
+  color: var(--primitive-cobalt-300);
+}
+
+.inst-trigger--blank .inst-trigger__count {
+  color: var(--primitive-cobalt-400);
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.inst-trigger__badge {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  margin-bottom: var(--space-2);
+}
+
+.inst-trigger__count {
+  font-family: var(--font-mono);
+  font-size: clamp(32px, 5.5vh, 44px);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: var(--space-1);
+}
+
+.inst-trigger__label {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.inst-trigger__odds {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* --------------------------------------------------------------------------
+   RECESSED INVENTORY CHAMBER BAY
+   -------------------------------------------------------------------------- */
+
+.inst-bay {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--surface-recessed);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-inset);
+}
+
+.inst-bay__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inst-bay__slots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 38px;
+  padding: var(--space-1) 0;
+}
+
+.inst-slot {
+  width: 22px;
+  height: 34px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--primitive-neutral-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform var(--duration-fast) var(--ease-tactile),
+              opacity var(--duration-fast) var(--ease-tactile),
+              box-shadow var(--duration-fast) var(--ease-tactile);
+}
+
+.inst-slot--live {
+  background: linear-gradient(180deg, #e63946 0%, #8b1824 100%);
+  border-color: var(--primitive-crimson-400);
+  box-shadow: 0 0 6px rgba(230, 57, 70, 0.35);
+}
+
+.inst-slot--blank {
+  background: linear-gradient(180deg, #38bdf8 0%, #155e8d 100%);
+  border-color: var(--primitive-cobalt-400);
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.35);
+}
+
+.inst-slot--spent {
+  opacity: 0.18;
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--primitive-neutral-600);
+}
+
+.inst-slot__primer {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   SEGMENTED CONTROLS & PRESET SELECTORS
+   -------------------------------------------------------------------------- */
+
+.inst-segmented {
+  display: flex;
+  align-items: center;
+  background-color: var(--surface-recessed);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 3px;
+  width: 100%;
+}
+
+.inst-segmented__item {
+  flex: 1;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  border-radius: var(--radius-xs);
+  transition: background-color var(--duration-fast) var(--ease-tactile),
+              color var(--duration-fast) var(--ease-tactile);
+}
+
+.inst-segmented__item--active {
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border-highlight);
+  box-shadow: var(--shadow-xs);
+}
+
+/* --------------------------------------------------------------------------
+   TACTICAL ACTION BUTTONS
+   -------------------------------------------------------------------------- */
+
+.inst-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background-color: var(--surface-raised);
+  border: 1px solid var(--border-highlight);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-instant) var(--ease-depress),
+              background-color var(--duration-fast) var(--ease-tactile),
+              border-color var(--duration-fast) var(--ease-tactile);
+}
+
+.inst-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.inst-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.inst-button--primary {
+  background: linear-gradient(180deg, var(--primitive-neutral-700) 0%, var(--primitive-neutral-750) 100%);
+  border-color: var(--primitive-neutral-600);
+}
+
+.inst-button--danger {
+  background: linear-gradient(180deg, #2b0b10 0%, #1b070a 100%);
+  border-color: var(--primitive-crimson-800);
+  color: var(--primitive-crimson-300);
+}
+
+.inst-button--subtle {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+  min-height: 40px;
+}
+
+.inst-button--subtle:hover:not(:disabled) {
+  background-color: var(--surface-raised);
+  color: var(--text-primary);
+}

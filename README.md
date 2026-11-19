@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/photo/GitHub%20Banner.png" alt="Buckshot Counter Banner" width="100%">
+</p>
+
 # Buckshot Counter
 
 A fast, tactile, mobile-first utility application built as a Telegram Mini App. Designed for precision tracking of binary two-state inventory counts, real-time statistical composition ratios, and reversible event histories.

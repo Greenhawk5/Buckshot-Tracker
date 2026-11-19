@@ -1,5 +1,4 @@
 @import './tokens.css';
-@import './instrument.css';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -42,7 +41,7 @@ button {
 button:focus-visible,
 input:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--border-focus);
+  outline: 2px solid var(--color-border-focus);
   outline-offset: 2px;
 }
 

@@ -12,27 +12,39 @@ export const UndoButton: React.FC<UndoButtonProps> = ({ onUndo, disabled, eventC
       type="button"
       onClick={onUndo}
       disabled={disabled}
-      aria-label="Undo last recorded discharge"
-      className="inst-button"
+      aria-label="Undo last shot"
       style={{
         flex: 1,
-        minHeight: '44px',
-        padding: 'var(--space-2) var(--space-4)',
-        gap: 'var(--space-2)',
+        padding: '12px 16px',
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-md)',
+        color: disabled ? 'var(--color-text-muted)' : 'var(--color-text)',
+        fontFamily: 'var(--font-display)',
+        fontSize: '0.85rem',
+        fontWeight: 600,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.4 : 1,
+        transition: 'all 0.15s ease',
       }}
     >
-      <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>↩</span>
-      <span>UNDO DISCHARGE</span>
+      <span style={{ fontSize: '1rem' }}>↩</span>
+      <span>UNDO SHOT</span>
       {eventCount > 0 && !disabled && (
         <span
-          className="inst-readout"
           style={{
-            backgroundColor: 'var(--surface-recessed)',
+            background: 'var(--color-surface-raised)',
             padding: '2px 6px',
-            borderRadius: 'var(--radius-xs)',
-            fontSize: 'var(--text-2xs)',
-            color: 'var(--text-muted)',
-            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: '0.7rem',
+            fontFamily: 'var(--font-mono)',
+            color: 'var(--color-text-dim)',
           }}
         >
           {eventCount}

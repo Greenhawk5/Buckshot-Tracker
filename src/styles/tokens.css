@@ -1,189 +1,101 @@
 /* ==========================================================================
-   BUCKSHOT COUNTER — THREE-LAYER DESIGN TOKEN ARCHITECTURE
+   BUCKSHOT COUNTER — DESIGN SYSTEM TOKENS
+   Soft Industrial Gaming UI
    ========================================================================== */
 
 :root {
-  /* ------------------------------------------------------------------------
-     LAYER 1: PRIMITIVE TOKENS (Raw values)
-     ------------------------------------------------------------------------ */
+  /* Surfaces & Canvas */
+  --color-bg: #0c0d10;
+  --color-surface: #14161b;
+  --color-surface-raised: #1b1e25;
+  --color-surface-hover: #222630;
+  --color-surface-card: #16181f;
 
-  /* Neutral Chassis & Slate Tones */
-  --primitive-neutral-950: #07080a; /* Darkest vacuum canvas */
-  --primitive-neutral-900: #0d0f13; /* Device chassis background */
-  --primitive-neutral-850: #13161c; /* Recessed instrument bays */
-  --primitive-neutral-800: #1a1e26; /* Standard panel surface */
-  --primitive-neutral-750: #222732; /* Raised tactile surface */
-  --primitive-neutral-700: #2c3342; /* Machined hardware borders */
-  --primitive-neutral-600: #3b4457; /* Secondary highlights / active borders */
-  --primitive-neutral-500: #556075; /* Inactive icons / subtle text */
-  --primitive-neutral-400: #7e8b9f; /* Technical labels & metadata */
-  --primitive-neutral-300: #a9b4c7; /* Secondary readable text */
-  --primitive-neutral-200: #cfd6e4; /* Primary readout text */
-  --primitive-neutral-50:  #f8fafc; /* High-visibility white figures */
+  /* Borders & Dividers */
+  --color-border: #252a34;
+  --color-border-subtle: #191c23;
+  --color-border-highlight: #3b4252;
+  --color-border-focus: #38bdf8;
 
-  /* Type A: Live Ammunition (Crimson / Heat) */
-  --primitive-crimson-950: #1b070a; /* Deep shadow cavity */
-  --primitive-crimson-900: #2b0b10; /* Recessed live bay background */
-  --primitive-crimson-800: #4a131c; /* Chamfer edge */
-  --primitive-crimson-700: #731c2a; /* Machined live border */
-  --primitive-crimson-600: #aa2234; /* Tactical trigger surface */
-  --primitive-crimson-500: #e63946; /* Core Live signal */
-  --primitive-crimson-400: #ff5260; /* Highlight signal edge */
-  --primitive-crimson-300: #ff8590; /* High-visibility text */
+  /* Typography Colors */
+  --color-text: #f8fafc;
+  --color-text-dim: #b8c0cc;
+  --color-text-muted: #6e7687;
 
-  /* Type B: Blank Ammunition (Cobalt / Ice) */
-  --primitive-cobalt-950:  #05111d; /* Deep shadow cavity */
-  --primitive-cobalt-900:  #0a1a2b; /* Recessed blank bay background */
-  --primitive-cobalt-800:  #102c47; /* Chamfer edge */
-  --primitive-cobalt-700:  #17446e; /* Machined blank border */
-  --primitive-cobalt-600:  #1f619e; /* Tactical trigger surface */
-  --primitive-cobalt-500:  #2985d6; /* Core Blank signal */
-  --primitive-cobalt-400:  #38bdf8; /* Highlight signal edge */
-  --primitive-cobalt-300:  #7dd3fc; /* High-visibility text */
+  /* Live Shell (Vivid Crimson / Amber Warmth) */
+  --color-live: #ff3b47;
+  --color-live-light: #ff7d85;
+  --color-live-soft: #241114;
+  --color-live-border: #66181f;
+  --color-live-border-glow: #ff3b47;
+  --color-live-glow: rgba(255, 59, 71, 0.28);
+  --color-live-gradient: linear-gradient(180deg, #2e1116 0%, #1a0a0d 100%);
+  --color-live-gradient-active: linear-gradient(180deg, #44161d 0%, #290d12 100%);
+  --color-live-btn-gradient: linear-gradient(135deg, #ff3b47 0%, #c41c26 100%);
 
-  /* Functional Status Accents */
-  --primitive-emerald-500: #10b981; /* Verified telemetry sync */
-  --primitive-emerald-900: #062b1e;
-  --primitive-amber-500:   #f59e0b; /* Offline / warning state */
-  --primitive-amber-900:   #331e05;
-  --primitive-ruby-500:    #ef4444; /* Error / destructive action */
-  --primitive-ruby-900:    #300d0d;
+  /* Blank Shell (Cold Industrial Cyan / Ice Blue) */
+  --color-blank: #38bdf8;
+  --color-blank-light: #7dd3fc;
+  --color-blank-soft: #0c1f2e;
+  --color-blank-border: #15486c;
+  --color-blank-border-glow: #38bdf8;
+  --color-blank-glow: rgba(56, 189, 248, 0.28);
+  --color-blank-gradient: linear-gradient(180deg, #0e2033 0%, #081320 100%);
+  --color-blank-gradient-active: linear-gradient(180deg, #153250 0%, #0d2035 100%);
+  --color-blank-btn-gradient: linear-gradient(135deg, #38bdf8 0%, #1d72a8 100%);
+
+  /* State Accents */
+  --color-success: #10b981;
+  --color-success-soft: rgba(16, 185, 129, 0.15);
+  --color-warning: #f59e0b;
+  --color-warning-soft: rgba(245, 158, 11, 0.15);
+  --color-danger: #ef4444;
+  --color-danger-soft: rgba(239, 68, 68, 0.15);
 
   /* Typography Families */
   --font-display: "Chakra Petch", -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 
-  /* Spacing Scale (4px base grid) */
-  --space-0-5: 2px;
-  --space-1:   4px;
-  --space-2:   8px;
-  --space-3:   12px;
-  --space-4:   16px;
-  --space-5:   20px;
-  --space-6:   24px;
-  --space-8:   32px;
+  /* Font Sizes */
+  --text-2xs: 0.68rem;
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-base: 1rem;
+  --text-md:  1.125rem;
+  --text-lg:  1.25rem;
+  --text-xl:  1.5rem;
 
-  /* Geometry & Corner Radii */
-  --radius-xs:   4px;
-  --radius-sm:   6px;
-  --radius-md:   10px;
-  --radius-lg:   14px;
-  --radius-xl:   18px;
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Geometry & Corner Radii — Soft & Comfortable */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-pill: 9999px;
 
-  /* Tactile Motion Timing */
-  --duration-instant: 80ms;
-  --duration-fast:    150ms;
-  --duration-normal:  220ms;
-  --ease-tactile:     cubic-bezier(0.2, 0, 0, 1);
-  --ease-depress:     cubic-bezier(0.4, 0, 0.2, 1);
+  /* Shadows & Depth */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-glow-live: 0 4px 20px var(--color-live-glow);
+  --shadow-glow-blank: 0 4px 20px var(--color-blank-glow);
 
-  /* Safe Area Mobile Viewport Insets */
-  --safe-top:    env(safe-area-inset-top, 0px);
+  /* Timing */
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --ease-soft: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Safe Area Insets */
+  --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-left:   env(safe-area-inset-left, 0px);
-  --safe-right:  env(safe-area-inset-right, 0px);
-
-
-  /* ------------------------------------------------------------------------
-     LAYER 2: SEMANTIC TOKENS (Role-based aliases)
-     ------------------------------------------------------------------------ */
-
-  /* Structural Surfaces */
-  --surface-canvas:      var(--primitive-neutral-900);
-  --surface-canvas-sub:  var(--primitive-neutral-950);
-  --surface-recessed:    var(--primitive-neutral-850);
-  --surface-panel:       var(--primitive-neutral-800);
-  --surface-raised:      var(--primitive-neutral-750);
-  --surface-interactive: var(--primitive-neutral-700);
-
-  /* Hardware Borders & Dividers */
-  --border-subtle:       rgba(255, 255, 255, 0.05);
-  --border-default:      var(--primitive-neutral-700);
-  --border-highlight:    var(--primitive-neutral-600);
-  --border-focus:        var(--primitive-cobalt-400);
-
-  /* Typography Roles */
-  --text-primary:        var(--primitive-neutral-50);
-  --text-secondary:      var(--primitive-neutral-300);
-  --text-muted:          var(--primitive-neutral-400);
-  --text-dim:            var(--primitive-neutral-500);
-
-  /* Live Ammunition Semantics */
-  --live-bg:             var(--primitive-crimson-900);
-  --live-border:         var(--primitive-crimson-700);
-  --live-border-active:  var(--primitive-crimson-500);
-  --live-text:           var(--primitive-crimson-400);
-  --live-text-soft:      var(--primitive-crimson-300);
-  --live-glow:           rgba(230, 57, 70, 0.2);
-
-  /* Blank Ammunition Semantics */
-  --blank-bg:            var(--primitive-cobalt-900);
-  --blank-border:        var(--primitive-cobalt-700);
-  --blank-border-active: var(--primitive-cobalt-500);
-  --blank-text:          var(--primitive-cobalt-400);
-  --blank-text-soft:     var(--primitive-cobalt-300);
-  --blank-glow:          rgba(56, 189, 248, 0.2);
-
-  /* Telemetry Status Signals */
-  --status-synced-bg:    var(--primitive-emerald-900);
-  --status-synced-fg:    var(--primitive-emerald-500);
-  --status-offline-bg:   var(--primitive-amber-900);
-  --status-offline-fg:   var(--primitive-amber-500);
-  --status-error-bg:     var(--primitive-ruby-900);
-  --status-error-fg:     var(--primitive-ruby-500);
-
-
-  /* ------------------------------------------------------------------------
-     LAYER 3: COMPONENT TOKENS (Specific ergonomic dimensions)
-     ------------------------------------------------------------------------ */
-
-  /* Shot Triggers (Adaptable viewport scaling) */
-  --trigger-min-height:   clamp(108px, 16vh, 136px);
-  --trigger-radius:       var(--radius-lg);
-  --trigger-depress-y:    2px;
-
-  /* Chamber Inventory Gauge */
-  --gauge-height:         26px;
-  --gauge-slot-min-width: 14px;
-  --gauge-slot-max-width: 32px;
-  --gauge-gap:            5px;
-
-  /* Rotary-feel Steppers */
-  --stepper-btn-size:     48px;
-  --stepper-number-size:  2.35rem;
-
-  /* Header Bar */
-  --header-height:        44px;
-
-
-  /* ------------------------------------------------------------------------
-     BACKWARD-COMPATIBILITY ALIASES (Guarantees zero regression in Phase A)
-     ------------------------------------------------------------------------ */
-  --color-bg:               var(--surface-canvas);
-  --color-surface:          var(--surface-recessed);
-  --color-surface-raised:   var(--surface-panel);
-  --color-surface-hover:    var(--surface-raised);
-  --color-border:           var(--border-default);
-  --color-border-subtle:    var(--border-subtle);
-  --color-border-highlight: var(--border-highlight);
-
-  --color-text:             var(--text-primary);
-  --color-text-dim:         var(--text-secondary);
-  --color-text-muted:       var(--text-muted);
-
-  --color-live:             var(--live-text);
-  --color-live-soft:        var(--live-bg);
-  --color-live-border:      var(--live-border);
-  --color-live-glow:        var(--live-glow);
-
-  --color-blank:            var(--blank-text);
-  --color-blank-soft:       var(--blank-bg);
-  --color-blank-border:     var(--blank-border);
-  --color-blank-glow:       var(--blank-glow);
-
-  --color-success:          var(--primitive-emerald-500);
-  --color-warning:          var(--primitive-amber-500);
-  --color-danger:           var(--primitive-ruby-500);
 }

@@ -9,31 +9,49 @@ interface SyncStatusProps {
 export const SyncStatus: React.FC<SyncStatusProps> = ({ syncState, onRetry }) => {
   const { status, pendingOperations, errorMessage } = syncState;
 
-  let ledClass = 'inst-led--active';
-  let label = 'PERSISTENCE: ONLINE';
+  let color = 'var(--color-success)';
+  let text = 'CLOUD SYNCED';
 
   if (status === 'syncing') {
-    ledClass = 'inst-led--warning';
-    label = pendingOperations > 0 ? `SYNCING (${pendingOperations})` : 'SYNCING';
+    color = 'var(--color-blank)';
+    text = pendingOperations > 0 ? `SYNCING (${pendingOperations})...` : 'SYNCING...';
   } else if (status === 'offline') {
-    ledClass = 'inst-led--warning';
-    label = 'LOCAL CACHE (OFFLINE)';
+    color = 'var(--color-warning)';
+    text = 'OFFLINE (SAVED LOCALLY)';
   } else if (status === 'error') {
-    ledClass = 'inst-led--error';
-    label = errorMessage || 'SYNC FAULT (RETRY)';
+    color = 'var(--color-danger)';
+    text = errorMessage || 'SYNC ERROR';
   }
 
   return (
     <div
       onClick={status === 'error' ? onRetry : undefined}
-      className="inst-telemetry-badge"
       style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '3px 8px',
+        borderRadius: 'var(--radius-pill)',
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        fontSize: '0.68rem',
+        fontFamily: 'var(--font-mono)',
+        color: 'var(--color-text-dim)',
         cursor: status === 'error' ? 'pointer' : 'default',
       }}
-      title={errorMessage || label}
+      title={errorMessage || text}
     >
-      <span className={`inst-led ${ledClass}`} />
-      <span>{label}</span>
+      <span
+        style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          backgroundColor: color,
+          boxShadow: `0 0 6px ${color}`,
+          display: 'inline-block',
+        }}
+      />
+      <span>{text}</span>
     </div>
   );
 };

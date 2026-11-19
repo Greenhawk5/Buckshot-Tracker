@@ -28,59 +28,73 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(5, 7, 10, 0.85)',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'var(--space-4)',
+        padding: '20px',
       }}
     >
       <div
-        className="inst-panel inst-panel--raised"
         style={{
-          maxWidth: '380px',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-lg)',
+          padding: '24px',
+          maxWidth: '360px',
           width: '100%',
+          boxShadow: '0 12px 36px rgba(0,0,0,0.8)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 'var(--space-4)',
-          border: '1px solid var(--border-highlight)',
+          gap: '16px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          <span className={`inst-led ${isDestructive ? 'inst-led--error' : 'inst-led--warning'}`} />
-          <h3
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'var(--text-md)',
-              fontWeight: 700,
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: isDestructive ? 'var(--primitive-crimson-400)' : 'var(--text-primary)',
-            }}
-          >
-            {title}
-          </h3>
-        </div>
+        <h3
+          style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: '1.15rem',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            color: isDestructive ? 'var(--color-live)' : 'var(--color-text)',
+            margin: 0,
+          }}
+        >
+          {title}
+        </h3>
 
         <p
           style={{
-            fontSize: 'var(--text-sm)',
-            color: 'var(--text-secondary)',
+            fontSize: '0.88rem',
+            color: 'var(--color-text-dim)',
             lineHeight: 1.5,
+            margin: 0,
           }}
         >
           {message}
         </p>
 
-        <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
           <button
             type="button"
             onClick={onCancel}
-            className="inst-button"
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{
+              flex: 1,
+              padding: '12px',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--color-surface-raised)',
+              border: '1px solid var(--color-border)',
+              color: 'var(--color-text-dim)',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
           >
             {cancelLabel}
           </button>
@@ -88,8 +102,24 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <button
             type="button"
             onClick={onConfirm}
-            className={`inst-button ${isDestructive ? 'inst-button--danger' : 'inst-button--primary'}`}
-            style={{ flex: 1, minHeight: '44px' }}
+            style={{
+              flex: 1,
+              padding: '12px',
+              borderRadius: 'var(--radius-md)',
+              background: isDestructive
+                ? 'linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%)'
+                : 'linear-gradient(135deg, var(--color-blank) 0%, #1d72a8 100%)',
+              border: `1px solid ${isDestructive ? 'var(--color-live)' : 'var(--color-blank)'}`,
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              boxShadow: isDestructive ? '0 4px 16px var(--color-live-glow)' : '0 4px 16px var(--color-blank-glow)',
+              transition: 'all 0.15s ease',
+            }}
           >
             {confirmLabel}
           </button>

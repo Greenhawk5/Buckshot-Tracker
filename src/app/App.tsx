@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './app.css';
+import botLogo from '../assets/logo.png';
 import { useTelegram } from '../hooks/useTelegram';
 import { useTrackerSession } from '../hooks/useTrackerSession';
 import { ShellType } from '../features/tracker/tracker.types';
@@ -71,27 +72,27 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="app-container inst-chassis">
-      {/* Telemetry Header */}
+    <div className="app-container">
+      {/* Header */}
       <header className="app-header">
         <div className="brand">
-          <div className="brand-icon">⚡</div>
+          <img src={botLogo} alt="Buckshot Counter Logo" className="brand-logo" />
           <div>
             <h1 className="brand-title">Buckshot Counter</h1>
-            <span className="brand-subtitle">Tactical Instrument</span>
+            <span className="brand-subtitle">Shotgun Shell Tracker</span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-          <div className="inst-telemetry-badge">
-            <span className={`inst-led ${isTelegram ? 'inst-led--active' : ''}`} style={{ width: '5px', height: '5px' }} />
+        <div className="header-status">
+          <div className="operator-badge">
+            <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
             <span>{user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}</span>
           </div>
           <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>
       </header>
 
-      {/* Primary Application Screens */}
+      {/* Main Screens */}
       <main className="app-main">
         {!session && (
           <SetupScreen onStartLoad={handleStartLoad} />
@@ -118,10 +119,10 @@ export const App: React.FC = () => {
       {/* Confirmation Modal */}
       <ConfirmModal
         isOpen={showConfirmReset}
-        title="Discard Active Chamber?"
-        message="An armed chamber round is currently active. Discarding will clear remaining rounds and reset the counter."
+        title="Discard Current Load?"
+        message="A shotgun load is currently in progress. Starting a new load will discard the active session."
         confirmLabel="DISCARD & RESET"
-        cancelLabel="CONTINUE ROUND"
+        cancelLabel="KEEP PLAYING"
         isDestructive={true}
         onConfirm={handleConfirmReset}
         onCancel={() => setShowConfirmReset(false)}

@@ -27,24 +27,53 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
   const recentEvents = [...session.events].slice(-6);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%' }}>
-      {/* Tactical Session Status Bar */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+      {/* Top Session Status Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          <div className="inst-telemetry-badge" style={{ borderColor: 'rgba(16, 185, 129, 0.3)' }}>
-            <span className="inst-led inst-led--active" />
-            <span style={{ color: 'var(--primitive-emerald-500)' }}>CHAMBER ARMED</span>
-          </div>
-          <span className="inst-label">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            style={{
+              padding: '3px 8px',
+              borderRadius: 'var(--radius-pill)',
+              background: 'var(--color-surface-raised)',
+              border: '1px solid var(--color-border)',
+              fontSize: '0.7rem',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: 700,
+              color: 'var(--color-success)',
+              letterSpacing: '0.05em',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            <span
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--color-success)',
+                boxShadow: '0 0 6px var(--color-success)',
+              }}
+            />
+            ACTIVE LOAD
+          </span>
+          <span
+            style={{
+              fontSize: '0.7rem',
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--color-text-muted)',
+            }}
+          >
             REV {session.version}
           </span>
         </div>
 
-        {/* Discharge history sequence preview */}
+        {/* History preview badges */}
         <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           {recentEvents.length === 0 ? (
-            <span className="inst-label" style={{ opacity: 0.5 }}>
-              STANDBY
+            <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
+              No shots yet
             </span>
           ) : (
             recentEvents.map((ev, idx) => {
@@ -54,11 +83,11 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
                   key={ev.id || idx}
                   title={`${ev.type}: ${'shell' in ev ? ev.shell : 'unknown'}`}
                   style={{
-                    width: '9px',
-                    height: '9px',
+                    width: '10px',
+                    height: '10px',
                     borderRadius: '50%',
-                    backgroundColor: isLive ? 'var(--primitive-crimson-500)' : 'var(--primitive-cobalt-400)',
-                    boxShadow: isLive ? '0 0 6px rgba(230, 57, 70, 0.6)' : '0 0 6px rgba(56, 189, 248, 0.6)',
+                    background: isLive ? 'var(--color-live)' : 'var(--color-blank)',
+                    boxShadow: isLive ? '0 0 6px var(--color-live-glow)' : '0 0 6px var(--color-blank-glow)',
                     display: 'inline-block',
                   }}
                 />
@@ -68,7 +97,7 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         </div>
       </div>
 
-      {/* Recessed Chamber Inventory Bay */}
+      {/* Chamber Visual Bar */}
       <AmmoIndicator
         liveRemaining={session.liveRemaining}
         blankRemaining={session.blankRemaining}
@@ -76,8 +105,8 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         initialBlank={session.initialBlank}
       />
 
-      {/* Primary Tactical Shot Triggers */}
-      <div className="inst-trigger-grid">
+      {/* Shot Buttons — Main Gameplay Centerpiece */}
+      <div style={{ display: 'flex', gap: '12px' }}>
         <ShotButton
           shell="live"
           remaining={session.liveRemaining}
@@ -90,11 +119,11 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         />
       </div>
 
-      {/* Composition & Odds Telemetry */}
+      {/* Composition Odds */}
       <ProbabilityDisplay probability={probability} />
 
-      {/* Auxiliary Controls */}
-      <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-1)' }}>
+      {/* Bottom Actions: Undo and New Load */}
+      <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
         <UndoButton
           onUndo={onUndo}
           disabled={!undoAllowed}
@@ -104,14 +133,22 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         <button
           type="button"
           onClick={onNewLoad}
-          className="inst-button"
           style={{
-            padding: 'var(--space-2) var(--space-4)',
-            minHeight: '44px',
-            color: 'var(--text-secondary)',
+            padding: '12px 18px',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 'var(--radius-md)',
+            color: 'var(--color-text-dim)',
+            fontFamily: 'var(--font-display)',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
           }}
         >
-          RELOAD / RESET
+          RESET / NEW LOAD
         </button>
       </div>
     </div>

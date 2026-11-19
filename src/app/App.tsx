@@ -71,22 +71,25 @@ export const App: React.FC = () => {
     reset();
   };
 
+  const rawDisplayName = user?.first_name || user?.username || '';
+  const displayName = rawDisplayName.trim() || 'TELEGRAM';
+
   return (
     <div className="app-container">
       {/* Header */}
       <header className="app-header">
         <div className="brand">
-          <img src={botLogo} alt="Buckshot Counter Logo" className="brand-logo" />
-          <div>
-            <h1 className="brand-title">Buckshot Counter</h1>
+          <img src={botLogo} alt="Buckshot Tracker Logo" className="brand-logo" />
+          <div className="brand-text">
+            <h1 className="brand-title">Buckshot Tracker</h1>
             <span className="brand-subtitle">Shotgun Shell Tracker</span>
           </div>
         </div>
 
         <div className="header-status">
-          <div className="operator-badge">
+          <div className="operator-badge" title={displayName}>
             <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
-            <span>{user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}</span>
+            <span className="operator-name" dir="auto">{displayName}</span>
           </div>
           <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>

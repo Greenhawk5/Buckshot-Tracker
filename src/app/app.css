@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BUCKSHOT COUNTER — APPLICATION LAYOUT & HEADER
+   BUCKSHOT TRACKER — APPLICATION LAYOUT & HEADER
    Soft Industrial Gaming UI
    ========================================================================== */
 
@@ -11,10 +11,14 @@
   max-width: 480px;
   margin: 0 auto;
   width: 100%;
-  padding: calc(var(--safe-top) + 16px) 16px calc(var(--safe-bottom) + 16px);
+  padding: calc(var(--safe-top) + 16px) clamp(12px, 3.5vw, 16px) calc(var(--safe-bottom) + 16px);
   position: relative;
   box-sizing: border-box;
 }
+
+/* --------------------------------------------------------------------------
+   APPLICATION HEADER
+   -------------------------------------------------------------------------- */
 
 .app-header {
   display: flex;
@@ -23,62 +27,95 @@
   padding-bottom: 14px;
   border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 18px;
-  gap: 12px;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
 }
 
+/* Brand Identity: Logo + Title + Subtitle */
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(8px, 2.5vw, 12px);
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .brand-logo {
-  width: 38px;
-  height: 38px;
+  width: clamp(42px, 11vw, 48px);
+  height: clamp(42px, 11vw, 48px);
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-sm);
   object-fit: contain;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
   flex-shrink: 0;
   display: block;
 }
 
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  justify-content: center;
+}
+
 .brand-title {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: clamp(0.92rem, 4vw, 1.15rem);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--color-text);
-  line-height: 1.1;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .brand-subtitle {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: clamp(0.64rem, 2.2vw, 0.72rem);
+  letter-spacing: 0.07em;
   color: var(--color-text-muted);
   text-transform: uppercase;
   display: block;
   margin-top: 2px;
+  white-space: nowrap;
 }
 
+/* Header Status Column: Account Indicator + Server Sync Status */
 .header-status {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
+/* Telegram Account Indicator */
 .operator-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 3px 8px;
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  max-width: 125px;
+  min-width: 0;
+  box-shadow: var(--shadow-sm);
+  cursor: default;
+}
+
+.operator-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  unicode-bidi: isolate;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-weight: 600;
   font-size: 0.68rem;
-  font-family: var(--font-mono);
-  color: var(--color-text-dim);
+  letter-spacing: 0.02em;
+  color: var(--color-text);
+  line-height: 1.2;
 }
 
 .status-dot {
@@ -87,12 +124,55 @@
   border-radius: 50%;
   background-color: var(--color-text-muted);
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .status-dot--active {
   background-color: var(--color-success);
   box-shadow: 0 0 6px var(--color-success);
 }
+
+/* Server Synchronization Indicator */
+.sync-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-dim);
+  max-width: 125px;
+  min-width: 0;
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sync-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sync-status-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   MAIN APPLICATION CONTAINER
+   -------------------------------------------------------------------------- */
 
 .app-main {
   flex: 1;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './preset-selector.css';
+import './setup-summary.css';
 import { ShellCounter } from './ShellCounter';
 import { validateInitialCounts } from '../features/tracker/tracker.validation';
 
@@ -15,8 +16,19 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
   const total = liveCount + blankCount;
   const validation = validateInitialCounts(liveCount, blankCount);
 
+  // Derived relative percentages and proportions for composition visualization
+  const livePercent = total > 0 ? Math.round((liveCount / total) * 100) : 0;
+  const blankPercent = total > 0 ? 100 - livePercent : 0;
+  const liveRatio = total > 0 ? (liveCount / total) * 100 : 0;
+  const blankRatio = total > 0 ? (blankCount / total) * 100 : 0;
+
   const handleStart = () => {
     if (validation.valid) {
+      try {
+        window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium');
+      } catch {
+        // safe fallback outside Telegram
+      }
       onStartLoad(liveCount, blankCount);
     }
   };
@@ -122,81 +134,81 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
         />
       </div>
 
-      {/* Total & Action Card */}
-      <div
-        style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '16px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '14px',
-          boxShadow: 'var(--shadow-sm)',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span
-            style={{
-              fontSize: '0.88rem',
-              color: 'var(--color-text-muted)',
-              fontFamily: 'var(--font-display)',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-            }}
+      {/* Total Ammunition Summary & Primary Action */}
+      <div className="setup-action-card">
+        {/* Ammunition Summary Panel */}
+        <div className="setup-summary" aria-label="Ammunition summary">
+          <div className="setup-summary-header">
+            <span className="setup-summary-title">
+              <span className="setup-summary-icon" aria-hidden="true" />
+              TOTAL ROUNDS IN CHAMBER
+            </span>
+            <span className="setup-summary-count" aria-label={`Total rounds: ${total}`}>
+              {total}
+            </span>
+          </div>
+
+          {/* Proportional Ammunition Ratio Bar */}
+          <div
+            className="setup-ratio-bar"
+            role="progressbar"
+            aria-label="Ammunition composition"
+            aria-valuenow={liveCount}
+            aria-valuemin={0}
+            aria-valuemax={total}
           >
-            TOTAL ROUNDS IN CHAMBER
-          </span>
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: 'var(--color-text)',
-            }}
-          >
-            {total}
-          </span>
+            {total === 0 ? (
+              <div className="setup-ratio-empty" />
+            ) : (
+              <>
+                {liveCount > 0 && (
+                  <div
+                    className="setup-ratio-segment setup-ratio-segment--live"
+                    style={{ width: `${liveRatio}%` }}
+                  />
+                )}
+                {liveCount > 0 && blankCount > 0 && (
+                  <div className="setup-ratio-divider" />
+                )}
+                {blankCount > 0 && (
+                  <div
+                    className="setup-ratio-segment setup-ratio-segment--blank"
+                    style={{ width: `${blankRatio}%` }}
+                  />
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Composition Breakdown Sub-row */}
+          <div className="setup-summary-breakdown" aria-hidden="true">
+            <div className="setup-summary-col">
+              <span className="setup-summary-dot setup-summary-dot--live" />
+              <span className="setup-summary-val--live">{liveCount} LIVE</span>
+              {total > 0 && <span className="setup-summary-pct">({livePercent}%)</span>}
+            </div>
+            <div className="setup-summary-col">
+              <span className="setup-summary-dot setup-summary-dot--blank" />
+              <span className="setup-summary-val--blank">{blankCount} BLANK</span>
+              {total > 0 && <span className="setup-summary-pct">({blankPercent}%)</span>}
+            </div>
+          </div>
         </div>
 
+        {/* Validation Error Message */}
         {!validation.valid && (
-          <div
-            style={{
-              color: 'var(--color-danger)',
-              fontSize: '0.8rem',
-              textAlign: 'center',
-              background: 'var(--color-danger-soft)',
-              padding: '8px',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
-            }}
-          >
+          <div className="setup-validation-alert" role="alert">
             {validation.error}
           </div>
         )}
 
+        {/* Primary Action Button */}
         <button
           type="button"
           onClick={handleStart}
           disabled={!validation.valid}
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: 'var(--radius-md)',
-            background: validation.valid
-              ? 'linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%)'
-              : 'var(--color-surface-raised)',
-            border: validation.valid ? '1px solid var(--color-live)' : '1px solid var(--color-border)',
-            color: validation.valid ? '#ffffff' : 'var(--color-text-muted)',
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.05rem',
-            fontWeight: 700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            cursor: validation.valid ? 'pointer' : 'not-allowed',
-            boxShadow: validation.valid ? '0 4px 16px var(--color-live-glow)' : 'none',
-            transition: 'all 0.15s ease',
-          }}
+          className="btn-start-tracking"
+          aria-label="Start tracking session"
         >
           START TRACKING
         </button>

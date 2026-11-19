@@ -20,69 +20,54 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
     }
   };
 
-  // Quick preset buttons for common Buckshot Roulette loads
   const setPreset = (live: number, blank: number) => {
     setLiveCount(live);
     setBlankCount(blank);
   };
 
+  const presets = [
+    { label: '1:1', live: 1, blank: 1 },
+    { label: '2:2', live: 2, blank: 2 },
+    { label: '3:2', live: 3, blank: 2 },
+    { label: '3:3', live: 3, blank: 3 },
+    { label: '4:4', live: 4, blank: 4 },
+  ];
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', width: '100%' }}>
+      {/* Screen Title & Instructions */}
       <div style={{ textAlign: 'center' }}>
-        <h2
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.35rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text)',
-            marginBottom: '4px',
-          }}
-        >
-          LOAD THE SHOTGUN
-        </h2>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem' }}>
-          Specify the shell count announced by the Dealer.
+        <h2 className="inst-title">INITIALIZE CHAMBER</h2>
+        <p className="inst-subtitle" style={{ marginTop: 'var(--space-1)' }}>
+          Configure initial live and blank ammunition composition
         </p>
       </div>
 
-      {/* Preset Quick Select */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '8px',
-          justifyContent: 'center',
-        }}
-      >
-        {[
-          { label: '1L • 1B', live: 1, blank: 1 },
-          { label: '2L • 2B', live: 2, blank: 2 },
-          { label: '3L • 2B', live: 3, blank: 2 },
-          { label: '3L • 3B', live: 3, blank: 3 },
-          { label: '4L • 4B', live: 4, blank: 4 },
-        ].map((p) => (
-          <button
-            key={p.label}
-            type="button"
-            onClick={() => setPreset(p.live, p.blank)}
-            style={{
-              padding: '6px 10px',
-              borderRadius: 'var(--radius-sm)',
-              background: liveCount === p.live && blankCount === p.blank ? 'var(--color-surface-hover)' : 'var(--color-surface)',
-              border: `1px solid ${liveCount === p.live && blankCount === p.blank ? 'var(--color-border-highlight)' : 'var(--color-border)'}`,
-              color: 'var(--color-text-dim)',
-              fontSize: '0.72rem',
-              fontFamily: 'var(--font-mono)',
-              cursor: 'pointer',
-            }}
-          >
-            {p.label}
-          </button>
-        ))}
+      {/* Segmented Quick Preset Bar */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+        <span className="inst-label" style={{ textAlign: 'center', opacity: 0.7 }}>
+          QUICK LOAD PRESETS
+        </span>
+        <div className="inst-segmented">
+          {presets.map((p) => {
+            const isActive = liveCount === p.live && blankCount === p.blank;
+            return (
+              <button
+                key={p.label}
+                type="button"
+                onClick={() => setPreset(p.live, p.blank)}
+                className={`inst-segmented__item ${isActive ? 'inst-segmented__item--active' : ''}`}
+                aria-pressed={isActive}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Shell Counters */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      {/* Dual Shell Steppers */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
         <ShellCounter
           type="live"
           label="Live Rounds"
@@ -97,36 +82,43 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
         />
       </div>
 
-      {/* Total & Action */}
+      {/* Load Summary & Arm Action */}
       <div
+        className="inst-panel inst-panel--recessed"
         style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '14px',
+          gap: 'var(--space-3)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', fontFamily: 'var(--font-display)' }}>
-            TOTAL ROUNDS IN CHAMBER
+          <span className="inst-label" style={{ color: 'var(--text-secondary)' }}>
+            TOTAL CHAMBER CAPACITY
           </span>
           <span
+            className="inst-readout"
             style={{
-              fontFamily: 'var(--font-mono)',
               fontSize: '1.4rem',
-              fontWeight: 700,
-              color: 'var(--color-text)',
+              fontWeight: 800,
+              color: 'var(--text-primary)',
             }}
           >
-            {total}
+            {total} ROUNDS
           </span>
         </div>
 
         {!validation.valid && (
-          <div style={{ color: 'var(--color-danger)', fontSize: '0.78rem', textAlign: 'center' }}>
+          <div
+            className="inst-label"
+            style={{
+              color: 'var(--primitive-ruby-500)',
+              textAlign: 'center',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              padding: 'var(--space-2)',
+              borderRadius: 'var(--radius-xs)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+            }}
+          >
             {validation.error}
           </div>
         )}
@@ -135,24 +127,15 @@ export const SetupScreen: React.FC<SetupScreenProps> = ({ onStartLoad }) => {
           type="button"
           onClick={handleStart}
           disabled={!validation.valid}
+          className="inst-button inst-button--primary"
           style={{
             width: '100%',
-            padding: '16px',
-            borderRadius: 'var(--radius-md)',
-            background: validation.valid ? 'linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%)' : 'var(--color-surface-raised)',
-            border: validation.valid ? '1px solid var(--color-live)' : '1px solid var(--color-border)',
-            color: validation.valid ? '#ffffff' : 'var(--color-text-muted)',
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.05rem',
-            fontWeight: 700,
+            minHeight: '52px',
+            fontSize: 'var(--text-md)',
             letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            cursor: validation.valid ? 'pointer' : 'not-allowed',
-            boxShadow: validation.valid ? '0 4px 16px var(--color-live-glow)' : 'none',
-            transition: 'all 0.15s ease',
           }}
         >
-          START TRACKING
+          ARM & BEGIN TRACKING
         </button>
       </div>
     </div>

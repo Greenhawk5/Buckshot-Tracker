@@ -25,12 +25,12 @@ export const App: React.FC = () => {
 
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
-  // Enable swipe-away confirmation when a game is in progress
+  // Enable swipe-away confirmation when an active round is in progress
   useEffect(() => {
     setClosingConfirmation(session?.status === 'active');
   }, [session?.status, setClosingConfirmation]);
 
-  // Trigger haptic when status transitions to completed
+  // Trigger haptic when session completes
   useEffect(() => {
     if (session?.status === 'completed') {
       haptics.success();
@@ -71,38 +71,27 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="app-container">
-      {/* Header */}
+    <div className="app-container inst-chassis">
+      {/* Telemetry Header */}
       <header className="app-header">
         <div className="brand">
           <div className="brand-icon">⚡</div>
           <div>
             <h1 className="brand-title">Buckshot Counter</h1>
-            <span className="brand-subtitle">Shotgun Shell Tracker</span>
+            <span className="brand-subtitle">Tactical Instrument</span>
           </div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span
-              style={{
-                fontSize: '0.68rem',
-                padding: '2px 8px',
-                borderRadius: 'var(--radius-pill)',
-                background: 'var(--color-surface)',
-                color: isTelegram ? 'var(--color-success)' : 'var(--color-text-dim)',
-                border: '1px solid var(--color-border)',
-                fontFamily: 'var(--font-mono)',
-              }}
-            >
-              {user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}
-            </span>
+          <div className="inst-telemetry-badge">
+            <span className={`inst-led ${isTelegram ? 'inst-led--active' : ''}`} style={{ width: '5px', height: '5px' }} />
+            <span>{user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}</span>
           </div>
           <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>
       </header>
 
-      {/* Main Screens */}
+      {/* Primary Application Screens */}
       <main className="app-main">
         {!session && (
           <SetupScreen onStartLoad={handleStartLoad} />
@@ -129,10 +118,10 @@ export const App: React.FC = () => {
       {/* Confirmation Modal */}
       <ConfirmModal
         isOpen={showConfirmReset}
-        title="Discard Current Load?"
-        message="A shotgun load is currently in progress. Starting a new load will discard the active session."
+        title="Discard Active Chamber?"
+        message="An armed chamber round is currently active. Discarding will clear remaining rounds and reset the counter."
         confirmLabel="DISCARD & RESET"
-        cancelLabel="KEEP PLAYING"
+        cancelLabel="CONTINUE ROUND"
         isDestructive={true}
         onConfirm={handleConfirmReset}
         onCancel={() => setShowConfirmReset(false)}

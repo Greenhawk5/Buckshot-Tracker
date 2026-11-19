@@ -26,113 +26,107 @@ export const CompletedScreen: React.FC<CompletedScreenProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '20px',
+        gap: 'var(--space-4)',
         width: '100%',
         textAlign: 'center',
       }}
     >
-      <div
-        style={{
-          width: '64px',
-          height: '64px',
-          borderRadius: '50%',
-          background: 'var(--color-surface)',
-          border: '2px solid var(--color-border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '28px',
-          color: 'var(--color-text-muted)',
-          boxShadow: '0 0 20px rgba(0,0,0,0.5)',
-        }}
-      >
-        🔒
+      {/* Status Badge */}
+      <div className="inst-telemetry-badge" style={{ borderColor: 'rgba(245, 158, 11, 0.3)' }}>
+        <span className="inst-led inst-led--warning" />
+        <span style={{ color: 'var(--primitive-amber-500)' }}>CYCLE COMPLETED</span>
       </div>
 
       <div>
-        <h2
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.4rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text)',
-            marginBottom: '4px',
-          }}
-        >
-          CHAMBER EMPTY
-        </h2>
-        <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
-          All shells in this load have been recorded.
+        <h2 className="inst-title">CHAMBER EXHAUSTED</h2>
+        <p className="inst-subtitle" style={{ marginTop: 'var(--space-1)' }}>
+          All chamber rounds have been recorded and expended
         </p>
       </div>
 
-      {/* Summary Box */}
+      {/* Summary Debrief Box */}
       <div
+        className="inst-panel inst-panel--recessed"
         style={{
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '18px 24px',
           width: '100%',
-          display: 'flex',
-          justifyContent: 'space-around',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr 1fr',
+          gap: 'var(--space-2)',
+          padding: 'var(--space-4)',
         }}
       >
         <div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--color-live)', display: 'block', fontWeight: 600 }}>
+          <span
+            className="inst-label"
+            style={{ color: 'var(--primitive-crimson-400)', display: 'block' }}
+          >
             LIVE FIRED
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.6rem', fontWeight: 700, color: '#fff' }}>
+          <span
+            className="inst-readout"
+            style={{
+              fontSize: '1.8rem',
+              fontWeight: 800,
+              color: 'var(--primitive-crimson-300)',
+            }}
+          >
             {liveFired}
           </span>
         </div>
 
-        <div style={{ width: '1px', background: 'var(--color-border)' }} />
-
-        <div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--color-blank)', display: 'block', fontWeight: 600 }}>
+        <div style={{ borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
+          <span
+            className="inst-label"
+            style={{ color: 'var(--primitive-cobalt-400)', display: 'block' }}
+          >
             BLANK FIRED
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.6rem', fontWeight: 700, color: '#fff' }}>
+          <span
+            className="inst-readout"
+            style={{
+              fontSize: '1.8rem',
+              fontWeight: 800,
+              color: 'var(--primitive-cobalt-300)',
+            }}
+          >
             {blankFired}
           </span>
         </div>
 
-        <div style={{ width: '1px', background: 'var(--color-border)' }} />
-
         <div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', display: 'block', fontWeight: 600 }}>
-            TOTAL
+          <span
+            className="inst-label"
+            style={{ color: 'var(--text-muted)', display: 'block' }}
+          >
+            TOTAL FIRED
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '1.6rem', fontWeight: 700, color: '#fff' }}>
+          <span
+            className="inst-readout"
+            style={{
+              fontSize: '1.8rem',
+              fontWeight: 800,
+              color: 'var(--text-primary)',
+            }}
+          >
             {totalFired}
           </span>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+      {/* Action Controls */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%' }}>
         <button
           type="button"
           onClick={onNewLoad}
+          className="inst-button inst-button--primary"
           style={{
             width: '100%',
-            padding: '16px',
-            borderRadius: 'var(--radius-md)',
-            background: 'linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%)',
-            border: '1px solid var(--color-live)',
-            color: '#ffffff',
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.05rem',
-            fontWeight: 700,
+            minHeight: '52px',
+            fontSize: 'var(--text-md)',
             letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            boxShadow: '0 4px 16px var(--color-live-glow)',
           }}
         >
-          START NEW LOAD
+          INITIALIZE NEW LOAD
         </button>
 
         {undoAllowed && (

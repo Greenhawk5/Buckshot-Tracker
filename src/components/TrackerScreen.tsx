@@ -23,66 +23,52 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
   const probability = calculateProbability(session);
   const undoAllowed = canUndo(session);
 
-  // Recent shots preview (last 5 events)
+  // Recent shots preview (last 6 events)
   const recentEvents = [...session.events].slice(-6);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
-      {/* Top Session Status Bar */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', width: '100%' }}>
+      {/* Tactical Session Status Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span
-            style={{
-              padding: '3px 8px',
-              borderRadius: 'var(--radius-pill)',
-              background: 'var(--color-surface-raised)',
-              border: '1px solid var(--color-border)',
-              fontSize: '0.7rem',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              color: 'var(--color-success)',
-              letterSpacing: '0.05em',
-            }}
-          >
-            ● ACTIVE LOAD
-          </span>
-          <span
-            style={{
-              fontSize: '0.7rem',
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--color-text-muted)',
-            }}
-          >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+          <div className="inst-telemetry-badge" style={{ borderColor: 'rgba(16, 185, 129, 0.3)' }}>
+            <span className="inst-led inst-led--active" />
+            <span style={{ color: 'var(--primitive-emerald-500)' }}>CHAMBER ARMED</span>
+          </div>
+          <span className="inst-label">
             REV {session.version}
           </span>
         </div>
 
-        {/* History preview badges */}
-        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+        {/* Discharge history sequence preview */}
+        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
           {recentEvents.length === 0 ? (
-            <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-              No shots yet
+            <span className="inst-label" style={{ opacity: 0.5 }}>
+              STANDBY
             </span>
           ) : (
-            recentEvents.map((ev, idx) => (
-              <span
-                key={ev.id || idx}
-                title={`${ev.type}: ${'shell' in ev ? ev.shell : 'unknown'}`}
-                style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  background: 'shell' in ev && ev.shell === 'live' ? 'var(--color-live)' : 'var(--color-blank)',
-                  boxShadow: 'shell' in ev && ev.shell === 'live' ? '0 0 6px var(--color-live-glow)' : '0 0 6px var(--color-blank-glow)',
-                  display: 'inline-block',
-                }}
-              />
-            ))
+            recentEvents.map((ev, idx) => {
+              const isLive = 'shell' in ev && ev.shell === 'live';
+              return (
+                <span
+                  key={ev.id || idx}
+                  title={`${ev.type}: ${'shell' in ev ? ev.shell : 'unknown'}`}
+                  style={{
+                    width: '9px',
+                    height: '9px',
+                    borderRadius: '50%',
+                    backgroundColor: isLive ? 'var(--primitive-crimson-500)' : 'var(--primitive-cobalt-400)',
+                    boxShadow: isLive ? '0 0 6px rgba(230, 57, 70, 0.6)' : '0 0 6px rgba(56, 189, 248, 0.6)',
+                    display: 'inline-block',
+                  }}
+                />
+              );
+            })
           )}
         </div>
       </div>
 
-      {/* Chamber Visual Bar */}
+      {/* Recessed Chamber Inventory Bay */}
       <AmmoIndicator
         liveRemaining={session.liveRemaining}
         blankRemaining={session.blankRemaining}
@@ -90,8 +76,8 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         initialBlank={session.initialBlank}
       />
 
-      {/* Shot Buttons — Main Gameplay Interaction */}
-      <div style={{ display: 'flex', gap: '12px' }}>
+      {/* Primary Tactical Shot Triggers */}
+      <div className="inst-trigger-grid">
         <ShotButton
           shell="live"
           remaining={session.liveRemaining}
@@ -104,11 +90,11 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         />
       </div>
 
-      {/* Composition Odds */}
+      {/* Composition & Odds Telemetry */}
       <ProbabilityDisplay probability={probability} />
 
-      {/* Bottom Actions: Undo and New Load */}
-      <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+      {/* Auxiliary Controls */}
+      <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-1)' }}>
         <UndoButton
           onUndo={onUndo}
           disabled={!undoAllowed}
@@ -118,22 +104,14 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         <button
           type="button"
           onClick={onNewLoad}
+          className="inst-button"
           style={{
-            padding: '12px 18px',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text-dim)',
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
+            padding: 'var(--space-2) var(--space-4)',
+            minHeight: '44px',
+            color: 'var(--text-secondary)',
           }}
         >
-          RESET / NEW LOAD
+          RELOAD / RESET
         </button>
       </div>
     </div>

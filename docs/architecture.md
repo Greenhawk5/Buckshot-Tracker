@@ -95,3 +95,4 @@ Persisted on SQLite with WAL mode enabled:
 | `operation_id` | `text primaryKey` | Client-provided idempotency key |
 | `user_id` | `integer not null` | Owning Telegram user identifier |
 | `created_at` | `text not null` | Timestamp of execution |
+

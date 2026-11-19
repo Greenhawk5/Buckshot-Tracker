@@ -38,3 +38,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cryptographic launch validation enforcing caller identity via `ctx.initData.user`.
 - Defense-in-depth backend validation rejecting unauthorized shell ejection states.
 - User-isolated database queries preventing cross-tenant data access.
+

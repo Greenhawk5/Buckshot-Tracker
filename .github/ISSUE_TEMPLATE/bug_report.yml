@@ -75,3 +75,4 @@ body:
           required: true
         - label: I have confirmed this bug report contains no sensitive tokens, secrets, or personal data.
           required: true
+

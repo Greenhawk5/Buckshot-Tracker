@@ -30,3 +30,4 @@ Maintainers will acknowledge receipt of your vulnerability report within 72 hour
 - **Cryptographic Authentication:** The Telegram Serverless endpoints validate caller identity exclusively via cryptographically signed `initData` provided by the Telegram platform.
 - **Tenant Isolation:** All database records and session mutations are scoped strictly to the authenticated `user.id`.
 - **Zero Stored Secrets:** No bot tokens, encryption keys, or sensitive credentials are ever bundled in client code or stored in client-side persistence.
+

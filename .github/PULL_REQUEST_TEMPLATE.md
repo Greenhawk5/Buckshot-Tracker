@@ -28,3 +28,4 @@
 - [ ] I have updated relevant documentation (`docs/`, `README.md`, `CHANGELOG.md`) if applicable.
 - [ ] No secrets, tokens, or personal identifiers are committed.
 - [ ] This PR does not introduce multiplayer assumptions or unverified game mechanics.
+

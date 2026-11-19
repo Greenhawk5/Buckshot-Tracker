@@ -128,14 +128,14 @@
 .chamber-capsule--live {
   background: linear-gradient(180deg, var(--color-live) 0%, #a81c25 100%);
   border: 1px solid var(--color-live-border);
-  box-shadow: 0 2px 8px var(--color-live-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Blank Round Capsule */
 .chamber-capsule--blank {
   background: linear-gradient(180deg, var(--color-blank) 0%, #155e8a 100%);
   border: 1px solid var(--color-blank-border);
-  box-shadow: 0 2px 8px var(--color-blank-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Spent / Discharged Shell Capsule */
@@ -164,3 +164,4 @@
     transition: none !important;
   }
 }
+

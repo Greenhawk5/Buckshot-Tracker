@@ -198,6 +198,17 @@ async function run() {
   state = await getTrackerState();
   console.log('3L, 3B Mixed Inventory State:', state);
   await saveScreenshot('tracker-4-mixed-inventory.png');
+  await saveScreenshot('glow-correction-mixed.png');
+
+  // Also take a close-up screenshot of just the chamber inventory card
+  const inventoryEl = await page.$('.chamber-inventory-card');
+  if (inventoryEl) {
+    const closeupOut = path.join(OUTPUT_DIR, 'glow-correction-card-closeup.png');
+    const closeupArt = path.join(ARTIFACT_DIR, 'glow-correction-card-closeup.png');
+    await inventoryEl.screenshot({ path: closeupOut });
+    fs.copyFileSync(closeupOut, closeupArt);
+    console.log('Saved screenshot: glow-correction-card-closeup.png');
+  }
 
   // 7. Shoot all 3 blanks -> only Live ammunition remains
   console.log('\n--- Step 7: Only Live Ammunition Remains ---');
@@ -215,6 +226,7 @@ async function run() {
     throw new Error(`Expected 3 live and 0 blank, got ${state.liveCapsules}L, ${state.blankCapsules}B`);
   }
   await saveScreenshot('tracker-5-only-live.png');
+  await saveScreenshot('glow-correction-only-live.png');
 
   // 8. Reset & Create 1 Live, 3 Blank -> Shoot Live -> only Blank ammunition remains
   console.log('\n--- Step 8: Only Blank Ammunition Remains ---');
@@ -259,6 +271,7 @@ async function run() {
     throw new Error(`Expected 0 live and 3 blank, got ${state.liveCapsules}L, ${state.blankCapsules}B`);
   }
   await saveScreenshot('tracker-6-only-blank.png');
+  await saveScreenshot('glow-correction-only-blank.png');
 
   // 9. Viewport 320px check
   console.log('\n--- Step 9: Viewport 320px ---');
@@ -268,6 +281,7 @@ async function run() {
   console.log('320px horizontal overflow:', overflow320);
   if (overflow320) throw new Error('Horizontal overflow detected at 320px!');
   await saveScreenshot('tracker-7-width-320px.png');
+  await saveScreenshot('glow-correction-320px.png');
 
   // 10. Viewport 390px check
   console.log('\n--- Step 10: Viewport 390px ---');
@@ -277,6 +291,7 @@ async function run() {
   console.log('390px horizontal overflow:', overflow390);
   if (overflow390) throw new Error('Horizontal overflow detected at 390px!');
   await saveScreenshot('tracker-8-width-390px.png');
+  await saveScreenshot('glow-correction-390px.png');
 
   // 11. Responsive Widths Matrix
   const widths = [320, 360, 375, 390, 430, 768];
@@ -307,3 +322,4 @@ run().catch((err) => {
   console.error('Error in tracker verification:', err);
   process.exit(1);
 });
+

@@ -194,6 +194,8 @@ export function ejectShell(
     const knownPos1 = currentIntel.find((i) => i.positionFromCurrent === 1);
     if (knownPos1) {
       effectiveShell = knownPos1.shellType;
+    } else {
+      throw new Error('Cannot eject unknown shell: Chambered shell type is not known.');
     }
   }
 

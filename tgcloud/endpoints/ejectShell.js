@@ -69,13 +69,28 @@ export default async function (input, ctx) {
     currentIntel = [];
   }
 
-  // If unknown, check if position 1 is known
+  // If unknown, check if position 1 is already known via intelligence
   let effectiveShell = shell;
+  const knownPos1 = currentIntel.find((i) => i.positionFromCurrent === 1);
+
   if (effectiveShell === 'unknown') {
-    const knownPos1 = currentIntel.find((i) => i.positionFromCurrent === 1);
     if (knownPos1) {
       effectiveShell = knownPos1.shellType;
+    } else {
+      throw new EndpointError('Cannot eject unknown shell: Chambered shell type is not known.', {
+        code: 'VALIDATION_ERROR',
+      });
     }
+  } else if (knownPos1 && effectiveShell !== knownPos1.shellType) {
+    throw new EndpointError(`Conflict: Chambered shell is already known to be ${knownPos1.shellType.toUpperCase()}.`, {
+      code: 'VALIDATION_ERROR',
+    });
+  }
+
+  if (effectiveShell !== 'live' && effectiveShell !== 'blank') {
+    throw new EndpointError('Invalid shell type for ejection. Must be live or blank.', {
+      code: 'VALIDATION_ERROR',
+    });
   }
 
   if (effectiveShell === 'live' && session.liveRemaining <= 0) {
@@ -83,6 +98,26 @@ export default async function (input, ctx) {
   }
   if (effectiveShell === 'blank' && session.blankRemaining <= 0) {
     throw new EndpointError('No blank shells remaining to eject.', { code: 'OUT_OF_STOCK' });
+  }
+
+  // Aggregate capacity invariant check: cannot eject a shell type if all remaining shells of that type
+  // are already known to be at upcoming positions (positions > 1)
+  const knownFutureLive = currentIntel.filter(
+    (i) => i.positionFromCurrent > 1 && i.shellType === 'live'
+  ).length;
+  if (effectiveShell === 'live' && session.liveRemaining <= knownFutureLive) {
+    throw new EndpointError('Cannot eject Live shell: all remaining live shells are known at upcoming positions.', {
+      code: 'VALIDATION_ERROR',
+    });
+  }
+
+  const knownFutureBlank = currentIntel.filter(
+    (i) => i.positionFromCurrent > 1 && i.shellType === 'blank'
+  ).length;
+  if (effectiveShell === 'blank' && session.blankRemaining <= knownFutureBlank) {
+    throw new EndpointError('Cannot eject Blank shell: all remaining blank shells are known at upcoming positions.', {
+      code: 'VALIDATION_ERROR',
+    });
   }
 
   const now = Date.now();

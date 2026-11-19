@@ -219,6 +219,15 @@ describe('Burner Phone Intelligence & Shell Advancement Engine', () => {
     expect((session.events[1] as { shell: string }).shell).toBe('live');
   });
 
+  // 15b. Rejecting unknown shell ejection when Position 1 is NOT known
+  it('15b. rejects ejectShell with unknown shell when position 1 is unknown', () => {
+    const session = createNewSession({ initialLive: 3, initialBlank: 3 });
+    expect(() => ejectShell(session, 'unknown')).toThrow(
+      /Cannot eject unknown shell: Chambered shell type is not known/i
+    );
+    expect(canEjectShell(session, 'unknown').allowed).toBe(false);
+  });
+
   // 16. Undoing ejection restores pre-ejection counts and intel
   it('16. undos ejection and restores pre-ejection counts and intel', () => {
     let session = createNewSession({ initialLive: 2, initialBlank: 2 });

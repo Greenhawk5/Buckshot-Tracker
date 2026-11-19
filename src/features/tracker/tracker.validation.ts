@@ -56,15 +56,40 @@ export function canEjectShell(session: TrackerSession, shell: ShellType | 'unkno
     return { allowed: false, error: 'No shells remaining in chamber to eject.' };
   }
 
-  if (shell === 'live') {
+  // If unknown, check if position 1 is known via intelligence
+  const knownPos1 = (session.shellIntel || []).find((i) => i.positionFromCurrent === 1);
+  let effectiveShell = shell;
+  if (effectiveShell === 'unknown') {
+    if (knownPos1) {
+      effectiveShell = knownPos1.shellType;
+    } else {
+      return { allowed: false, error: 'Cannot eject unknown shell: Chambered shell type is not known.' };
+    }
+  } else if (knownPos1 && effectiveShell !== knownPos1.shellType) {
+    return { allowed: false, error: `Conflict: Chambered shell is already known to be ${knownPos1.shellType.toUpperCase()}.` };
+  }
+
+  if (effectiveShell === 'live') {
     if (session.liveRemaining <= 0) {
       return { allowed: false, error: 'No live shells remaining to eject.' };
     }
-  } else if (shell === 'blank') {
+    const knownFutureLive = (session.shellIntel || []).filter(
+      (i) => i.positionFromCurrent > 1 && i.shellType === 'live'
+    ).length;
+    if (session.liveRemaining <= knownFutureLive) {
+      return { allowed: false, error: 'Cannot eject Live shell: all remaining live shells are known at upcoming positions.' };
+    }
+  } else if (effectiveShell === 'blank') {
     if (session.blankRemaining <= 0) {
       return { allowed: false, error: 'No blank shells remaining to eject.' };
     }
-  } else if (shell !== 'unknown') {
+    const knownFutureBlank = (session.shellIntel || []).filter(
+      (i) => i.positionFromCurrent > 1 && i.shellType === 'blank'
+    ).length;
+    if (session.blankRemaining <= knownFutureBlank) {
+      return { allowed: false, error: 'Cannot eject Blank shell: all remaining blank shells are known at upcoming positions.' };
+    }
+  } else {
     return { allowed: false, error: 'Invalid shell type for ejection.' };
   }
 

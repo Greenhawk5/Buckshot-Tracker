@@ -1,2 +1,6 @@
 .tgcloud/
 node_modules/
+
+# Local-only project notes and visual test artifacts
+/note/
+/docs/photo/screenshots/

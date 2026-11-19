@@ -1,0 +1,91 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — TRACKER STATUS BAR
+   Soft Industrial Gaming UI
+   ========================================================================== */
+
+.tracker-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  min-height: 28px;
+  box-sizing: border-box;
+}
+
+/* Left: Active Load Badge */
+.tracker-status-badge {
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-success);
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.tracker-status-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-success);
+  box-shadow: 0 0 6px var(--color-success);
+  flex-shrink: 0;
+}
+
+/* Right: Activity & Shot Counter */
+.tracker-activity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 2.4vw, 0.74rem);
+  color: var(--color-text-muted);
+  justify-content: flex-end;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tracker-activity-label {
+  color: var(--color-text-dim);
+  font-weight: 500;
+}
+
+.tracker-activity-empty {
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* History Dots */
+.tracker-history-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.tracker-history-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.tracker-history-dot--live {
+  background-color: var(--color-live);
+  box-shadow: 0 0 5px var(--color-live-glow);
+}
+
+.tracker-history-dot--blank {
+  background-color: var(--color-blank);
+  box-shadow: 0 0 5px var(--color-blank-glow);
+}

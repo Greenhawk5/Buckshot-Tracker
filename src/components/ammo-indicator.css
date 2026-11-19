@@ -1,0 +1,166 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — CHAMBER INVENTORY
+   Soft Industrial Gaming UI
+   ========================================================================== */
+
+.chamber-inventory-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Header: Two Columns (Left Title/Tag, Right Count/Label) */
+.chamber-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 12px;
+}
+
+/* Left Column: Title & UNORDERED badge */
+.chamber-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.chamber-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.78rem, 2.8vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  line-height: 1.2;
+}
+
+.chamber-badge-unordered {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  opacity: 0.85;
+}
+
+/* Right Column: Ammunition Count & REMAINING tag */
+.chamber-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.chamber-count-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.chamber-count-remaining {
+  font-size: clamp(1rem, 3.2vw, 1.15rem);
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.chamber-count-sep {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.chamber-count-total {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.chamber-count-label {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  line-height: 1;
+}
+
+/* Visual Ammunition Capsules Grid / Track */
+.chamber-capsules-track {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  align-items: center;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+}
+
+/* Individual Shell Capsule */
+.chamber-capsule {
+  flex: 1 1 0;
+  min-width: 14px;
+  max-width: 42px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+  transition: transform 0.15s var(--ease-soft), box-shadow 0.15s ease, opacity 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Live Round Capsule */
+.chamber-capsule--live {
+  background: linear-gradient(180deg, var(--color-live) 0%, #a81c25 100%);
+  border: 1px solid var(--color-live-border);
+  box-shadow: 0 2px 8px var(--color-live-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Blank Round Capsule */
+.chamber-capsule--blank {
+  background: linear-gradient(180deg, var(--color-blank) 0%, #155e8a 100%);
+  border: 1px solid var(--color-blank-border);
+  box-shadow: 0 2px 8px var(--color-blank-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Spent / Discharged Shell Capsule */
+.chamber-capsule--spent {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px dashed var(--color-border-highlight);
+  opacity: 0.22;
+  box-shadow: none;
+}
+
+/* Chamber Empty Banner */
+.chamber-empty-msg {
+  width: 100%;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 6px 0;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .chamber-capsule {
+    transition: none !important;
+  }
+}

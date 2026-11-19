@@ -1,4 +1,5 @@
 import React from 'react';
+import './tracker-status.css';
 import { TrackerSession, ShellType } from '../features/tracker/tracker.types';
 import { ShotButton } from './ShotButton';
 import { AmmoIndicator } from './AmmoIndicator';
@@ -23,76 +24,53 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
   const probability = calculateProbability(session);
   const undoAllowed = canUndo(session);
 
+  // Authoritative current shot count (derived from effective session state)
+  const initialTotal = session.initialLive + session.initialBlank;
+  const currentTotal = session.liveRemaining + session.blankRemaining;
+  const shotsFired = Math.max(0, initialTotal - currentTotal);
+
   // Recent shots preview (last 6 events)
   const recentEvents = [...session.events].slice(-6);
+
+  // Grammatically correct shot activity label
+  const activityLabel =
+    shotsFired === 0
+      ? 'No shots fired'
+      : shotsFired === 1
+      ? '1 shot fired'
+      : `${shotsFired} shots fired`;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
       {/* Top Session Status Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span
-            style={{
-              padding: '3px 8px',
-              borderRadius: 'var(--radius-pill)',
-              background: 'var(--color-surface-raised)',
-              border: '1px solid var(--color-border)',
-              fontSize: '0.7rem',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              color: 'var(--color-success)',
-              letterSpacing: '0.05em',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-            }}
-          >
-            <span
-              style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--color-success)',
-                boxShadow: '0 0 6px var(--color-success)',
-              }}
-            />
-            ACTIVE LOAD
-          </span>
-          <span
-            style={{
-              fontSize: '0.7rem',
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--color-text-muted)',
-            }}
-          >
-            REV {session.version}
-          </span>
+      <div className="tracker-status-bar" aria-label="Session status">
+        {/* Active Load Indicator */}
+        <div className="tracker-status-badge">
+          <span className="tracker-status-led" aria-hidden="true" />
+          <span>ACTIVE LOAD</span>
         </div>
 
-        {/* History preview badges */}
-        <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-          {recentEvents.length === 0 ? (
-            <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-              No shots yet
-            </span>
-          ) : (
-            recentEvents.map((ev, idx) => {
-              const isLive = 'shell' in ev && ev.shell === 'live';
-              return (
-                <span
-                  key={ev.id || idx}
-                  title={`${ev.type}: ${'shell' in ev ? ev.shell : 'unknown'}`}
-                  style={{
-                    width: '10px',
-                    height: '10px',
-                    borderRadius: '50%',
-                    background: isLive ? 'var(--color-live)' : 'var(--color-blank)',
-                    boxShadow: isLive ? '0 0 6px var(--color-live-glow)' : '0 0 6px var(--color-blank-glow)',
-                    display: 'inline-block',
-                  }}
-                />
-              );
-            })
+        {/* Meaningful Shot Activity Indicator */}
+        <div className="tracker-activity">
+          <span className={shotsFired === 0 ? 'tracker-activity-empty' : 'tracker-activity-label'}>
+            {activityLabel}
+          </span>
+
+          {recentEvents.length > 0 && (
+            <div className="tracker-history-dots" aria-label="Recent shot history">
+              {recentEvents.map((ev, idx) => {
+                const isLive = 'shell' in ev && ev.shell === 'live';
+                return (
+                  <span
+                    key={ev.id || idx}
+                    title={`${isLive ? 'Live' : 'Blank'} shot`}
+                    className={`tracker-history-dot ${
+                      isLive ? 'tracker-history-dot--live' : 'tracker-history-dot--blank'
+                    }`}
+                  />
+                );
+              })}
+            </div>
           )}
         </div>
       </div>

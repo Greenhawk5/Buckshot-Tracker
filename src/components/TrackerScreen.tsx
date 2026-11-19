@@ -1,5 +1,6 @@
 import React from 'react';
 import './tracker-status.css';
+import './tracker-actions.css';
 import { TrackerSession, ShellType } from '../features/tracker/tracker.types';
 import { ShotButton } from './ShotButton';
 import { AmmoIndicator } from './AmmoIndicator';
@@ -101,7 +102,7 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
       <ProbabilityDisplay probability={probability} />
 
       {/* Bottom Actions: Undo and New Load */}
-      <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+      <div className="tracker-bottom-actions">
         <UndoButton
           onUndo={onUndo}
           disabled={!undoAllowed}
@@ -111,20 +112,8 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         <button
           type="button"
           onClick={onNewLoad}
-          style={{
-            padding: '12px 18px',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text-dim)',
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
-          }}
+          className="btn-tracker-action btn-reset-load"
+          aria-label="Reset or start new load"
         >
           RESET / NEW LOAD
         </button>

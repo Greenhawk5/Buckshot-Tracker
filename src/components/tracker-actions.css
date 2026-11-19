@@ -1,0 +1,124 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — TRACKER BOTTOM ACTIONS
+   Soft Industrial Gaming UI
+   ========================================================================== */
+
+/* 2-Column Equal Grid Container */
+.tracker-bottom-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+/* Shared Action Button Base */
+.btn-tracker-action {
+  min-height: 44px;
+  height: 44px;
+  padding: 0 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s var(--ease-soft),
+              border-color 0.15s var(--ease-soft),
+              transform 0.1s var(--ease-soft),
+              color 0.15s ease;
+}
+
+.btn-tracker-action:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-highlight);
+}
+
+.btn-tracker-action:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-tracker-action:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Undo Button Specifics */
+.btn-undo {
+  color: var(--color-text);
+}
+
+.btn-undo--disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.undo-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.undo-label {
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 2.2vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.undo-badge {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-highlight);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+/* Reset / New Load Button Specifics */
+.btn-reset-load {
+  color: var(--color-text-dim);
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 2.2vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .btn-tracker-action {
+    transition: none !important;
+  }
+}

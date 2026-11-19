@@ -85,6 +85,21 @@ export default async function (input, ctx) {
   const nextVersion = session.version + 1;
   const newStatus = (restoredLive > 0 || restoredBlank > 0) ? 'active' : 'completed';
 
+  let restoredIntel = [];
+  if (Array.isArray(lastEvent.previousIntel)) {
+    restoredIntel = lastEvent.previousIntel;
+  } else {
+    try {
+      const currentIntel = JSON.parse(session.intelJson || '[]');
+      restoredIntel = currentIntel.map((i) => ({
+        ...i,
+        positionFromCurrent: i.positionFromCurrent + 1,
+      }));
+    } catch {
+      restoredIntel = [];
+    }
+  }
+
   await db
     .update(trackerSessions)
     .set({
@@ -92,6 +107,7 @@ export default async function (input, ctx) {
       blankRemaining: restoredBlank,
       status: newStatus,
       eventsJson: JSON.stringify(events),
+      intelJson: JSON.stringify(restoredIntel),
       version: nextVersion,
       updatedAt: now,
     })

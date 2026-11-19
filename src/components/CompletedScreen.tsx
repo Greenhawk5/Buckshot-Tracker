@@ -43,7 +43,7 @@ export const CompletedScreen: React.FC<CompletedScreenProps> = ({
           justifyContent: 'center',
           fontSize: '28px',
           color: 'var(--color-text-muted)',
-          boxShadow: '0 0 20px rgba(0,0,0,0.5)',
+          boxShadow: '0 0 20px rgba(0, 0, 0, 0.5)',
         }}
       >
         🔒
@@ -77,6 +77,7 @@ export const CompletedScreen: React.FC<CompletedScreenProps> = ({
           width: '100%',
           display: 'flex',
           justifyContent: 'space-around',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         <div>
@@ -130,6 +131,7 @@ export const CompletedScreen: React.FC<CompletedScreenProps> = ({
             textTransform: 'uppercase',
             cursor: 'pointer',
             boxShadow: '0 4px 16px var(--color-live-glow)',
+            transition: 'all 0.15s ease',
           }}
         >
           START NEW LOAD

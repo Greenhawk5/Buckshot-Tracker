@@ -51,6 +51,7 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
         gap: '12px',
         position: 'relative',
         overflow: 'hidden',
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -64,7 +65,7 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
             color: colorVar,
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
+            gap: '8px',
           }}
         >
           <span
@@ -80,7 +81,7 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
         </span>
         <span
           style={{
-            fontSize: '0.7rem',
+            fontSize: '0.72rem',
             fontFamily: 'var(--font-mono)',
             color: 'var(--color-text-muted)',
           }}
@@ -96,8 +97,8 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
           disabled={count <= min}
           aria-label={`Decrease ${label}`}
           style={{
-            width: '46px',
-            height: '46px',
+            width: '48px',
+            height: '48px',
             borderRadius: 'var(--radius-md)',
             background: 'var(--color-surface)',
             border: '1px solid var(--color-border)',
@@ -108,8 +109,9 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             cursor: count <= min ? 'not-allowed' : 'pointer',
-            opacity: count <= min ? 0.4 : 1,
+            opacity: count <= min ? 0.35 : 1,
             transition: 'all 0.15s ease',
+            userSelect: 'none',
           }}
         >
           −
@@ -118,12 +120,13 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
         <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '2.5rem',
+            fontSize: '2.6rem',
             fontWeight: 700,
             color: colorVar,
             minWidth: '60px',
             textAlign: 'center',
             lineHeight: 1,
+            fontVariantNumeric: 'tabular-nums',
           }}
         >
           {count}
@@ -135,8 +138,8 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
           disabled={count >= max}
           aria-label={`Increase ${label}`}
           style={{
-            width: '46px',
-            height: '46px',
+            width: '48px',
+            height: '48px',
             borderRadius: 'var(--radius-md)',
             background: 'var(--color-surface)',
             border: '1px solid var(--color-border)',
@@ -147,8 +150,9 @@ export const ShellCounter: React.FC<ShellCounterProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             cursor: count >= max ? 'not-allowed' : 'pointer',
-            opacity: count >= max ? 0.4 : 1,
+            opacity: count >= max ? 0.35 : 1,
             transition: 'all 0.15s ease',
+            userSelect: 'none',
           }}
         >
           +

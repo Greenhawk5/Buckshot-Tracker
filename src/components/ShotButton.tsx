@@ -53,17 +53,19 @@ export const ShotButton: React.FC<ShotButtonProps> = ({
         cursor: isDisabled ? 'not-allowed' : 'pointer',
         opacity: isDisabled ? 0.35 : 1,
         transform: isPressing ? 'scale(0.97)' : 'scale(1)',
-        transition: 'transform 0.1s ease, border-color 0.15s ease, background 0.15s ease',
-        boxShadow: !isDisabled ? `0 4px 16px ${glow}` : 'none',
+        transition: 'transform 0.12s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease',
+        boxShadow: !isDisabled ? `0 4px 18px ${glow}` : 'none',
         position: 'relative',
         overflow: 'hidden',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span
           style={{
-            width: '10px',
-            height: '10px',
+            width: '9px',
+            height: '9px',
             borderRadius: '50%',
             backgroundColor: textColor,
             boxShadow: `0 0 10px ${textColor}`,
@@ -91,7 +93,8 @@ export const ShotButton: React.FC<ShotButtonProps> = ({
             fontWeight: 800,
             lineHeight: 1,
             color: '#ffffff',
-            textShadow: `0 2px 10px rgba(0,0,0,0.8)`,
+            textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+            fontVariantNumeric: 'tabular-nums',
           }}
         >
           {remaining}

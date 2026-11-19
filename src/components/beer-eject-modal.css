@@ -1,0 +1,166 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — BEER EJECT MODAL
+   Soft Industrial Gaming UI
+   ========================================================================== */
+
+.eject-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.eject-modal-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.eject-modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eject-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eject-modal-subtitle {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.eject-known-alert {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eject-known-alert strong {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.eject-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-eject-choice {
+  padding: 14px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn-eject-choice:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-eject-choice--live {
+  background: var(--color-live-soft);
+  border: 1px solid var(--color-live-border);
+  color: var(--color-live-light);
+}
+
+.btn-eject-choice--live:not(:disabled):hover,
+.btn-eject-choice--live:not(:disabled):active {
+  background: linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%);
+  border-color: var(--color-live);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--color-live-glow);
+}
+
+.btn-eject-choice--blank {
+  background: var(--color-blank-soft);
+  border: 1px solid var(--color-blank-border);
+  color: var(--color-blank-light);
+}
+
+.btn-eject-choice--blank:not(:disabled):hover,
+.btn-eject-choice--blank:not(:disabled):active {
+  background: linear-gradient(135deg, var(--color-blank) 0%, #1d72a8 100%);
+  border-color: var(--color-blank);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--color-blank-glow);
+}
+
+.btn-eject-known-confirm {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-eject-known-confirm--live {
+  background: linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%);
+  border: 1px solid var(--color-live);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--color-live-glow);
+}
+
+.btn-eject-known-confirm--blank {
+  background: linear-gradient(135deg, var(--color-blank) 0%, #1d72a8 100%);
+  border: 1px solid var(--color-blank);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--color-blank-glow);
+}
+
+.eject-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}

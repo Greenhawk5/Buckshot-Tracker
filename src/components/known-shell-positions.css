@@ -1,0 +1,330 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — KNOWN SHELL POSITIONS
+   Soft Industrial Gaming UI — Compact & Balanced Refinement
+   ========================================================================== */
+
+.known-shells-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: clamp(12px, 2.8vw, 15px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Header */
+.known-shells-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.known-shells-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.known-shells-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.78rem, 2.5vw, 0.84rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.known-shells-subtitle {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.known-shells-count-badge {
+  padding: 2.5px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--color-text-dim);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+/* List of Known Shells */
+.known-shells-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+}
+
+/* ==========================================================================
+   INDIVIDUAL KNOWN SHELL ITEM (COMPACT 3-REGION GRID)
+   Left:   Fixed 30px Position Badge
+   Center: Flexible Information Column (min-width: 0) — Single line Title + Badge
+   Right:  Fixed 26px Dedicated Remove Action (with 40px touch zone)
+   ========================================================================== */
+.known-shell-item {
+  display: grid;
+  grid-template-columns: 30px 1fr 26px;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  width: 100%;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+/* Current Chambered Shell (Position 1) */
+.known-shell-item--current {
+  background: var(--color-surface-raised);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.08);
+}
+
+/* Upcoming Shells (Position 2+) */
+.known-shell-item--upcoming {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+}
+
+/* Column 1: Position Badge [ 1 ], [ 2 ], etc. */
+.known-shell-pos-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.known-shell-item--current .known-shell-pos-badge {
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #f59e0b;
+}
+
+.known-shell-item--upcoming .known-shell-pos-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+}
+
+/* Column 2: Center Information Column */
+.known-shell-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+  justify-content: center;
+}
+
+/* Row 1: Title & Status Badge — Always single-line, perfectly balanced */
+.known-shell-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.known-shell-ordinal {
+  font-family: var(--font-display);
+  font-size: clamp(0.70rem, 2vw, 0.77rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Status Badges: Compact, refined status indicators */
+.known-shell-state-pill {
+  font-family: var(--font-mono);
+  font-size: clamp(0.50rem, 1.5vw, 0.55rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 1.5px 5px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.known-shell-state-pill--current {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+.known-shell-state-pill--upcoming {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+}
+
+/* Row 2: Metadata Row (Type & Source) */
+.known-shell-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: clamp(0.64rem, 1.8vw, 0.69rem);
+  line-height: 1.2;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.known-shell-type--live {
+  color: var(--color-live);
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.known-shell-type--blank {
+  color: var(--color-blank);
+  font-weight: 700;
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.known-shell-source {
+  color: var(--color-text-muted);
+  font-size: 0.62rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Column 3: Dedicated Subtle Remove Action */
+.btn-remove-intel {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: all 0.15s ease;
+  justify-self: end;
+  position: relative;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Non-visual expanded touch target for mobile ergonomics (40px) */
+.btn-remove-intel::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.btn-remove-intel:hover,
+.btn-remove-intel:active {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--color-danger);
+}
+
+.btn-remove-intel:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 1px;
+}
+
+/* Empty State */
+.known-shells-empty {
+  padding: 12px 10px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+  background: rgba(20, 22, 27, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.74rem;
+  user-select: none;
+}
+
+.known-shells-empty-icon {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+/* Ultra-Compact Viewport Adjustments (<= 340px) */
+@media (max-width: 340px) {
+  .known-shells-card {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+
+  .known-shell-item {
+    gap: 7px;
+    padding: 6px 7px;
+    grid-template-columns: 26px 1fr 24px;
+  }
+
+  .known-shell-pos-badge {
+    width: 26px;
+    height: 26px;
+    font-size: 0.78rem;
+  }
+
+  .known-shell-ordinal {
+    font-size: 0.68rem;
+  }
+
+  .known-shell-state-pill {
+    font-size: 0.48rem;
+    padding: 1px 4px;
+  }
+
+  .btn-remove-intel {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    font-size: 0.90rem;
+  }
+}

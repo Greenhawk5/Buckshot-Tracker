@@ -1,13 +1,17 @@
-import { TrackerSession } from '../features/tracker/tracker.types';
+import { TrackerSession, ShellType, IntelSource } from '../features/tracker/tracker.types';
 
 const SESSION_STORAGE_KEY = 'buckshot_tracker_session_v1';
 const PENDING_OPS_KEY = 'buckshot_tracker_pending_ops_v1';
 
 export interface PendingOperation {
   id: string;
-  type: 'create' | 'shot' | 'undo' | 'abandon';
+  type: 'create' | 'shot' | 'undo' | 'abandon' | 'intel_add' | 'intel_remove' | 'eject';
   sessionId?: string;
-  shell?: 'live' | 'blank';
+  shell?: ShellType | 'unknown';
+  intelId?: string;
+  intelPosition?: number;
+  intelShellType?: ShellType;
+  intelSource?: IntelSource;
   initialLive?: number;
   initialBlank?: number;
   expectedVersion?: number;
@@ -30,7 +34,12 @@ export function loadLocalSession(): TrackerSession | null {
   try {
     const raw = localStorage.getItem(SESSION_STORAGE_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as TrackerSession;
+    const parsed = JSON.parse(raw) as TrackerSession;
+    if (parsed) {
+      parsed.shellIntel = Array.isArray(parsed.shellIntel) ? parsed.shellIntel : [];
+      parsed.events = Array.isArray(parsed.events) ? parsed.events : [];
+    }
+    return parsed;
   } catch {
     return null;
   }

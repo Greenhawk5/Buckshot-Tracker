@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './app.css';
+import botLogo from '../assets/logo.png';
 import { useTelegram } from '../hooks/useTelegram';
 import { useTrackerSession } from '../hooks/useTrackerSession';
-import { ShellType } from '../features/tracker/tracker.types';
+import { ShellType, AddIntelParams } from '../features/tracker/tracker.types';
 import { SetupScreen } from '../components/SetupScreen';
 import { TrackerScreen } from '../components/TrackerScreen';
 import { CompletedScreen } from '../components/CompletedScreen';
@@ -18,6 +19,9 @@ export const App: React.FC = () => {
     syncState,
     startLoad,
     shoot,
+    eject,
+    addIntel,
+    removeIntel,
     undo,
     reset,
     retrySync,
@@ -25,12 +29,12 @@ export const App: React.FC = () => {
 
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
-  // Enable swipe-away confirmation when a game is in progress
+  // Enable swipe-away confirmation when an active round is in progress
   useEffect(() => {
     setClosingConfirmation(session?.status === 'active');
   }, [session?.status, setClosingConfirmation]);
 
-  // Trigger haptic when status transitions to completed
+  // Trigger haptic when session completes
   useEffect(() => {
     if (session?.status === 'completed') {
       haptics.success();
@@ -49,6 +53,21 @@ export const App: React.FC = () => {
       haptics.medium();
     }
     shoot(shell);
+  };
+
+  const handleEject = (shell: ShellType) => {
+    haptics.medium();
+    eject(shell);
+  };
+
+  const handleAddIntel = (params: AddIntelParams) => {
+    haptics.medium();
+    addIntel(params);
+  };
+
+  const handleRemoveIntel = (id: string) => {
+    haptics.light();
+    removeIntel(id);
   };
 
   const handleUndo = () => {
@@ -70,33 +89,25 @@ export const App: React.FC = () => {
     reset();
   };
 
+  const rawDisplayName = user?.first_name || user?.username || '';
+  const displayName = rawDisplayName.trim() || 'TELEGRAM';
+
   return (
     <div className="app-container">
       {/* Header */}
       <header className="app-header">
         <div className="brand">
-          <div className="brand-icon">⚡</div>
-          <div>
-            <h1 className="brand-title">Buckshot Counter</h1>
+          <img src={botLogo} alt="Buckshot Tracker Logo" className="brand-logo" />
+          <div className="brand-text">
+            <h1 className="brand-title">Buckshot Tracker</h1>
             <span className="brand-subtitle">Shotgun Shell Tracker</span>
           </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span
-              style={{
-                fontSize: '0.68rem',
-                padding: '2px 8px',
-                borderRadius: 'var(--radius-pill)',
-                background: 'var(--color-surface)',
-                color: isTelegram ? 'var(--color-success)' : 'var(--color-text-dim)',
-                border: '1px solid var(--color-border)',
-                fontFamily: 'var(--font-mono)',
-              }}
-            >
-              {user?.first_name ? user.first_name.toUpperCase() : 'TELEGRAM'}
-            </span>
+        <div className="header-status">
+          <div className="operator-badge" title={displayName}>
+            <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
+            <span className="operator-name" dir="auto">{displayName}</span>
           </div>
           <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>
@@ -112,6 +123,9 @@ export const App: React.FC = () => {
           <TrackerScreen
             session={session}
             onShot={handleShot}
+            onEject={handleEject}
+            onAddIntel={handleAddIntel}
+            onRemoveIntel={handleRemoveIntel}
             onUndo={handleUndo}
             onNewLoad={handleRequestNewLoad}
           />

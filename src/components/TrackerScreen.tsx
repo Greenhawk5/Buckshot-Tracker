@@ -1,8 +1,13 @@
-import React from 'react';
-import { TrackerSession, ShellType } from '../features/tracker/tracker.types';
+import React, { useState } from 'react';
+import './tracker-status.css';
+import './tracker-actions.css';
+import { TrackerSession, ShellType, AddIntelParams } from '../features/tracker/tracker.types';
 import { ShotButton } from './ShotButton';
 import { AmmoIndicator } from './AmmoIndicator';
 import { ProbabilityDisplay } from './ProbabilityDisplay';
+import { KnownShellPositions } from './KnownShellPositions';
+import { BurnerPhoneModal } from './BurnerPhoneModal';
+import { BeerEjectModal } from './BeerEjectModal';
 import { UndoButton } from './UndoButton';
 import { calculateProbability } from '../features/tracker/tracker.logic';
 import { canUndo } from '../features/tracker/tracker.validation';
@@ -10,6 +15,9 @@ import { canUndo } from '../features/tracker/tracker.validation';
 interface TrackerScreenProps {
   session: TrackerSession;
   onShot: (shell: ShellType) => void;
+  onEject: (shell: ShellType) => void;
+  onAddIntel: (params: AddIntelParams) => void;
+  onRemoveIntel: (id: string) => void;
   onUndo: () => void;
   onNewLoad: () => void;
 }
@@ -17,67 +25,65 @@ interface TrackerScreenProps {
 export const TrackerScreen: React.FC<TrackerScreenProps> = ({
   session,
   onShot,
+  onEject,
+  onAddIntel,
+  onRemoveIntel,
   onUndo,
   onNewLoad,
 }) => {
+  const [showPhoneModal, setShowPhoneModal] = useState(false);
+  const [showBeerModal, setShowBeerModal] = useState(false);
+
   const probability = calculateProbability(session);
   const undoAllowed = canUndo(session);
 
-  // Recent shots preview (last 5 events)
+  // Authoritative current shot count (derived from effective session state)
+  const initialTotal = session.initialLive + session.initialBlank;
+  const currentTotal = session.liveRemaining + session.blankRemaining;
+  const shotsFired = Math.max(0, initialTotal - currentTotal);
+
+  // Recent shots preview (last 6 events)
   const recentEvents = [...session.events].slice(-6);
+
+  // Grammatically correct shot activity label
+  const activityLabel =
+    shotsFired === 0
+      ? 'No shots fired'
+      : shotsFired === 1
+      ? '1 shot fired'
+      : `${shotsFired} shots fired`;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
       {/* Top Session Status Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span
-            style={{
-              padding: '3px 8px',
-              borderRadius: 'var(--radius-pill)',
-              background: 'var(--color-surface-raised)',
-              border: '1px solid var(--color-border)',
-              fontSize: '0.7rem',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              color: 'var(--color-success)',
-              letterSpacing: '0.05em',
-            }}
-          >
-            ● ACTIVE LOAD
-          </span>
-          <span
-            style={{
-              fontSize: '0.7rem',
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--color-text-muted)',
-            }}
-          >
-            REV {session.version}
-          </span>
+      <div className="tracker-status-bar" aria-label="Session status">
+        {/* Active Load Indicator */}
+        <div className="tracker-status-badge">
+          <span className="tracker-status-led" aria-hidden="true" />
+          <span>ACTIVE LOAD</span>
         </div>
 
-        {/* History preview badges */}
-        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-          {recentEvents.length === 0 ? (
-            <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
-              No shots yet
-            </span>
-          ) : (
-            recentEvents.map((ev, idx) => (
-              <span
-                key={ev.id || idx}
-                title={`${ev.type}: ${'shell' in ev ? ev.shell : 'unknown'}`}
-                style={{
-                  width: '10px',
-                  height: '10px',
-                  borderRadius: '50%',
-                  background: 'shell' in ev && ev.shell === 'live' ? 'var(--color-live)' : 'var(--color-blank)',
-                  boxShadow: 'shell' in ev && ev.shell === 'live' ? '0 0 6px var(--color-live-glow)' : '0 0 6px var(--color-blank-glow)',
-                  display: 'inline-block',
-                }}
-              />
-            ))
+        {/* Meaningful Shot Activity Indicator */}
+        <div className="tracker-activity">
+          <span className={shotsFired === 0 ? 'tracker-activity-empty' : 'tracker-activity-label'}>
+            {activityLabel}
+          </span>
+
+          {recentEvents.length > 0 && (
+            <div className="tracker-history-dots" aria-label="Recent shot history">
+              {recentEvents.map((ev, idx) => {
+                const isLive = 'shell' in ev && ev.shell === 'live';
+                return (
+                  <span
+                    key={ev.id || idx}
+                    title={`${isLive ? 'Live' : 'Blank'} shot`}
+                    className={`tracker-history-dot ${
+                      isLive ? 'tracker-history-dot--live' : 'tracker-history-dot--blank'
+                    }`}
+                  />
+                );
+              })}
+            </div>
           )}
         </div>
       </div>
@@ -90,7 +96,7 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         initialBlank={session.initialBlank}
       />
 
-      {/* Shot Buttons — Main Gameplay Interaction */}
+      {/* Shot Buttons — Main Gameplay Centerpiece */}
       <div style={{ display: 'flex', gap: '12px' }}>
         <ShotButton
           shell="live"
@@ -104,11 +110,40 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         />
       </div>
 
+      {/* Secondary Utility Actions (Burner Phone & Beer) */}
+      <div className="tracker-utility-actions">
+        <button
+          type="button"
+          onClick={() => setShowPhoneModal(true)}
+          className="btn-utility-action btn-utility-phone"
+          aria-label="Add Burner Phone intelligence"
+        >
+          <span aria-hidden="true">📞</span>
+          <span>ADD PHONE INTEL</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setShowBeerModal(true)}
+          className="btn-utility-action btn-utility-beer"
+          aria-label="Eject shell using Beer"
+        >
+          <span aria-hidden="true">🍺</span>
+          <span>EJECT (BEER)</span>
+        </button>
+      </div>
+
+      {/* Known Shell Positions Section */}
+      <KnownShellPositions
+        intelList={session.shellIntel}
+        onRemoveIntel={onRemoveIntel}
+      />
+
       {/* Composition Odds */}
       <ProbabilityDisplay probability={probability} />
 
       {/* Bottom Actions: Undo and New Load */}
-      <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+      <div className="tracker-bottom-actions">
         <UndoButton
           onUndo={onUndo}
           disabled={!undoAllowed}
@@ -118,24 +153,33 @@ export const TrackerScreen: React.FC<TrackerScreenProps> = ({
         <button
           type="button"
           onClick={onNewLoad}
-          style={{
-            padding: '12px 18px',
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--radius-md)',
-            color: 'var(--color-text-dim)',
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.85rem',
-            fontWeight: 600,
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            transition: 'all 0.15s ease',
-          }}
+          className="btn-tracker-action btn-reset-load"
+          aria-label="Reset or start new load"
         >
           RESET / NEW LOAD
         </button>
       </div>
+
+      {/* Modals */}
+      <BurnerPhoneModal
+        isOpen={showPhoneModal}
+        session={session}
+        onConfirm={(params) => {
+          onAddIntel(params);
+          setShowPhoneModal(false);
+        }}
+        onCancel={() => setShowPhoneModal(false)}
+      />
+
+      <BeerEjectModal
+        isOpen={showBeerModal}
+        session={session}
+        onConfirmEject={(shell) => {
+          onEject(shell);
+          setShowBeerModal(false);
+        }}
+        onCancel={() => setShowBeerModal(false)}
+      />
     </div>
   );
 };

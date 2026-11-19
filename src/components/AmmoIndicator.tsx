@@ -1,4 +1,5 @@
 import React from 'react';
+import './ammo-indicator.css';
 
 interface AmmoIndicatorProps {
   liveRemaining: number;
@@ -15,68 +16,34 @@ export const AmmoIndicator: React.FC<AmmoIndicatorProps> = ({
 }) => {
   const totalRemaining = liveRemaining + blankRemaining;
   const initialTotal = initialLive + initialBlank;
+  const spentCount = Math.max(0, initialTotal - totalRemaining);
 
   return (
-    <div
-      style={{
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '16px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '12px',
-      }}
-    >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.8rem',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-dim)',
-          }}
-        >
-          CHAMBER INVENTORY
-        </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.8rem',
-            color: 'var(--color-text-muted)',
-          }}
-        >
-          {totalRemaining} / {initialTotal} TOTAL
-        </span>
+    <div className="chamber-inventory-card" aria-label="Chamber inventory">
+      {/* Redesigned 2-Column Header */}
+      <div className="chamber-header">
+        <div className="chamber-header-left">
+          <span className="chamber-title">CHAMBER INVENTORY</span>
+          <span className="chamber-badge-unordered">UNORDERED</span>
+        </div>
+
+        <div className="chamber-header-right">
+          <div className="chamber-count-wrap" aria-label={`${totalRemaining} of ${initialTotal} remaining`}>
+            <span className="chamber-count-remaining">{totalRemaining}</span>
+            <span className="chamber-count-sep">/</span>
+            <span className="chamber-count-total">{initialTotal}</span>
+          </div>
+          <span className="chamber-count-label">REMAINING</span>
+        </div>
       </div>
 
-      {/* Visual pill bar representing composition */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '6px',
-          height: '24px',
-          alignItems: 'center',
-          overflowX: 'auto',
-          paddingBottom: '2px',
-        }}
-      >
+      {/* Visual Ammunition Capsules Track */}
+      <div className="chamber-capsules-track" aria-hidden="true">
         {Array.from({ length: liveRemaining }).map((_, i) => (
           <div
             key={`live-${i}`}
             title="Live shell"
-            style={{
-              flex: 1,
-              minWidth: '14px',
-              maxWidth: '36px',
-              height: '100%',
-              borderRadius: 'var(--radius-sm)',
-              background: 'linear-gradient(180deg, var(--color-live) 0%, #b81f29 100%)',
-              border: '1px solid var(--color-live-border)',
-              boxShadow: '0 0 6px var(--color-live-glow)',
-              transition: 'all 0.2s ease',
-            }}
+            className="chamber-capsule chamber-capsule--live"
           />
         ))}
 
@@ -84,30 +51,20 @@ export const AmmoIndicator: React.FC<AmmoIndicatorProps> = ({
           <div
             key={`blank-${i}`}
             title="Blank shell"
-            style={{
-              flex: 1,
-              minWidth: '14px',
-              maxWidth: '36px',
-              height: '100%',
-              borderRadius: 'var(--radius-sm)',
-              background: 'linear-gradient(180deg, var(--color-blank) 0%, #1d6ea3 100%)',
-              border: '1px solid var(--color-blank-border)',
-              boxShadow: '0 0 6px var(--color-blank-glow)',
-              transition: 'all 0.2s ease',
-            }}
+            className="chamber-capsule chamber-capsule--blank"
+          />
+        ))}
+
+        {Array.from({ length: spentCount }).map((_, i) => (
+          <div
+            key={`spent-${i}`}
+            title="Discharged shell"
+            className="chamber-capsule chamber-capsule--spent"
           />
         ))}
 
         {totalRemaining === 0 && (
-          <div
-            style={{
-              width: '100%',
-              textAlign: 'center',
-              color: 'var(--color-text-muted)',
-              fontSize: '0.8rem',
-              fontFamily: 'var(--font-mono)',
-            }}
-          >
+          <div className="chamber-empty-msg">
             CHAMBER EMPTY
           </div>
         )}

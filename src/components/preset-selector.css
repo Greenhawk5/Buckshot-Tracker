@@ -1,0 +1,204 @@
+/* ==========================================================================
+   BUCKSHOT TRACKER — QUICK LOAD PRESET SELECTOR
+   Soft Industrial Gaming UI
+   ========================================================================== */
+
+.preset-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.preset-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.preset-title {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+.preset-hint {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+}
+
+/* Outer Deck / Recessed Enclosure */
+.preset-dock {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Individual Preset Item (Accessible Radio Button) */
+.preset-item {
+  flex: 1;
+  min-height: 48px;
+  padding: 6px 2px 8px 2px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background-color 0.15s var(--ease-soft),
+              border-color 0.15s var(--ease-soft),
+              box-shadow 0.15s var(--ease-soft),
+              transform 0.1s var(--ease-soft);
+}
+
+.preset-item:hover:not(.preset-item--active) {
+  background: var(--color-surface-hover);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+.preset-item:active {
+  transform: scale(0.97);
+}
+
+.preset-item:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* Selected State */
+.preset-item--active {
+  background: linear-gradient(180deg, #222631 0%, #171922 100%);
+  border-color: var(--color-border-highlight);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Ammunition Composition Pips (Top Row) */
+.preset-pips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 5px;
+}
+
+.preset-pip {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.preset-pip--live {
+  background-color: var(--color-live);
+  box-shadow: 0 0 4px var(--color-live-glow);
+}
+
+.preset-pip--blank {
+  background-color: var(--color-blank);
+  box-shadow: 0 0 4px var(--color-blank-glow);
+}
+
+.preset-pips-divider {
+  width: 1px;
+  height: 5px;
+  background-color: var(--color-border-highlight);
+  margin: 0 1px;
+  opacity: 0.35;
+}
+
+/* Numerals (Center Row) */
+.preset-label {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.68rem, 2.5vw, 0.74rem);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.preset-qty--live {
+  color: rgba(255, 125, 133, 0.85);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.preset-sep {
+  color: var(--color-text-muted);
+  font-size: 0.65rem;
+  opacity: 0.45;
+}
+
+.preset-qty--blank {
+  color: rgba(125, 211, 252, 0.85);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+/* Active Highlight Styling */
+.preset-item--active .preset-qty--live {
+  color: var(--color-live);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 59, 71, 0.45);
+}
+
+.preset-item--active .preset-qty--blank {
+  color: var(--color-blank);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.45);
+}
+
+.preset-item--active .preset-pip {
+  transform: scale(1.15);
+}
+
+.preset-item--active .preset-pip--live {
+  box-shadow: 0 0 6px rgba(255, 59, 71, 0.7);
+}
+
+.preset-item--active .preset-pip--blank {
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.7);
+}
+
+/* Active Indicator Bar (Bottom Accent) */
+.preset-active-indicator {
+  position: absolute;
+  bottom: 3px;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-live) 0%, var(--color-blank) 100%);
+  box-shadow: 0 0 6px rgba(255, 59, 71, 0.3);
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .preset-item,
+  .preset-pip,
+  .preset-qty--live,
+  .preset-qty--blank {
+    transition: none !important;
+  }
+}

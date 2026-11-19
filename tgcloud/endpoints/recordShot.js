@@ -1,7 +1,7 @@
 import { db, EndpointError } from 'sdk';
 import { eq, and } from 'sdk/db';
 import { trackerSessions, processedOperations } from '../schema.js';
-import { getAuthenticatedUserId, formatSessionRow } from '../lib/session-helper.js';
+import { getAuthenticatedUserId, formatSessionRow, advanceIntelOnConsumption } from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
   const userId = getAuthenticatedUserId(ctx);
@@ -73,11 +73,22 @@ export default async function (input, ctx) {
     events = [];
   }
 
+  let currentIntel = [];
+  try {
+    currentIntel = JSON.parse(session.intelJson || '[]');
+  } catch {
+    currentIntel = [];
+  }
+
+  const previousIntel = [...currentIntel];
+  const updatedIntel = isCompleted ? [] : advanceIntelOnConsumption(currentIntel);
+
   const eventId = operationId || `shot_${now}_${Math.random().toString(36).slice(2, 7)}`;
   events.push({
     id: eventId,
     type: 'shot',
     shell,
+    previousIntel,
     createdAt: now,
   });
 
@@ -90,6 +101,7 @@ export default async function (input, ctx) {
       blankRemaining: newBlank,
       status: isCompleted ? 'completed' : 'active',
       eventsJson: JSON.stringify(events),
+      intelJson: JSON.stringify(updatedIntel),
       version: nextVersion,
       updatedAt: now,
     })

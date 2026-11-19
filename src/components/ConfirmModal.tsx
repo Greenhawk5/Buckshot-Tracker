@@ -29,7 +29,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         position: 'fixed',
         inset: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        backdropFilter: 'blur(4px)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
@@ -54,10 +55,11 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         <h3
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '1.1rem',
+            fontSize: '1.15rem',
             letterSpacing: '0.06em',
             textTransform: 'uppercase',
             color: isDestructive ? 'var(--color-live)' : 'var(--color-text)',
+            margin: 0,
           }}
         >
           {title}
@@ -65,15 +67,16 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
         <p
           style={{
-            fontSize: '0.85rem',
+            fontSize: '0.88rem',
             color: 'var(--color-text-dim)',
             lineHeight: 1.5,
+            margin: 0,
           }}
         >
           {message}
         </p>
 
-        <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
           <button
             type="button"
             onClick={onCancel}
@@ -86,7 +89,11 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               color: 'var(--color-text-dim)',
               fontWeight: 600,
               fontSize: '0.85rem',
+              fontFamily: 'var(--font-display)',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
               cursor: 'pointer',
+              transition: 'all 0.15s ease',
             }}
           >
             {cancelLabel}
@@ -99,14 +106,19 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               flex: 1,
               padding: '12px',
               borderRadius: 'var(--radius-md)',
-              background: isDestructive ? 'var(--color-live)' : 'var(--color-success)',
-              border: 'none',
+              background: isDestructive
+                ? 'linear-gradient(135deg, var(--color-live) 0%, #a81c25 100%)'
+                : 'linear-gradient(135deg, var(--color-blank) 0%, #1d72a8 100%)',
+              border: `1px solid ${isDestructive ? 'var(--color-live)' : 'var(--color-blank)'}`,
               color: '#ffffff',
               fontWeight: 700,
               fontSize: '0.85rem',
               fontFamily: 'var(--font-display)',
-              letterSpacing: '0.05em',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
               cursor: 'pointer',
+              boxShadow: isDestructive ? '0 4px 16px var(--color-live-glow)' : '0 4px 16px var(--color-blank-glow)',
+              transition: 'all 0.15s ease',
             }}
           >
             {confirmLabel}

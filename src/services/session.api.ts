@@ -1,5 +1,5 @@
 import { callServerless, ServerlessError } from './serverless.client';
-import { TrackerSession, ShellType } from '../features/tracker/tracker.types';
+import { TrackerSession, ShellType, AddIntelParams } from '../features/tracker/tracker.types';
 
 export interface ApiResponse<T> {
   ok: boolean;
@@ -43,6 +43,53 @@ export async function recordRemoteShot(
   const res = await callServerless<{ ok: boolean; session: TrackerSession }>('recordShot', {
     sessionId,
     shell,
+    expectedVersion,
+    operationId,
+  });
+  return res.session;
+}
+
+export async function ejectRemoteShell(
+  sessionId: string,
+  shell: ShellType | 'unknown',
+  expectedVersion: number,
+  operationId: string
+): Promise<TrackerSession> {
+  const res = await callServerless<{ ok: boolean; session: TrackerSession }>('ejectShell', {
+    sessionId,
+    shell,
+    expectedVersion,
+    operationId,
+  });
+  return res.session;
+}
+
+export async function addRemoteShellIntel(
+  sessionId: string,
+  params: AddIntelParams,
+  expectedVersion: number,
+  operationId: string
+): Promise<TrackerSession> {
+  const res = await callServerless<{ ok: boolean; session: TrackerSession }>('addShellIntel', {
+    sessionId,
+    positionFromCurrent: params.positionFromCurrent,
+    shellType: params.shellType,
+    source: params.source || 'burner_phone',
+    expectedVersion,
+    operationId,
+  });
+  return res.session;
+}
+
+export async function removeRemoteShellIntel(
+  sessionId: string,
+  intelId: string,
+  expectedVersion: number,
+  operationId: string
+): Promise<TrackerSession> {
+  const res = await callServerless<{ ok: boolean; session: TrackerSession }>('removeShellIntel', {
+    sessionId,
+    intelId,
     expectedVersion,
     operationId,
   });

@@ -33,7 +33,7 @@ export default async function (message, ctx) {
 
     await api.sendMessage({
       chat_id: chatId,
-      text: '🎲 *Buckshot Counter*\n\nWelcome! This tactical companion helps you track live and blank shotgun shells remaining in the chamber during your matches.\n\nTap the button below to launch the tracker:',
+      text: '🎲 *Buckshot Roulette Tracker*\n\nWelcome! This tactical companion helps you track live and blank shotgun shells remaining in the chamber during your matches.\n\nTap the button below to launch the tracker:',
       parse_mode: 'Markdown',
       reply_markup: {
         inline_keyboard: [

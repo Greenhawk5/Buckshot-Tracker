@@ -1,139 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Buckshot Tracker — Verification</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    :root {
-      --bg: #101113;
-      --surface: #191b1f;
-      --surface-raised: #22252a;
-      --border: #34383f;
-      --text: #f2f2f0;
-      --muted: #999da5;
-      --live: #ef626b;
-      --blank: #65b5ee;
-      --success: #70c49b;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    }
-    h1 {
-      font-size: 1.3rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: var(--surface-raised);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      margin-bottom: 20px;
-    }
-    .status-box {
-      background: var(--surface-raised);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-      text-align: left;
-      font-size: 0.85rem;
-      line-height: 1.5;
-      color: var(--muted);
-      margin-bottom: 20px;
-      word-break: break-all;
-    }
-    .status-box strong { color: var(--text); }
-    .status-ok { color: var(--success); font-weight: bold; }
-    .btn {
-      background: var(--surface-raised);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.15s ease;
-    }
-    .btn:active {
-      background: #2a2e35;
-      transform: scale(0.98);
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h1>Buckshot Counter</h1>
-    <div class="badge">Phase 0: Platform Verification</div>
-    <div id="status" class="status-box">Connecting to Telegram Serverless...</div>
-    <button id="pingBtn" class="btn">Test Ping Endpoint</button>
-  </div>
-
-  <script>
-    const statusEl = document.getElementById('status');
-    const pingBtn = document.getElementById('pingBtn');
-
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
-    }
-
-    function testPing() {
-      statusEl.innerHTML = 'Calling <code>ping</code> endpoint...';
-
-      if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.Serverless) {
-        statusEl.innerHTML = '<strong>Warning:</strong> Telegram.WebApp.Serverless API not detected. Open this inside Telegram Mini App.';
-        return;
-      }
-
-      window.Telegram.WebApp.Serverless.call('ping', { clientTimestamp: Date.now() }, function(err, result) {
-        if (err) {
-          statusEl.innerHTML = '<span style="color:var(--live);">Endpoint Error:</span><br/>' +
-            '<strong>Type:</strong> ' + (err.type || 'UNKNOWN') + '<br/>' +
-            '<strong>Message:</strong> ' + (err.message || 'Call failed');
-          return;
-        }
-
-        statusEl.innerHTML = '<span class="status-ok">✔ Serverless Connected</span><br/>' +
-          '<strong>Server Time:</strong> ' + new Date(result.serverTime).toLocaleTimeString() + '<br/>' +
-          '<strong>User ID:</strong> ' + (result.authenticatedUser ? result.authenticatedUser.id : 'Anonymous') + '<br/>' +
-          '<strong>First Name:</strong> ' + (result.authenticatedUser ? result.authenticatedUser.firstName : 'N/A');
-      });
-    }
-
-    pingBtn.addEventListener('click', testPing);
-    // Automatic call on load
-    testPing();
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Buckshot Roulette Tracker</title>
+    <!-- Telegram Mini App WebApp script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-CkbUBZex.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D60HgoEx.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>

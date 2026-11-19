@@ -1,0 +1,44 @@
+name: Feature Request
+description: Suggest an idea or enhancement for Buckshot Tracker
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement to Buckshot Tracker!
+        Please note that this project is strictly focused on Single-Player Buckshot Roulette tracking mechanics.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem or tactical friction during gameplay?
+      placeholder: A clear and concise description of the problem or limitation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution or enhancement you'd like to see.
+      placeholder: Detailed description of how the new feature would work in the tracker UI or backend.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or workarounds you've evaluated.
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any other context, game mechanics references, or screenshots about the feature request here.
+    validations:
+      required: false

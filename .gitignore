@@ -1,6 +1,10 @@
 .tgcloud/
 node_modules/
 
+# Editor and IDE settings
+.vscode/
+.idea/
+
 # Local-only project notes and visual test artifacts
 /note/
 /docs/photo/screenshots/

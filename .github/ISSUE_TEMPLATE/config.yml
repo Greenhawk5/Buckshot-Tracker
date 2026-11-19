@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security Vulnerabilities
+    url: https://github.com/Greenhawk5/Buckshot-Tracker/security/advisories/new
+    about: Please report security vulnerabilities privately via GitHub Security Advisories.
+  - name: Game Mechanics References
+    url: https://github.com/Greenhawk5/Buckshot-Tracker/blob/main/docs/game-mechanics-sources.md
+    about: Review authoritative single-player Buckshot Roulette mechanics and intelligence rules.

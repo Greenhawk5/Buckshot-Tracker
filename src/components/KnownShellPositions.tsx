@@ -54,46 +54,44 @@ export const KnownShellPositions: React.FC<KnownShellPositionsProps> = ({
                   isCurrent ? 'known-shell-item--current' : 'known-shell-item--upcoming'
                 }`}
               >
-                <div className="known-shell-left">
-                  {/* Position Badge */}
-                  <div
-                    className="known-shell-pos-badge"
-                    aria-label={`Position ${intel.positionFromCurrent}`}
-                  >
-                    {intel.positionFromCurrent}
+                {/* 1. Fixed-size Position Badge */}
+                <div
+                  className="known-shell-pos-badge"
+                  aria-label={`Position ${intel.positionFromCurrent}`}
+                >
+                  {intel.positionFromCurrent}
+                </div>
+
+                {/* 2. Flexible Center Column */}
+                <div className="known-shell-details">
+                  <div className="known-shell-header-row">
+                    <span className="known-shell-ordinal">
+                      {getOrdinalLabel(intel.positionFromCurrent)}
+                    </span>
+                    <span
+                      className={`known-shell-state-pill ${
+                        isCurrent
+                          ? 'known-shell-state-pill--current'
+                          : 'known-shell-state-pill--upcoming'
+                      }`}
+                    >
+                      {isCurrent ? 'CURRENT SHELL' : 'UPCOMING'}
+                    </span>
                   </div>
 
-                  {/* Details */}
-                  <div className="known-shell-details">
-                    <div className="known-shell-header-row">
-                      <span className="known-shell-ordinal">
-                        {getOrdinalLabel(intel.positionFromCurrent)}
-                      </span>
-                      <span
-                        className={`known-shell-state-pill ${
-                          isCurrent
-                            ? 'known-shell-state-pill--current'
-                            : 'known-shell-state-pill--upcoming'
-                        }`}
-                      >
-                        {isCurrent ? 'CURRENT SHELL' : 'UPCOMING'}
-                      </span>
-                    </div>
-
-                    <div className="known-shell-meta-row">
-                      <span
-                        className={
-                          isLive ? 'known-shell-type--live' : 'known-shell-type--blank'
-                        }
-                      >
-                        {isLive ? 'LIVE ROUND' : 'BLANK ROUND'}
-                      </span>
-                      <span className="known-shell-source">· BURNER PHONE</span>
-                    </div>
+                  <div className="known-shell-meta-row">
+                    <span
+                      className={
+                        isLive ? 'known-shell-type--live' : 'known-shell-type--blank'
+                      }
+                    >
+                      {isLive ? 'LIVE ROUND' : 'BLANK ROUND'}
+                    </span>
+                    <span className="known-shell-source">· BURNER PHONE</span>
                   </div>
                 </div>
 
-                {/* Remove Button */}
+                {/* 3. Dedicated Fixed-size Remove Button */}
                 <button
                   type="button"
                   onClick={() => onRemoveIntel(intel.id)}

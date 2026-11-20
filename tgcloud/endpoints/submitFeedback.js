@@ -52,3 +52,4 @@ export default async function (input, ctx) {
     message: 'Thank you for your feedback!',
   };
 }
+

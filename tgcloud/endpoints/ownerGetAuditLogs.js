@@ -30,3 +30,4 @@ export default async function (input, ctx) {
     totalPages: Math.ceil(total / pageSize) || 1,
   };
 }
+

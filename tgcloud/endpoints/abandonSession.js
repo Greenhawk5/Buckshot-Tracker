@@ -1,9 +1,14 @@
 import { db, EndpointError } from 'sdk';
 import { eq, and } from 'sdk/db';
 import { trackerSessions } from '../schema.js';
-import { getAuthenticatedUserId, trackUserAndActivity } from '../lib/session-helper.js';
+import {
+  getAuthenticatedUserId,
+  trackUserAndActivity,
+  checkMaintenanceAccess,
+} from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
+  await checkMaintenanceAccess(ctx);
   const userId = getAuthenticatedUserId(ctx);
   const { sessionId, expectedVersion } = input || {};
 

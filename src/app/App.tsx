@@ -20,6 +20,7 @@ export const App: React.FC = () => {
 
   const [activePage, setActivePage] = useState<'tracker' | 'about' | 'owner'>('tracker');
   const [isOwner, setIsOwner] = useState(false);
+  const [maintenanceNotice, setMaintenanceNotice] = useState<string | null>(null);
 
   const {
     session,
@@ -36,7 +37,7 @@ export const App: React.FC = () => {
 
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
-  // Record application open and detect owner privileges
+  // Record application open and detect owner privileges and maintenance mode
   useEffect(() => {
     let mounted = true;
     if (user && String(user.id) === APP_CONFIG.ownerTelegramId) {
@@ -44,8 +45,14 @@ export const App: React.FC = () => {
     }
     recordRemoteAppOpen()
       .then((res) => {
-        if (mounted && res.isOwner) {
+        if (!mounted) return;
+        if (res.isOwner) {
           setIsOwner(true);
+        }
+        if (res.maintenance?.active && String(user?.id) !== APP_CONFIG.ownerTelegramId) {
+          setMaintenanceNotice(
+            res.maintenance.message || 'Buckshot Tracker is currently under scheduled maintenance.'
+          );
         }
       })
       .catch(() => {
@@ -180,6 +187,14 @@ export const App: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Scheduled Maintenance Warning Banner for normal players */}
+      {maintenanceNotice && !isOwner && (
+        <div className="maintenance-banner" role="alert">
+          <span className="maintenance-icon">⚠️</span>
+          <span className="maintenance-text">{maintenanceNotice}</span>
+        </div>
+      )}
 
       {/* Main Screens */}
       <main className="app-main">

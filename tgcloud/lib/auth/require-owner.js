@@ -24,3 +24,4 @@ export function requireOwner(ctx) {
 
   return user;
 }
+

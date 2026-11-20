@@ -120,9 +120,17 @@ export async function abandonRemoteSession(
   return Boolean(res.success);
 }
 
-export async function recordRemoteAppOpen(): Promise<{ ok: boolean; isOwner: boolean }> {
+export async function recordRemoteAppOpen(): Promise<{
+  ok: boolean;
+  isOwner: boolean;
+  maintenance?: { active: boolean; message: string };
+}> {
   try {
-    return await callServerless<{ ok: boolean; isOwner: boolean }>('recordAppOpen', {});
+    return await callServerless<{
+      ok: boolean;
+      isOwner: boolean;
+      maintenance?: { active: boolean; message: string };
+    }>('recordAppOpen', {});
   } catch {
     return { ok: false, isOwner: false };
   }

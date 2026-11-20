@@ -1,6 +1,7 @@
 import { EndpointError } from 'sdk';
-import { upsertObservedUser, checkUserRestriction } from './users/user-service.js';
+import { upsertObservedUser, checkUserRestriction, OWNER_TELEGRAM_ID } from './users/user-service.js';
 import { recordActivityEvent } from './analytics/event-service.js';
+import { getSystemSettings } from './settings/settings-service.js';
 
 export function getAuthenticatedUser(ctx) {
   const user = ctx?.initData?.user;
@@ -15,6 +16,29 @@ export function getAuthenticatedUser(ctx) {
 export function getAuthenticatedUserId(ctx) {
   const user = getAuthenticatedUser(ctx);
   return String(user.id);
+}
+
+/**
+ * Validates that the application is not currently under maintenance for normal players.
+ * The Owner (Telegram ID 184202422) always retains full access and is never blocked.
+ */
+export async function checkMaintenanceAccess(ctx) {
+  const user = getAuthenticatedUser(ctx);
+  const userIdStr = String(user.id);
+  if (userIdStr === OWNER_TELEGRAM_ID) {
+    return; // Owner always retains access
+  }
+
+  const settings = await getSystemSettings();
+  if (settings.maintenanceMode) {
+    throw new EndpointError(
+      settings.maintenanceMessage || 'Buckshot Tracker is currently under scheduled maintenance. Please check back shortly.',
+      {
+        code: 'MAINTENANCE_MODE',
+        maintenance: true,
+      }
+    );
+  }
 }
 
 /**

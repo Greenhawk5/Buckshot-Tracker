@@ -67,3 +67,4 @@ export async function updateSystemSetting(key, value, updatedBy) {
     }).run();
   }
 }
+

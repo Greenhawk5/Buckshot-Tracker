@@ -6,9 +6,11 @@ import {
   formatSessionRow,
   advanceIntelOnConsumption,
   trackUserAndActivity,
+  checkMaintenanceAccess,
 } from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
+  await checkMaintenanceAccess(ctx);
   const userId = getAuthenticatedUserId(ctx);
   const { sessionId, shell, expectedVersion, operationId } = input || {};
 

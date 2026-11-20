@@ -96,3 +96,4 @@ export async function recordActivityEvent({
     return null;
   }
 }
+

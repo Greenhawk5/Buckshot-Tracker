@@ -54,3 +54,4 @@ export default async function (input, ctx) {
     status: CAMPAIGN_STATUS.PAUSED,
   };
 }
+

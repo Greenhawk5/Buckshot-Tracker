@@ -43,3 +43,4 @@ export function canTransitionCampaign(currentStatus, nextStatus) {
   const allowed = ALLOWED_TRANSITIONS[currentStatus] || [];
   return allowed.includes(nextStatus);
 }
+

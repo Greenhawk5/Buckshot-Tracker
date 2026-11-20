@@ -206,3 +206,4 @@ describe('User Registry & Activity Tracking Unit Suite — Phase 2', () => {
     expect(memoryStore.activity_events.size).toBe(2);
   });
 });
+

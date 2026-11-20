@@ -117,3 +117,4 @@ export async function getUserByTelegramId(telegramUserId) {
     .where(eq(users.telegramId, tgIdStr))
     .get();
 }
+

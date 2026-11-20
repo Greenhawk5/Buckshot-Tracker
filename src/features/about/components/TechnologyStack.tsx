@@ -17,3 +17,4 @@ export const TechnologyStack: React.FC = () => {
     </div>
   );
 };
+

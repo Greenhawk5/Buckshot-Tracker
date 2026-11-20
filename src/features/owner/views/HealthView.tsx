@@ -99,3 +99,4 @@ export const HealthView: React.FC = () => {
     </div>
   );
 };
+

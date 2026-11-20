@@ -54,3 +54,4 @@ describe('Frontend Architecture & About Page Tests — Phase 8', () => {
     expect(closed).toBe(true);
   });
 });
+

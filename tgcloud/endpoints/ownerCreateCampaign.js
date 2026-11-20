@@ -76,3 +76,4 @@ export default async function (input, ctx) {
     campaign: campaignRecord,
   };
 }
+

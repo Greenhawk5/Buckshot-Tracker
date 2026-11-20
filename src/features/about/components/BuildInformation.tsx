@@ -26,3 +26,4 @@ export const BuildInformation: React.FC = () => {
     </div>
   );
 };
+

@@ -19,7 +19,7 @@ Access to all administrative endpoints and administrative interfaces is restrict
 
 ### 2.2 Server-Side Authorization (`requireOwner`)
 - The backend never trusts client-supplied user IDs, roles, body parameters, or query parameters.
-- Every protected endpoint imports and invokes `requireOwner(ctx)` as its first instruction.
+- Every protected administrative endpoint (24 verified endpoints in `tgcloud/endpoints/owner*.js`) imports and invokes `requireOwner(ctx)` as its first instruction.
 - The platform guarantees `ctx.initData` was signed with the official Telegram Bot token. Invalid or tampered requests are rejected with HTTP 401 before an endpoint executes.
 - If the authenticated caller ID is not `'184202422'`, the endpoint rejects the call immediately with an `EndpointError` having code `FORBIDDEN` (HTTP 400 with description: *"Forbidden: Owner authorization required."*).
 - Non-owners never receive sensitive user lists, telemetry, or system health details.

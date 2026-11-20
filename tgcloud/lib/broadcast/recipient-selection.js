@@ -121,3 +121,4 @@ export async function snapshotCampaignRecipients(campaignId, targetDef) {
 
   return recipientRows.length;
 }
+

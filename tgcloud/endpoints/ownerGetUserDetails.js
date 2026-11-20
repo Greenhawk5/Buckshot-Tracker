@@ -60,3 +60,4 @@ export default async function (input, ctx) {
     broadcastHistory: recipientRows.slice(0, 20),
   };
 }
+

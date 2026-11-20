@@ -126,28 +126,83 @@ export async function processBroadcastBatch(campaignId, batchSize = 5) {
 
   const now = Date.now();
 
-  // Find claimable recipients: pending or retryable, ready for next attempt, lease expired
+  // Find candidate claimable recipients:
+  // 1. Pending or retryable (with nextAttemptAt <= now and leaseUntil <= now)
+  // 2. OR currently in 'sending' whose lease has expired (leaseUntil <= now) -> expired lease recovery
   const allRecipients = await db
     .select()
     .from(broadcastRecipients)
     .where(eq(broadcastRecipients.campaignId, campaignId))
     .all();
 
-  const claimable = allRecipients.filter((r) => {
-    const isReadyStatus =
+  const claimableCandidates = allRecipients.filter((r) => {
+    const isPendingOrRetryable =
       r.status === RECIPIENT_STATUS.PENDING || r.status === RECIPIENT_STATUS.FAILED_RETRYABLE;
+    const isExpiredSending =
+      r.status === RECIPIENT_STATUS.SENDING && (r.leaseUntil || 0) <= now;
     const isReadyTime = (r.nextAttemptAt || 0) <= now;
     const isLeaseExpired = (r.leaseUntil || 0) <= now;
-    return isReadyStatus && isReadyTime && isLeaseExpired;
+
+    return (isPendingOrRetryable && isReadyTime && isLeaseExpired) || isExpiredSending;
   });
 
-  const batch = claimable.slice(0, batchSize);
+  // Genuinely atomic recipient claiming using Compare-And-Swap (CAS) conditional updates.
+  // Guarantees that concurrent batch invocations cannot claim the same recipient.
+  const leaseTime = now + 60000;
+  const claimedBatch = [];
+
+  for (const candidate of claimableCandidates) {
+    if (claimedBatch.length >= batchSize) {
+      break;
+    }
+
+    const claimResult = await db
+      .update(broadcastRecipients)
+      .set({
+        status: RECIPIENT_STATUS.SENDING,
+        leaseUntil: leaseTime,
+        updatedAt: now,
+      })
+      .where(
+        and(
+          eq(broadcastRecipients.id, candidate.id),
+          or(
+            eq(broadcastRecipients.status, RECIPIENT_STATUS.PENDING),
+            eq(broadcastRecipients.status, RECIPIENT_STATUS.FAILED_RETRYABLE),
+            and(
+              eq(broadcastRecipients.status, RECIPIENT_STATUS.SENDING),
+              lte(broadcastRecipients.leaseUntil, now)
+            )
+          ),
+          lte(broadcastRecipients.leaseUntil, now),
+          lte(broadcastRecipients.nextAttemptAt, now)
+        )
+      )
+      .run();
+
+    if (claimResult && claimResult.rowsAffected === 1) {
+      claimedBatch.push({
+        ...candidate,
+        status: RECIPIENT_STATUS.SENDING,
+        leaseUntil: leaseTime,
+        updatedAt: now,
+      });
+    }
+  }
+
+  const batch = claimedBatch;
 
   if (batch.length === 0) {
-    // Check if campaign is finished
-    const hasRemaining = allRecipients.some(
-      (r) => r.status === RECIPIENT_STATUS.PENDING || r.status === RECIPIENT_STATUS.FAILED_RETRYABLE
-    );
+    // Check if campaign is finished or has remaining in-flight/retryable recipients
+    const hasRemaining = allRecipients.some((r) => {
+      if (r.status === RECIPIENT_STATUS.PENDING || r.status === RECIPIENT_STATUS.FAILED_RETRYABLE) {
+        return true;
+      }
+      if (r.status === RECIPIENT_STATUS.SENDING) {
+        return true;
+      }
+      return false;
+    });
 
     if (!hasRemaining && campaign.status === CAMPAIGN_STATUS.RUNNING) {
       const finalStatus =
@@ -164,10 +219,14 @@ export async function processBroadcastBatch(campaignId, batchSize = 5) {
       return { status: finalStatus, processedCount: 0, remainingCount: 0 };
     }
 
+    const uncompletedCount = allRecipients.filter(
+      (r) => r.status !== RECIPIENT_STATUS.SENT && r.status !== RECIPIENT_STATUS.FAILED_PERMANENT
+    ).length;
+
     return {
       status: campaign.status,
       processedCount: 0,
-      remainingCount: claimable.length,
+      remainingCount: uncompletedCount,
     };
   }
 
@@ -181,20 +240,6 @@ export async function processBroadcastBatch(campaignId, batchSize = 5) {
         updatedAt: now,
       })
       .where(eq(broadcastCampaigns.id, campaignId))
-      .run();
-  }
-
-  // Acquire lease
-  const leaseTime = now + 60000;
-  for (const item of batch) {
-    await db
-      .update(broadcastRecipients)
-      .set({
-        status: RECIPIENT_STATUS.SENDING,
-        leaseUntil: leaseTime,
-        updatedAt: now,
-      })
-      .where(eq(broadcastRecipients.id, item.id))
       .run();
   }
 
@@ -300,3 +345,4 @@ export async function processBroadcastBatch(campaignId, batchSize = 5) {
     remainingCount: remaining,
   };
 }
+

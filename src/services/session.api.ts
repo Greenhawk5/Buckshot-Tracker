@@ -119,3 +119,21 @@ export async function abandonRemoteSession(
   });
   return Boolean(res.success);
 }
+
+export async function recordRemoteAppOpen(): Promise<{ ok: boolean; isOwner: boolean }> {
+  try {
+    return await callServerless<{ ok: boolean; isOwner: boolean }>('recordAppOpen', {});
+  } catch {
+    return { ok: false, isOwner: false };
+  }
+}
+
+export async function submitRemoteFeedback(
+  category: 'bug' | 'feature' | 'general',
+  message: string
+): Promise<{ ok: boolean; message: string }> {
+  return await callServerless<{ ok: boolean; message: string }>('submitFeedback', {
+    category,
+    message,
+  });
+}

@@ -1,7 +1,12 @@
 import { db, EndpointError } from 'sdk';
 import { eq, and } from 'sdk/db';
 import { trackerSessions, processedOperations } from '../schema.js';
-import { getAuthenticatedUserId, formatSessionRow, advanceIntelOnConsumption } from '../lib/session-helper.js';
+import {
+  getAuthenticatedUserId,
+  formatSessionRow,
+  advanceIntelOnConsumption,
+  trackUserAndActivity,
+} from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
   const userId = getAuthenticatedUserId(ctx);
@@ -173,6 +178,23 @@ export default async function (input, ctx) {
       sessionId,
       createdAt: now,
     }).run();
+  }
+
+  // Track shell_ejected event and completion if applicable
+  await trackUserAndActivity(ctx, {
+    eventType: 'shell_ejected',
+    sessionId,
+    metadata: { shell: effectiveShell, liveRemaining: newLive, blankRemaining: newBlank },
+    eventId: operationId ? `ev_eject_${operationId}` : null,
+  });
+
+  if (isCompleted) {
+    await trackUserAndActivity(ctx, {
+      eventType: 'session_completed',
+      sessionId,
+      metadata: { initialLive: session.initialLive, initialBlank: session.initialBlank },
+      eventId: operationId ? `ev_comp_${operationId}` : null,
+    });
   }
 
   const updated = await db

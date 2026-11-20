@@ -9,10 +9,17 @@ import { TrackerScreen } from '../components/TrackerScreen';
 import { CompletedScreen } from '../components/CompletedScreen';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { SyncStatus } from '../components/SyncStatus';
+import { recordRemoteAppOpen } from '../services/session.api';
+import { AboutPage } from '../features/about/AboutPage';
+import { OwnerLayout } from '../features/owner/OwnerLayout';
+import { APP_CONFIG } from '../config/app.config';
 
 export const App: React.FC = () => {
   const { user, isTelegram, haptics, setClosingConfirmation } = useTelegram();
   const userId = user ? String(user.id) : 'anonymous';
+
+  const [activePage, setActivePage] = useState<'tracker' | 'about' | 'owner'>('tracker');
+  const [isOwner, setIsOwner] = useState(false);
 
   const {
     session,
@@ -29,10 +36,30 @@ export const App: React.FC = () => {
 
   const [showConfirmReset, setShowConfirmReset] = useState(false);
 
+  // Record application open and detect owner privileges
+  useEffect(() => {
+    let mounted = true;
+    if (user && String(user.id) === APP_CONFIG.ownerTelegramId) {
+      setIsOwner(true);
+    }
+    recordRemoteAppOpen()
+      .then((res) => {
+        if (mounted && res.isOwner) {
+          setIsOwner(true);
+        }
+      })
+      .catch(() => {
+        // ignore in offline/standalone
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [user]);
+
   // Enable swipe-away confirmation when an active round is in progress
   useEffect(() => {
-    setClosingConfirmation(session?.status === 'active');
-  }, [session?.status, setClosingConfirmation]);
+    setClosingConfirmation(session?.status === 'active' && activePage === 'tracker');
+  }, [session?.status, activePage, setClosingConfirmation]);
 
   // Trigger haptic when session completes
   useEffect(() => {
@@ -92,6 +119,15 @@ export const App: React.FC = () => {
   const rawDisplayName = user?.first_name || user?.username || '';
   const displayName = rawDisplayName.trim() || 'TELEGRAM';
 
+  // Sub-pages: About Page or Owner Command Center
+  if (activePage === 'about') {
+    return <AboutPage onClose={() => setActivePage('tracker')} />;
+  }
+
+  if (activePage === 'owner' && isOwner) {
+    return <OwnerLayout onClose={() => setActivePage('tracker')} />;
+  }
+
   return (
     <div className="app-container">
       {/* Header */}
@@ -104,12 +140,44 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="header-status">
-          <div className="operator-badge" title={displayName}>
-            <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
-            <span className="operator-name" dir="auto">{displayName}</span>
+        <div className="header-actions">
+          {/* About Button */}
+          <button
+            type="button"
+            className="header-icon-btn"
+            onClick={() => setActivePage('about')}
+            title="About Buckshot Tracker"
+            aria-label="About Buckshot Tracker"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+          </button>
+
+          {/* Owner Command Center Gated Button */}
+          {isOwner && (
+            <button
+              type="button"
+              className="header-icon-btn header-icon-btn--owner"
+              onClick={() => setActivePage('owner')}
+              title="Owner Command Center"
+              aria-label="Owner Command Center"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </button>
+          )}
+
+          <div className="header-status">
+            <div className="operator-badge" title={displayName}>
+              <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
+              <span className="operator-name" dir="auto">{displayName}</span>
+            </div>
+            <SyncStatus syncState={syncState} onRetry={retrySync} />
           </div>
-          <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>
       </header>
 

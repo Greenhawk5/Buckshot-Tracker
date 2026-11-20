@@ -1,6 +1,6 @@
-# Local Development & Deployment Operations
+# Local Development & Deployment Operations — v1.2.0
 
-This document covers local setup, test execution, coding standards, and deployment procedures for **Buckshot Tracker**.
+This document covers local setup, test execution, coding standards, and deployment procedures for **Buckshot Tracker v1.2.0**.
 
 ---
 
@@ -33,10 +33,10 @@ Navigate to `http://localhost:5173`. In standard browser environments, Telegram 
 
 ## 3. Testing & Verification
 
-The project includes unit, persistence, and backend test suites executed via Vitest:
+The project includes unit, persistence, backend, analytics, and frontend integration test suites executed via Vitest:
 
 ```bash
-# Run all automated tests
+# Run all automated tests (82 tests across 7 test suites)
 npm test
 
 # Run TypeScript type check
@@ -44,12 +44,6 @@ npm run typecheck
 
 # Build production bundle
 npm run build
-```
-
-### End-to-End Responsive Verification
-To verify responsive layouts and UI rendering under simulated Telegram WebApp viewports:
-```bash
-node tests/test-intel-verification.mjs
 ```
 
 ---
@@ -85,11 +79,14 @@ npm run deploy
 # or: npm run build && npx tgcloud push
 ```
 
-### Cloud Handler Execution
+### Testing Endpoints Server-Side
 Test endpoints server-side with simulated contexts:
 ```bash
-npx tgcloud run endpoints/ping '{}'
-npx tgcloud run endpoints/getActiveSession '{}' --ctx '{ "initData": { "user": { "id": 12345 } } }'
+# Test public app open
+npx tgcloud run endpoints/recordAppOpen '{}' --ctx '{ "initData": { "user": { "id": 12345 } } }'
+
+# Test owner overview (only succeeds for Telegram ID 184202422)
+npx tgcloud run endpoints/ownerGetOverview '{}' --ctx '{ "initData": { "user": { "id": 184202422 } } }'
 ```
 
 ---
@@ -100,5 +97,5 @@ When modifying code in `tgcloud/`:
 1. **Module Extensions:** All relative imports within `tgcloud/` must explicitly end with `.js` (e.g., `import { users } from '../schema.js'`).
 2. **Platform SDK:** Import platform capabilities directly by name: `import { db, api, fetch, EndpointError } from 'sdk'`.
 3. **No npm Dependencies at Runtime:** Runtime dependencies in `tgcloud/` are restricted to the serverless SDK and local project files.
-4. **Foreign Keys:** SQLite runs with foreign keys disabled in the isolate; enforce referential integrity within application logic.
-
+4. **Flat Endpoints:** All callable endpoints must reside directly in `tgcloud/endpoints/` (one level only). Shared code belongs under `tgcloud/lib/`.
+5. **Foreign Keys:** SQLite runs with foreign keys disabled in the isolate; enforce referential integrity within application logic.

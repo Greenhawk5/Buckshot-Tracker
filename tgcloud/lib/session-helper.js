@@ -1,12 +1,51 @@
 import { EndpointError } from 'sdk';
+import { upsertObservedUser, checkUserRestriction } from './users/user-service.js';
+import { recordActivityEvent } from './analytics/event-service.js';
 
-export function getAuthenticatedUserId(ctx) {
+export function getAuthenticatedUser(ctx) {
   const user = ctx?.initData?.user;
   if (!user || user.id === undefined || user.id === null) {
     throw new EndpointError('Unauthorized: Telegram user context is required.', {
       code: 'UNAUTHORIZED',
     });
   }
+  return user;
+}
+
+export function getAuthenticatedUserId(ctx) {
+  const user = getAuthenticatedUser(ctx);
+  return String(user.id);
+}
+
+/**
+ * Tracks user activity, validates restriction status, updates registry,
+ * and records domain activity events.
+ */
+export async function trackUserAndActivity(ctx, {
+  eventType = null,
+  eventCategory = 'tracker',
+  sessionId = null,
+  metadata = null,
+  eventId = null,
+} = {}) {
+  const user = getAuthenticatedUser(ctx);
+  await checkUserRestriction(user.id);
+  await upsertObservedUser(user, {
+    isSessionCreated: eventType === 'session_created',
+    isAppOpen: eventType === 'app_opened',
+  });
+
+  if (eventType) {
+    await recordActivityEvent({
+      telegramUserId: user.id,
+      eventType,
+      eventCategory,
+      sessionId,
+      metadata,
+      eventId,
+    });
+  }
+
   return String(user.id);
 }
 

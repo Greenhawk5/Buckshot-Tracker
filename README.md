@@ -34,11 +34,11 @@ A precision tactical companion for **Buckshot Roulette** running on the **Telegr
   <a href="https://github.com/Greenhawk5/Buckshot-Tracker/actions/workflows/ci.yml">
     <img src="https://github.com/Greenhawk5/Buckshot-Tracker/actions/workflows/ci.yml/badge.svg" alt="CI Workflow" />
   </a>
-  <img src="https://img.shields.io/badge/version-v1.0.0-39ff8b?style=for-the-badge&labelColor=05060a" alt="Version 1.0.0" />
+  <img src="https://img.shields.io/badge/version-v1.2.0-39ff8b?style=for-the-badge&labelColor=05060a" alt="Version 1.2.0" />
   <img src="https://img.shields.io/badge/Platform-Telegram%20Mini%20App-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Mini App" />
   <img src="https://img.shields.io/badge/Runtime-Telegram%20Serverless-0088cc?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Serverless" />
   <img src="https://img.shields.io/badge/Database-SQLite%20WAL-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite Database" />
-  <img src="https://img.shields.io/badge/Tests-53%20Passed-brightgreen?style=for-the-badge" alt="53 Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-82%20Passed-brightgreen?style=for-the-badge" alt="82 Tests Passed" />
   <img src="https://img.shields.io/badge/License-MIT-36d97e?style=for-the-badge" alt="MIT License" />
   <img src="https://badges.pufler.dev/visits/Greenhawk5/Buckshot-Tracker" />
 </p>
@@ -108,8 +108,21 @@ In *Buckshot Roulette*, survival depends on precise probability calculation, tra
 ### ☁️ Cloud Persistence & Offline Recovery
 - **Telegram Serverless Isolate:** Built natively on `@tgcloud/cli` using V8 serverless isolate functions.
 - **SQLite Database:** Authoritative session persistence using SQLite in WAL mode.
-- **Optimistic Concurrency:** Version-checked `revision` headers prevent stale writes and race conditions.
+- **Optimistic Concurrency:** Version-checked `version` headers prevent stale writes and race conditions.
 - **Offline Mutation Queue:** Local storage queue caches mutations during disconnection and replays them when back online.
+
+### ℹ️ Public About Experience (v1.2.0)
+- **Product Identity & Intelligence:** Full documentation of single-player tactical capabilities and verified technology stack (React 19, TypeScript, Vite, Telegram Serverless, SQLite WAL).
+- **Direct Developer Showcase:** Clickable links to creator portfolio ([alifaniani.ir](https://alifaniani.ir)) and the official GitHub repository.
+- **In-App Feedback:** Modal allowing players to submit bug reports and feature requests directly to the cloud backend.
+
+### 🛡️ Private Owner Command Center (v1.2.0)
+- **Single-Owner Security:** Strictly gated server-side to Telegram user ID `184202422` via cryptographically verified `ctx.initData`.
+- **Telemetry & Rolling Analytics:** Overview dashboard with active user anchors (DAU, WAU, MAU), comparative interval analysis, and activity histograms.
+- **Player Registry & Management:** Searchable directory with Unicode preservation, user detail drawer, private owner aliases/notes, VIP player tagging, and application-level restriction controls.
+- **Multimedia Broadcast Center:** Compose and dispatch text, photo, video, voice, video note, and document campaigns across segmented player audiences with bounded batch processing and rate-limit backoff.
+- **System Health & Controls:** Live SQLite latency ping, maintenance mode toggle, announcement banner editor, and administrative audit trails.
+- **Data Export Center:** One-click CSV and JSON exports for Users, Events, Sessions, Campaigns, and Feedback with automated spreadsheet formula injection protection.
 
 ---
 

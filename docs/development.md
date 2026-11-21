@@ -36,7 +36,7 @@ Navigate to `http://localhost:5173`. In standard browser environments, Telegram 
 The project includes unit, persistence, backend, analytics, and frontend integration test suites executed via Vitest:
 
 ```bash
-# Run all automated tests (82 tests across 7 test suites)
+# Run all automated tests (97 tests across 8 test suites)
 npm test
 
 # Run TypeScript type check

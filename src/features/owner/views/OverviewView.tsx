@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fetchOwnerOverview, OwnerOverviewData } from '../../../services/owner.api';
+import { CompactMetricCard } from '../components/CompactMetricCard';
+import { TimeRangeSelector } from '../components/TimeRangeSelector';
+import { GridBarChart } from '../components/charts/GridBarChart';
 
 export const OverviewView: React.FC = () => {
   const [data, setData] = useState<OwnerOverviewData | null>(null);
@@ -7,16 +10,26 @@ export const OverviewView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Request race condition protection
+  const activeRequestIdRef = useRef(0);
+
   const loadData = async (selectedPreset: string) => {
+    const currentRequestId = ++activeRequestIdRef.current;
     setLoading(true);
     setError(null);
     try {
       const res = await fetchOwnerOverview(selectedPreset);
-      setData(res);
+      if (currentRequestId === activeRequestIdRef.current) {
+        setData(res);
+      }
     } catch (err: any) {
-      setError(err?.message || 'Failed to load overview data');
+      if (currentRequestId === activeRequestIdRef.current) {
+        setError(err?.message || 'Failed to load overview data');
+      }
     } finally {
-      setLoading(false);
+      if (currentRequestId === activeRequestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -26,101 +39,86 @@ export const OverviewView: React.FC = () => {
 
   return (
     <div className="owner-view overview-view">
-      {/* Period Filter Bar */}
-      <div className="view-toolbar">
-        <div className="period-chips">
-          {['24h', '7d', '30d', '90d', '180d', '365d'].map((p) => (
-            <button
-              key={p}
-              type="button"
-              className={`period-chip ${preset === p ? 'active' : ''}`}
-              onClick={() => setPreset(p)}
-            >
-              {p.toUpperCase()}
-            </button>
-          ))}
-        </div>
-        <button type="button" className="refresh-btn" onClick={() => loadData(preset)} title="Refresh">
-          ↻
-        </button>
-      </div>
+      {/* Time-Range Selector with Debounced Refresh */}
+      <TimeRangeSelector
+        preset={preset}
+        onChangePreset={setPreset}
+        onRefresh={() => loadData(preset)}
+        loading={loading}
+      />
 
-      {loading && <div className="owner-loading">Loading telemetry and overview metrics...</div>}
-      {error && <div className="owner-error">{error}</div>}
+      {loading && (
+        <div className="owner-loading" role="status">
+          <span className="loading-pulse-dot" /> Loading telemetry and overview metrics...
+        </div>
+      )}
+
+      {error && <div className="owner-error" role="alert">{error}</div>}
 
       {data && !loading && (
         <>
-          {/* Key Metric Cards */}
+          {/* High-Density 2-Column KPI Grid */}
           <div className="metrics-grid">
-            <div className="metric-card metric-card--primary">
-              <span className="metric-label">Total Users (All Time)</span>
-              <span className="metric-value font-mono">{data.totals.totalUsers}</span>
-              <span className="metric-sub">Observed Telegram identities</span>
-            </div>
+            <CompactMetricCard
+              label="Total Users (All Time)"
+              value={data.totals.totalUsers}
+              sub="Observed Telegram profiles"
+              variant="primary"
+            />
 
-            <div className="metric-card metric-card--active">
-              <span className="metric-label">Active Users ({preset})</span>
-              <span className="metric-value font-mono">{data.totals.activeUsers}</span>
-              <span className="metric-sub">
-                {data.totals.returningUsers} returning • {data.totals.newUsers} new
-              </span>
-            </div>
+            <CompactMetricCard
+              label={`Active Users (${preset.toUpperCase()})`}
+              value={data.totals.activeUsers}
+              sub={`${data.totals.returningUsers} return • ${data.totals.newUsers} new`}
+              variant="active"
+              trend={{
+                value: `${data.totals.newUsers} new`,
+                positive: data.totals.newUsers > 0,
+                neutral: data.totals.newUsers === 0,
+              }}
+            />
 
-            <div className="metric-card">
-              <span className="metric-label">Sessions Created</span>
-              <span className="metric-value font-mono">{data.totals.sessionsCreated}</span>
-              <span className="metric-sub">{data.totals.sessionsCompleted} completed rounds</span>
-            </div>
+            <CompactMetricCard
+              label="Sessions Created"
+              value={data.totals.sessionsCreated}
+              sub={`${data.totals.sessionsCompleted} completed rounds`}
+            />
 
-            <div className="metric-card">
-              <span className="metric-label">Total Actions Recorded</span>
-              <span className="metric-value font-mono">{data.totals.actionsRecorded}</span>
-              <span className="metric-sub">Shots, ejections, intel & undo</span>
+            <CompactMetricCard
+              label="Actions Recorded"
+              value={data.totals.actionsRecorded.toLocaleString()}
+              sub="Shots, ejections, intel"
+            />
+          </div>
+
+          {/* Compact Telemetry Anchors Strip */}
+          <div className="anchors-strip" aria-label="Active user anchors">
+            <div className="anchors-strip-item">
+              <span className="anchor-label">DAU (24H)</span>
+              <span className="anchor-val font-mono">{data.activityTrends.dau}</span>
+            </div>
+            <div className="anchors-strip-item">
+              <span className="anchor-label">WAU (7D)</span>
+              <span className="anchor-val font-mono">{data.activityTrends.wau}</span>
+            </div>
+            <div className="anchors-strip-item">
+              <span className="anchor-label">MAU (30D)</span>
+              <span className="anchor-val font-mono">{data.activityTrends.mau}</span>
+            </div>
+            <div className="anchors-strip-item">
+              <span className="anchor-label">AVG SESS/USER</span>
+              <span className="anchor-val font-mono">{data.totals.avgSessionsPerActiveUser}</span>
             </div>
           </div>
 
-          {/* Retention & Trends */}
-          <div className="section-card">
-            <h4 className="card-heading">Active User Anchors (Rolling UTC)</h4>
-            <div className="anchors-row">
-              <div className="anchor-item">
-                <span className="anchor-num font-mono">{data.activityTrends.dau}</span>
-                <span className="anchor-tag">DAU (24h)</span>
-              </div>
-              <div className="anchor-item">
-                <span className="anchor-num font-mono">{data.activityTrends.wau}</span>
-                <span className="anchor-tag">WAU (7d)</span>
-              </div>
-              <div className="anchor-item">
-                <span className="anchor-num font-mono">{data.activityTrends.mau}</span>
-                <span className="anchor-tag">MAU (30d)</span>
-              </div>
-              <div className="anchor-item">
-                <span className="anchor-num font-mono">{data.totals.avgSessionsPerActiveUser}</span>
-                <span className="anchor-tag">Avg Sess/User</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Time Series Histogram */}
-          <div className="section-card">
-            <h4 className="card-heading">Activity Velocity ({data.window.periodLabel})</h4>
-            <div className="histogram-container">
-              {data.timeSeries.map((bucket, i) => {
-                const maxCount = Math.max(...data.timeSeries.map((b) => b.eventsCount), 1);
-                const heightPct = Math.max(8, Math.round((bucket.eventsCount / maxCount) * 100));
-                return (
-                  <div key={i} className="histogram-bar-wrap" title={`${bucket.label}: ${bucket.eventsCount} events`}>
-                    <div className="histogram-bar" style={{ height: `${heightPct}%` }} />
-                    <span className="histogram-label">{bucket.label.slice(-5)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {/* Activity Velocity Grid Matrix */}
+          <GridBarChart
+            title={`Activity Velocity (${data.window.periodLabel})`}
+            data={data.timeSeries}
+            maxBlocksPerCol={7}
+          />
         </>
       )}
     </div>
   );
 };
-

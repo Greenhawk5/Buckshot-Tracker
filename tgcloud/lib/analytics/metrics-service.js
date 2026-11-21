@@ -41,8 +41,20 @@ export function resolveTimeWindow(preset = '7d', customStart = null, customEnd =
       break;
     case 'custom':
       if (customStart && customEnd) {
-        startTime = Math.min(Number(customStart), Number(customEnd));
-        endTime = Math.max(Number(customStart), Number(customEnd));
+        let s = Number(customStart);
+        let e = Number(customEnd);
+        if (s > e) {
+          const temp = s;
+          s = e;
+          e = temp;
+        }
+        // If end timestamp falls on midnight UTC or equals start, extend to end-of-day UTC
+        const endDate = new Date(e);
+        if (s === e || (endDate.getUTCHours() === 0 && endDate.getUTCMinutes() === 0 && endDate.getUTCSeconds() === 0)) {
+          e = e + 86400 * 1000 - 1;
+        }
+        startTime = s;
+        endTime = e;
         periodLabel = `Custom Range (${new Date(startTime).toISOString().slice(0, 10)} to ${new Date(endTime).toISOString().slice(0, 10)})`;
       }
       break;
@@ -202,15 +214,31 @@ export async function getAnalyticsMetrics(windowParams) {
 
 /**
  * Builds chronological time series histogram buckets for charts.
+ * Adaptively selects bucket intervals to ensure charts always display between 7 and 14
+ * clean, readable data points regardless of the time range selected.
  */
 function generateTimeSeriesBuckets(startTime, endTime, events) {
   const duration = endTime - startTime;
-  let bucketSize = 3600 * 1000; // 1 hour default
+  let bucketSize;
 
-  if (duration > 60 * 86400 * 1000) {
-    bucketSize = 7 * 86400 * 1000; // 1 week
-  } else if (duration > 48 * 3600 * 1000) {
-    bucketSize = 86400 * 1000; // 1 day
+  if (duration > 200 * 86400 * 1000) {
+    // 365d range -> Monthly (~30 days) -> ~12 buckets
+    bucketSize = 30 * 86400 * 1000;
+  } else if (duration > 100 * 86400 * 1000) {
+    // 180d range -> Bi-weekly (14 days) -> ~13 buckets
+    bucketSize = 14 * 86400 * 1000;
+  } else if (duration > 35 * 86400 * 1000) {
+    // 90d range -> Weekly (7 days) -> ~13 buckets
+    bucketSize = 7 * 86400 * 1000;
+  } else if (duration > 10 * 86400 * 1000) {
+    // 30d range -> 3-day intervals -> ~10 buckets
+    bucketSize = 3 * 86400 * 1000;
+  } else if (duration > 36 * 3600 * 1000) {
+    // 7d range -> Daily (1 day) -> 7 buckets
+    bucketSize = 86400 * 1000;
+  } else {
+    // 24h range -> 2-hour intervals -> 12 buckets
+    bucketSize = 2 * 3600 * 1000;
   }
 
   const buckets = [];
@@ -220,7 +248,7 @@ function generateTimeSeriesBuckets(startTime, endTime, events) {
     const inBucket = events.filter((e) => e.occurredAt >= cur && e.occurredAt < next);
     buckets.push({
       timestamp: cur,
-      label: new Date(cur).toISOString().slice(0, bucketSize >= 86400 * 1000 ? 10 : 16),
+      label: formatBucketLabel(cur, bucketSize),
       eventsCount: inBucket.length,
       sessionsCount: inBucket.filter((e) => e.eventType === 'session_created').length,
       activeUsersCount: new Set(inBucket.map((e) => e.telegramUserId)).size,
@@ -228,4 +256,18 @@ function generateTimeSeriesBuckets(startTime, endTime, events) {
     cur = next;
   }
   return buckets;
+}
+
+function formatBucketLabel(timestamp, bucketSize) {
+  const d = new Date(timestamp);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  if (bucketSize >= 25 * 86400 * 1000) {
+    return months[d.getUTCMonth()];
+  }
+  if (bucketSize >= 24 * 3600 * 1000) {
+    return `${months[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  }
+  const hours = String(d.getUTCHours()).padStart(2, '0');
+  return `${hours}:00`;
 }

@@ -4,9 +4,9 @@
 
 # BUCKSHOT TRACKER
 
-### Tactical Ammunition & Shell Intelligence Companion for Telegram Mini Apps
+### Industrial-Grade Tactical Ammunition Companion & Command Center for Telegram Mini Apps
 
-A precision tactical companion for **Buckshot Roulette** running on the **Telegram Serverless** platform. Tracks live and blank ammunition inventory, computes real-time composition odds, maintains dynamic Burner Phone positional intelligence across shots and beer ejections, and provides resilient SQLite-backed cloud synchronization.
+A precision tactical companion for **Buckshot Roulette** running on Telegram's serverless V8 platform. Features real-time chamber inventory tracking, dynamic composition odds computation, Burner Phone positional intelligence, Beer Can ejection modeling, and a full-featured administrative **Owner Command Center** backed by durable SQLite WAL storage.
 
 <br />
 
@@ -15,9 +15,9 @@ A precision tactical companion for **Buckshot Roulette** running on the **Telegr
   &nbsp;&nbsp;•&nbsp;&nbsp;
   <a href="#-visual-showcase">Visual Showcase</a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="#-key-features">Key Features</a>
+  <a href="#-features">Features</a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="#-how-it-works">How It Works</a>
+  <a href="#-owner-command-center">Owner Command Center</a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
   <a href="#-architecture">Architecture</a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
@@ -25,7 +25,7 @@ A precision tactical companion for **Buckshot Roulette** running on the **Telegr
   &nbsp;&nbsp;•&nbsp;&nbsp;
   <a href="#-getting-started">Getting Started</a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
-  <a href="#-testing">Testing</a>
+  <a href="#-testing--quality">Testing & Quality</a>
   &nbsp;&nbsp;•&nbsp;&nbsp;
   <a href="#-deployment">Deployment</a>
 </p>
@@ -36,9 +36,9 @@ A precision tactical companion for **Buckshot Roulette** running on the **Telegr
   </a>
   <img src="https://img.shields.io/badge/version-v1.2.0-39ff8b?style=for-the-badge&labelColor=05060a" alt="Version 1.2.0" />
   <img src="https://img.shields.io/badge/Platform-Telegram%20Mini%20App-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Mini App" />
-  <img src="https://img.shields.io/badge/Runtime-Telegram%20Serverless-0088cc?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Serverless" />
+  <img src="https://img.shields.io/badge/Runtime-Telegram%20Serverless%20V8-0088cc?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Serverless" />
   <img src="https://img.shields.io/badge/Database-SQLite%20WAL-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite Database" />
-  <img src="https://img.shields.io/badge/Tests-82%20Passed-brightgreen?style=for-the-badge" alt="82 Tests Passed" />
+  <img src="https://img.shields.io/badge/Tests-97%20Passed-brightgreen?style=for-the-badge" alt="97 Tests Passed" />
   <img src="https://img.shields.io/badge/License-MIT-36d97e?style=for-the-badge" alt="MIT License" />
   <img src="https://badges.pufler.dev/visits/Greenhawk5/Buckshot-Tracker" />
 </p>
@@ -49,100 +49,110 @@ A precision tactical companion for **Buckshot Roulette** running on the **Telegr
 
 ## 🎯 Overview
 
-In *Buckshot Roulette*, survival depends on precise probability calculation, tracking spent shells, and leveraging tactical item intelligence. 
+In *Buckshot Roulette*, split-second decision-making hinges on exact shell probabilities, tracking spent rounds, and maximizing strategic item revelations.
 
-**Buckshot Tracker** provides an instant, zero-friction tactical dashboard accessible directly inside Telegram. It replaces mental tracking with an authoritative digital chamber inventory:
+**Buckshot Tracker** provides an instant, zero-friction companion accessible directly inside Telegram. It replaces mental tracking with an authoritative digital chamber inventory:
 
-- **Eliminates Counting Errors:** Tracks remaining **Live** (crimson) and **Blank** (cyan) shells in the chamber.
-- **Calculates Real-Time Odds:** Updates remaining probability distribution and risk profiles after every shot.
-- **Maintains Positional Intelligence:** Accurately tracks shells revealed by the **Burner Phone** as the loadout changes.
-- **Models Item Interactions:** Handles **Beer Can** shell ejections and decrements positions automatically.
-- **Resilient Offline Architecture:** Operates seamlessly even during cellular drops, syncing state to the cloud via Telegram Serverless when connected.
-
-> **Scope Note:** Buckshot Tracker strictly targets **Single-Player** Buckshot Roulette mechanics as designed by Mike Klubnika. Multiplayer modes are not supported.
+- **Eliminates Memory Slip:** Real-time counters tracking remaining **Live** (crimson) and **Blank** (cyan) shells.
+- **Dynamic Composition Odds:** Instantaneous percentage calculations and tactical risk descriptors (*Dominant Live*, *High Live Risk*, *50/50 Even Split*, *High Blank Chance*, *Dominant Blank*).
+- **Burner Phone Positional Intel:** Relative 1-based chamber position tracking with automatic current-shell flagging and forward index advancement as rounds are discharged.
+- **Beer Can Ejection Modeling:** Automated shell consumption if Position 1 is already known, or interactive verification modal for unrevealed ejections.
+- **Deterministic Reversible Undo:** Single-step full-stack rollback engine restoring inventory counts, history logs, and positional intelligence without layout shifts.
+- **Public About Experience:** Interactive presentation documenting application capabilities, verified technology stack with official brand icons, project links, and encrypted player feedback submission.
+- **Owner Command Center:** Comprehensive administrative suite with real-time telemetry, active user anchors (DAU/WAU/MAU), EvilCharts data visualizations, multimedia broadcast campaigns with atomic CAS claiming, user management, audit trails, and data export.
+- **Offline Resilience:** Local storage hydration, automatic mutation queuing, and background synchronization upon network reconnection.
 
 ---
 
 ## 📱 Visual Showcase
 
+Genuine interface captures from the **Buckshot Tracker v1.2.0** production build:
+
+### Player Experience
+
 <div align="center">
 
-| **01. Setup & Presets** | **02. Active Chamber Tracker** | **03. Burner Phone Intel** |
-| :---: | :---: | :---: |
-| <img src="docs/assets/showcase/01-setup-presets.png" width="240" alt="Setup Screen and Quick Load Presets" /> | <img src="docs/assets/showcase/02-active-tracker.png" width="240" alt="Active Tracker and Composition Odds" /> | <img src="docs/assets/showcase/03-burner-phone-modal.png" width="240" alt="Burner Phone Intelligence Modal" /> |
-| *One-tap dealer presets from 1L/1B to 4L/4B and custom steppers.* | *Chamber capsules, odds breakdown, and tactile shot actions.* | *Log revealed shell positions relative to current chamber.* |
+| **01. Tactical Ammunition Tracker** | **02. Public About Experience** |
+| :---: | :---: |
+| <a href="docs/photo/screenshots/01-tracker-main.png"><img src="docs/photo/screenshots/01-tracker-main.png" width="300" alt="Tactical Tracker Interface" /></a> | <a href="docs/photo/screenshots/02-about-page.png"><img src="docs/photo/screenshots/02-about-page.png" width="300" alt="Public About Experience" /></a> |
+| *Active chamber readout, live odds gauge, Burner Phone intel, and tactile shot actions.* | *Mission statement, interactive capabilities carousel, tech stack, and encrypted feedback.* |
+
+</div>
+
+### Owner Command Center (Administrative Suite)
+
+<div align="center">
+
+| **03. Overview & Telemetry** | **04. Analytics & Progression** |
+| :---: | :---: |
+| <a href="docs/photo/screenshots/03-owner-overview.png"><img src="docs/photo/screenshots/03-owner-overview.png" width="300" alt="Owner Overview Dashboard" /></a> | <a href="docs/photo/screenshots/04-owner-analytics.png"><img src="docs/photo/screenshots/04-owner-analytics.png" width="300" alt="Analytics Dashboard" /></a> |
+| *Compact 2×2 KPI grid, 50px telemetry strip (DAU/WAU/MAU), and GridBar activity matrix.* | *Delta comparisons, smooth TacticalAreaChart progression curve, and TaxonomyDonutChart.* |
 
 <br />
 
-| **04. Known Shell Positions** | **05. Beer Can Ejection** |
+| **05. User Management & Drawer** | **06. Broadcast Campaign Manager** |
 | :---: | :---: |
-| <img src="docs/assets/showcase/04-known-shell-positions.png" width="260" alt="Known Shells with Current Shell Indicator" /> | <img src="docs/assets/showcase/05-beer-ejection-modal.png" width="260" alt="Beer Ejection Workflow Modal" /> |
-| *Position 1 CURRENT SHELL status with dynamic shift on fire.* | *Safe ejection verifying Position 1 or manual confirmation.* |
+| <a href="docs/photo/screenshots/05-owner-users.png"><img src="docs/photo/screenshots/05-owner-users.png" width="300" alt="User Directory" /></a> | <a href="docs/photo/screenshots/06-owner-broadcasts.png"><img src="docs/photo/screenshots/06-owner-broadcasts.png" width="300" alt="Broadcast Campaigns" /></a> |
+| *Searchable player directory, Unicode preservation, VIP tagging, and activity timeline drawer.* | *Multi-format composer, audience targeting, pre-send preview, and bounded queue monitoring.* |
+
+<br />
+
+| **07. System Health & Diagnostics** | **08. Operational Settings & Maintenance** |
+| :---: | :---: |
+| <a href="docs/photo/screenshots/07-owner-health.png"><img src="docs/photo/screenshots/07-owner-health.png" width="300" alt="System Health" /></a> | <a href="docs/photo/screenshots/08-owner-settings.png"><img src="docs/photo/screenshots/08-owner-settings.png" width="300" alt="System Settings" /></a> |
+| *Live SQLite database latency check, entity volume monitoring, and queue telemetry.* | *Server-authoritative maintenance mode toggle, announcement banner editor, and rate pacing.* |
+
+<br />
+
+| **09. Security Audit Logs** | **10. Player Feedback Review** | **11. Reports & Data Export** |
+| :---: | :---: | :---: |
+| <a href="docs/photo/screenshots/09-owner-audit.png"><img src="docs/photo/screenshots/09-owner-audit.png" width="220" alt="Security Audit Logs" /></a> | <a href="docs/photo/screenshots/10-owner-feedback.png"><img src="docs/photo/screenshots/10-owner-feedback.png" width="220" alt="Feedback Review" /></a> | <a href="docs/photo/screenshots/11-owner-exports.png"><img src="docs/photo/screenshots/11-owner-exports.png" width="220" alt="Data Export Center" /></a> |
+| *Immutable append-only audit trail with actor IDs, outcomes, and payload JSON viewer.* | *In-app triage inbox for player bug reports and feature ideas with status workflow.* | *One-click CSV/JSON export with automated spreadsheet formula injection neutralization.* |
 
 </div>
 
 ---
 
-## ✨ Key Features
+## ✨ Features
 
-### 🔴 Chamber Inventory & Odds Engine
-- **Visual Ammunition Readout:** Segmented chamber capsules representing remaining live and blank rounds with distinct soft-industrial glow identities.
-- **Statistical Composition Odds:** Real-time odds computation displaying exact percentages and semantic tactical descriptions (*Dominant Live*, *High Live Risk*, *50/50 Even Split*, *High Blank Chance*, *Dominant Blank*).
-- **Quick-Load Presets:** Pre-configured buttons for standard dealer loads (`1L/1B`, `2L/1B`, `2L/2B`, `3L/2B`, `3L/3B`, `4L/4B`) with custom steppers up to 8 rounds.
+### 🎮 Player Companion Features
 
-### 📞 Burner Phone Intelligence System
-- **Relative Positional Tracking:** Records revealed shells by relative position offset (`Position 1` = currently chambered shell, `Position 2` = next in line).
-- **Dynamic Position Advancement:** When any shell is fired or ejected, surviving intelligence automatically shifts forward (`pos = pos - 1`).
-- **Current Shell Detection:** When Position 1 becomes known, the interface prominently flags it as **CURRENT SHELL**, removing all ambiguity before pulling the trigger.
-- **Sanity Validation:** Prevents duplicate entries on the same position and ensures revealed shells do not exceed remaining ammunition counts.
-
-### 🍺 Beer Can Ejection Handling
-- **Automated Intelligence Consumption:** If Position 1 is already revealed, tapping Beer Can immediately ejects and logs that shell without extra prompts.
-- **Unrevealed Shell Modal:** If Position 1 is unrevealed, an interactive modal allows selecting whether a Live or Blank shell was expelled from the chamber.
-- **Defense-in-Depth Verification:** Rejects ambiguous ejections, preserving data integrity across both frontend and backend state.
-
-### ↩️ Deterministic Single-Step Undo
-- **Full-Stack Rollback:** Reverses the last action (shot, ejection, or intel change), restoring previous ammunition counts, odds, and positional state.
-- **History Badge Indicator:** Displays the reversible action count with layout-stable geometry.
-
-### ☁️ Cloud Persistence & Offline Recovery
-- **Telegram Serverless Isolate:** Built natively on `@tgcloud/cli` using V8 serverless isolate functions.
-- **SQLite Database:** Authoritative session persistence using SQLite in WAL mode.
-- **Optimistic Concurrency:** Version-checked `version` headers prevent stale writes and race conditions.
-- **Offline Mutation Queue:** Local storage queue caches mutations during disconnection and replays them when back online.
-
-### ℹ️ Public About Experience (v1.2.0)
-- **Product Identity & Intelligence:** Full documentation of single-player tactical capabilities and verified technology stack (React 19, TypeScript, Vite, Telegram Serverless, SQLite WAL).
-- **Direct Developer Showcase:** Clickable links to creator portfolio ([alifaniani.ir](https://alifaniani.ir)) and the official GitHub repository.
-- **In-App Feedback:** Modal allowing players to submit bug reports and feature requests directly to the cloud backend.
-
-### 🛡️ Private Owner Command Center (v1.2.0)
-- **Single-Owner Security:** Strictly gated server-side to Telegram user ID `184202422` via cryptographically verified `ctx.initData`.
-- **Telemetry & Rolling Analytics:** Overview dashboard with active user anchors (DAU, WAU, MAU), comparative interval analysis, and activity histograms.
-- **Player Registry & Management:** Searchable directory with Unicode preservation, user detail drawer, private owner aliases/notes, VIP player tagging, and application-level restriction controls.
-- **Multimedia Broadcast Center:** Compose and dispatch text, photo, video, voice, video note, and document campaigns across segmented player audiences with bounded batch processing and rate-limit backoff.
-- **System Health & Controls:** Live SQLite latency ping, maintenance mode toggle, announcement banner editor, and administrative audit trails.
-- **Data Export Center:** One-click CSV and JSON exports for Users, Events, Sessions, Campaigns, and Feedback with automated spreadsheet formula injection protection.
+- **Tactical Ammunition Readout:** Visual capsule gauges displaying remaining Live and Blank rounds with soft-industrial glowing state accents.
+- **Mathematical Composition Odds:** Real-time computation of discharge probability percentages paired with contextual tactical descriptions.
+- **Quick-Load Presets & Custom Dial:** Rapid loadout docks (`1L/1B`, `2L/1B`, `2L/2B`, `3L/2B`, `3L/3B`, `4L/4B`) alongside an intuitive custom capacity stepper supporting up to 8 total rounds.
+- **Burner Phone Positional Intelligence:**
+  - 1-based relative offset indexing from the current chamber forward.
+  - Prominent **CURRENT SHELL** status badge when Position 1 is identified.
+  - Forward index decrement (`pos = pos - 1`) as shells are fired or ejected.
+  - Strict conflict validation preventing duplicate position entries.
+- **Beer Can Ejection Workflow:**
+  - Immediate deduction and consumption when Position 1 is already known.
+  - Interactive verification modal for unrevealed shell ejections.
+  - Backend validation rejecting ambiguous ejection calls.
+- **Deterministic Reversible Undo:** Full-stack single-action rollback restoring ammunition counts, odds, and positional intelligence without layout shifts.
+- **Public About Experience:**
+  - Non-overlapping sticky header with responsive layout hierarchy.
+  - Infinite auto-scrolling carousels for Core Capabilities and Technology Stack.
+  - Developer showcase and repository links to creator portfolio ([alifaniani.ir](https://alifaniani.ir)) and GitHub.
+  - Direct feedback modal allowing players to submit encrypted bug reports and ideas.
 
 ---
 
-## 🕹️ How It Works
+### 🛡️ Owner Command Center (Admin Suite)
 
-```text
-1. SETUP PHASE           2. ROUND EXECUTION             3. REVELATION & EJECTION
-┌─────────────────┐      ┌────────────────────────┐      ┌─────────────────────────┐
-│ Dealer reveals  │ ──►  │ Fire Live / Blank      │ ──►  │ Use Burner Phone        │
-│ 3 Live, 2 Blank │      │ Chamber updates        │      │ Record Pos 3 is LIVE    │
-│ Tap preset 3L/2B│      │ Odds recalculate       │      │ Shells shift on fire    │
-└─────────────────┘      └────────────────────────┘      └─────────────────────────┘
-                                   │                                  │
-                                   ▼                                  ▼
-                         ┌────────────────────────┐      ┌─────────────────────────┐
-                         │ Undo last shot         │      │ Drink Beer              │
-                         │ Rollback state & intel │      │ Eject shell from gun    │
-                         │ Invariants preserved   │      │ Known Pos 1 consumed    │
-                         └────────────────────────┘      └─────────────────────────┘
-```
+Strictly gated server-side exclusively to Telegram user ID `184202422` via cryptographically signed `initData`:
+
+- **Overview & Activity Pulse:** High-density 2×2 metric grid, 50px 4-cell active user anchors strip (`DAU`, `WAU`, `MAU`, `Avg Sess/User`), and discrete `GridBarChart` activity matrix.
+- **Advanced Analytics & Visualizations:** Comparative growth metrics with formatted delta indicators, smooth Bézier progression curve (`TacticalAreaChart`), event breakdown distribution (`TaxonomyDonutChart`), and custom date range filters.
+- **Adaptive Time-Series Aggregation:** Dynamic interval bucketing (2h, 1d, 3d, 7d, 14d, 30d) across ranges (`24h`, `7d`, `30d`, `90d`, `180d`, `365d`) guaranteeing 7–14 readable columns with true distinct unique user calculation via `Set`.
+- **Navbar Stability Engine:** Closest-instance trajectory algorithm eliminating multi-rotation scrolling loops and circular fighting during tab activation.
+- **User Registry & Player Detail Drawer:** Searchable directory with Unicode preservation, mutable handle handling, player detail drawer with activity timeline, private owner notes & display aliases, VIP playtester tagging, and restriction controls.
+- **Multimedia Broadcast Center:** Campaign composer supporting Telegram text, photo, video, voice, video note, and document formats. Audience segmentation (all, active, inactive, new, VIP), pre-send recipient preview, and atomic compare-and-swap (CAS) batch claiming with rate-limit exponential backoff.
+- **System Health & SQLite Diagnostics:** Real-time database latency benchmarking, entity volume counters, queue telemetry, and memory health.
+- **Operational Settings:** Server-authoritative maintenance mode toggle (blocking non-owner mutations while permitting admin access), announcement banner editor, emergency broadcast kill switch, and inter-send pacing delay.
+- **Administrative Audit Logs:** Append-only security audit trail recording actor ID, action, target entity, timestamp, outcome, and sanitized parameters for all sensitive operations.
+- **Feedback Triage System:** In-app inbox for reviewing player submissions, updating status (`new`, `reviewing`, `resolved`, `dismissed`), and recording owner responses.
+- **Reports & Export Center:** One-click CSV and JSON exports for Users, Events, Sessions, Campaigns, Audit, and Feedback with automated spreadsheet formula injection neutralization (`=`, `+`, `-`, `@`).
 
 ---
 
@@ -151,43 +161,55 @@ In *Buckshot Roulette*, survival depends on precise probability calculation, tra
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Player
-    participant App as React Mini App
-    participant Storage as Local Cache & Queue
-    participant Cloud as Telegram Serverless (V8)
-    participant DB as SQLite (WAL Mode)
+    actor Player as Telegram Player
+    actor Owner as Bot Owner (ID 184202422)
+    participant Client as React 19 Mini App
+    participant Storage as Local Storage & Queue
+    participant Serverless as Telegram Serverless (V8 Isolate)
+    participant DB as SQLite WAL Database
 
-    User->>App: Launch Mini App via Telegram
-    App->>Storage: Hydrate cached session & offline queue
-    App->>Cloud: POST /api/getActiveSession (with initData)
-    Cloud->>Cloud: Verify Telegram cryptographic signature
-    Cloud->>DB: Query tracker_sessions by user_id
-    DB-->>Cloud: Active session record
-    Cloud-->>App: Authoritative session state
+    %% Player Session Flow
+    Note over Player,DB: Player Session & Ammunition Tracking
+    Player->>Client: Launch Mini App in Telegram
+    Client->>Storage: Hydrate cached session state & offline queue
+    Client->>Serverless: POST /api/getActiveSession (with initData)
+    Serverless->>Serverless: Validate Telegram cryptographic signature
+    Serverless->>DB: Query tracker_sessions by user_id
+    DB-->>Serverless: Active session record
+    Serverless-->>Client: Authoritative session state
+    Player->>Client: Record Shot (Live / Blank)
+    Client->>Client: Optimistically update inventory, odds & intel
+    Client->>Storage: Persist local snapshot & enqueue mutation
+    Client->>Serverless: POST /api/recordShot (payload + monotonic revision)
+    Serverless->>Serverless: Verify maintenance mode is inactive
+    Serverless->>DB: Atomic CAS revision update
+    DB-->>Serverless: Success (new revision)
+    Serverless-->>Client: Confirmed (drain queue)
 
-    User->>App: Record Shot (Live / Blank)
-    App->>App: Optimistically update UI, odds & intel
-    App->>Storage: Persist local snapshot & enqueue mutation
-    App->>Cloud: POST /api/recordShot (payload + revision)
-    Cloud->>DB: Validate revision & update session atomically
-    DB-->>Cloud: Success (new revision)
-    Cloud-->>App: Operation confirmed (drain queue)
+    %% Owner Command Center Flow
+    Note over Owner,DB: Private Owner Command Center Operations
+    Owner->>Client: Click Owner Command Center icon
+    Client->>Serverless: POST /api/ownerGetOverview (with initData)
+    Serverless->>Serverless: requireOwner guard (asserts user.id === 184202422)
+    Serverless->>DB: Query aggregated telemetry & rolling intervals
+    DB-->>Serverless: Calculated telemetry & time-series
+    Serverless-->>Client: Render Overview & EvilCharts visualizations
 ```
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Area | Technology |
-| :--- | :--- |
-| **Frontend UI** | <img src="https://img.shields.io/badge/React-19.3.1-61DAFB?style=flat&logo=react&logoColor=black" alt="React 19" /> <img src="https://img.shields.io/badge/TypeScript-7.0.2-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" /> |
-| **Styling & Tokens** | <img src="https://img.shields.io/badge/CSS-Tokens%20%2B%20Soft%20Industrial-1572B6?style=flat&logo=css3&logoColor=white" alt="CSS" /> |
-| **Build Tooling** | <img src="https://img.shields.io/badge/Vite-8.3.8-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" /> |
-| **Client Platform** | <img src="https://img.shields.io/badge/Telegram-Mini%20Apps-26A5E4?style=flat&logo=telegram&logoColor=white" alt="Telegram Mini Apps" /> |
-| **Serverless Runtime** | <img src="https://img.shields.io/badge/Telegram-Serverless%20V8-0088cc?style=flat&logo=telegram&logoColor=white" alt="Telegram Serverless" /> |
-| **Persistence Engine** | <img src="https://img.shields.io/badge/SQLite-WAL%20Mode-003B57?style=flat&logo=sqlite&logoColor=white" alt="SQLite" /> |
-| **Test Suites** | <img src="https://img.shields.io/badge/Vitest-5.1.1-6E9F18?style=flat&logo=vitest&logoColor=white" alt="Vitest" /> |
-| **E2E & UI Verification** | <img src="https://img.shields.io/badge/Puppeteer-Core-40B5A4?style=flat&logo=puppeteer&logoColor=white" alt="Puppeteer" /> |
+| Area | Technology | Version | Description |
+| :--- | :--- | :--- | :--- |
+| **Frontend Framework** | React | `19.3.1` | High-performance reactive component architecture |
+| **Programming Language** | TypeScript | `5.8.2` | Strict end-to-end type safety spanning contracts and state |
+| **Build & Asset Engine** | Vite | `8.3.8` | Ultra-fast build pipeline generating tree-shaken static assets |
+| **Client Platform** | Telegram Mini Apps | WebApp API | Official Telegram client integration with haptic feedback |
+| **Serverless Runtime** | Telegram Serverless | `@tgcloud/cli 0.2.0` | Isolated V8 serverless isolate functions |
+| **Persistence Engine** | SQLite | WAL Mode | Embedded database with write-ahead logging |
+| **Testing Framework** | Vitest | `5.1.1` | High-speed unit and integration test runner (97 tests) |
+| **End-to-End Verification** | Puppeteer-Core | `24.x` | Headless Chrome responsive verification across 8 viewports |
 
 ---
 
@@ -196,40 +218,47 @@ sequenceDiagram
 ```text
 Buckshot Tracker/
 ├── .github/
-│   ├── workflows/ci.yml             # GitHub Actions CI (test, typecheck, build)
-│   ├── ISSUE_TEMPLATE/              # Bug report and feature request forms
-│   ├── PULL_REQUEST_TEMPLATE.md     # Pull request guidelines and checklist
-│   └── CODEOWNERS                   # Repository code ownership
-├── dist/                            # Production static build deployed to Telegram
+│   ├── workflows/ci.yml             # GitHub Actions CI (typecheck, test, build)
+│   ├── ISSUE_TEMPLATE/              # Bug report and feature request templates
+│   ├── PULL_REQUEST_TEMPLATE.md     # Pull request guidelines and verification checklist
+│   └── CODEOWNERS                   # Repository code ownership specification
+├── dist/                            # Production static build served as the Mini App
 ├── docs/
 │   ├── README.md                    # Documentation index
-│   ├── architecture.md              # Technical specifications & data flow
-│   ├── development.md               # Local dev environment & operational manual
+│   ├── architecture.md              # Technical specifications & system data flow
+│   ├── development.md               # Local development setup & operational manual
 │   ├── game-mechanics-sources.md    # Authoritative rules & intelligence citations
-│   ├── tgcloud-sdk.md               # Telegram Serverless SDK reference
-│   ├── photo/                       # Public branding banners and logos
-│   └── assets/showcase/             # Application visual showcase screenshots
+│   ├── owner-panel.md               # Owner Command Center specification & reference
+│   ├── tgcloud-sdk.md               # Telegram Serverless platform SDK documentation
+│   ├── photo/                       # Official branding banners and icons
+│   └── screenshots/                 # 11 genuine v1.2.0 interface showcase screenshots
 ├── src/
-│   ├── app/                         # Application entrypoint & layout
-│   ├── components/                  # UI components (AmmoIndicator, KnownShellPositions, etc.)
-│   ├── features/tracker/            # Pure counting engine, intelligence logic & tests
+│   ├── app/                         # App layout, header responsive design, navigation
+│   ├── assets/                      # Bundled image assets and logos
+│   ├── components/                  # Shared UI components (AmmoIndicator, SetupScreen, etc.)
+│   ├── config/                      # Application constants and configuration
+│   ├── features/
+│   │   ├── about/                   # Public About page, infinite carousels, feedback modal
+│   │   ├── owner/                   # Owner Command Center (8 tactical views & EvilCharts)
+│   │   └── tracker/                 # Pure counting engine, probability math & intel logic
 │   ├── hooks/                       # React hooks (useTelegram, useTrackerSession)
-│   ├── services/                    # Telegram Serverless client & local storage
-│   └── styles/                      # Soft industrial design tokens & global CSS
-├── tests/                           # Vitest test suites & Puppeteer verification scripts
+│   ├── services/                    # Telegram Serverless API clients & local storage
+│   └── styles/                      # Design tokens, tactical themes, and responsive CSS
+├── tests/                           # Vitest test suites & automated verification scripts
 ├── tgcloud/                         # Telegram Serverless backend modules (deployed to cloud)
-│   ├── endpoints/                   # Serverless endpoints (recordShot, ejectShell, etc.)
+│   ├── endpoints/                   # Serverless endpoints (recordShot, ownerGetOverview, etc.)
 │   ├── handlers/                    # Telegram bot update handlers (message.js)
-│   ├── lib/                         # Shared backend helper functions
-│   └── schema.js                    # SQLite database schema (sdk/db)
+│   ├── lib/                         # Shared backend services (analytics, broadcast, security)
+│   └── schema.js                    # Additive SQLite database schema (sdk/db)
 ├── CHANGELOG.md                     # Keep a Changelog release history
 ├── CONTRIBUTING.md                  # Contribution guidelines
 ├── CODE_OF_CONDUCT.md               # Community standards
-├── SECURITY.md                      # Vulnerability reporting policy
+├── SECURITY.md                      # Security & vulnerability reporting policy
 ├── SUPPORT.md                       # Support & troubleshooting guidance
 ├── CITATION.cff                     # Citation file format metadata
 ├── LICENSE                          # MIT License
-├── package.json                     # Project manifest (v1.0.0)
+├── package.json                     # Project manifest (v1.2.0)
+├── package-lock.json                # Deterministic dependency tree
 ├── tgcloud.jsonc                    # Telegram Serverless platform configuration
 └── vite.config.ts                   # Vite bundler configuration
 ```
@@ -256,36 +285,46 @@ npm install
 ```bash
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173). In a desktop browser, Telegram WebApp APIs automatically fallback to preview mocks for seamless local testing.
+Open [http://localhost:5173](http://localhost:5173). In a desktop browser, Telegram WebApp APIs automatically fallback to preview mocks for seamless local development.
 
 ---
 
-## 🧪 Testing
+## 🧪 Testing & Quality
 
-The test suite validates counting logic, positional intelligence shifts, persistence queues, and serverless backend endpoints:
+The automated test suite verifies core ammunition tracking invariants, probability computation, burner phone shifts, persistence queues, atomic CAS claims, and serverless backend authorization:
 
 ```bash
-# Run complete test suite (53 tests)
+# Run complete test suite (97 tests across 8 test suites)
 npm test
 
-# Run TypeScript type check
+# Run TypeScript type check (strict mode)
 npm run typecheck
 
 # Build production bundle
 npm run build
 ```
 
-### End-to-End Responsive Verification
-Verify layout integrity and intelligence behaviors across simulated mobile viewports:
-```bash
-node tests/test-intel-verification.mjs
+### Test Suite Summary
+```text
+Test Files  8 passed (8)
+     Tests  97 passed (97)
+  Duration  1.51s
+
+ ✓ src/features/tracker/tracker.test.ts (17 tests)
+ ✓ src/features/tracker/intel.test.ts (20 tests)
+ ✓ tests/persistence.test.ts (5 tests)
+ ✓ tests/backend.test.ts (11 tests)
+ ✓ tests/owner-refinements.test.ts (6 tests)
+ ✓ tests/analytics-and-users.test.ts (7 tests)
+ ✓ tests/frontend-integration.test.ts (6 tests)
+ ✓ tests/owner-backend.test.ts (25 tests)
 ```
 
 ---
 
 ## ☁️ Deployment
 
-Buckshot Tracker is hosted natively on Telegram Serverless using `@tgcloud/cli`:
+Buckshot Tracker is hosted natively on the Telegram Serverless platform using `@tgcloud/cli`:
 
 ```bash
 # 1. Authenticate with your Telegram Bot
@@ -294,43 +333,48 @@ npx tgcloud login
 # 2. Verify cloud drift and status
 npm run status
 
-# 3. Apply SQLite schema migrations
+# 3. Apply SQLite schema migrations (interactive)
 npm run migrate
 
-# 4. Deploy static frontend and backend endpoints
+# 4. Build frontend and deploy to the cloud
 npm run deploy
 ```
 
----
-
-## 🔒 Security & Privacy
-
-- **Cryptographic Launch Verification:** All requests must include valid Telegram `initData`. Signatures are validated by the serverless platform before endpoint execution.
-- **Tenant Isolation:** All database records and session mutations are scoped strictly to the authenticated `user.id`.
-- **Zero Client-Side Secrets:** No bot tokens, database credentials, or secret keys are stored in client code or frontend bundles.
-- **Responsible Disclosure:** See [SECURITY.md](SECURITY.md) for vulnerability disclosure procedures.
+> [!IMPORTANT]
+> `npm run deploy` builds the static production bundle and pushes backend code to the cloud. Deploying code never touches the database schema; schema changes are executed separately via `npm run migrate`.
 
 ---
 
-## 📖 Documentation Index
+## 🔒 Security & Authorization
 
-- [Architecture & Data Flow](docs/architecture.md)
-- [Development & Deployment Manual](docs/development.md)
-- [Game Mechanics & Sources](docs/game-mechanics-sources.md)
-- [Telegram Serverless SDK Reference](docs/tgcloud-sdk.md)
-- [Release History (Changelog)](CHANGELOG.md)
+- **Cryptographic Authentication:** All requests must include valid Telegram `initData`. Signatures are validated by the serverless platform before endpoint execution.
+- **Strict Owner Authorization Guard:** Administrative endpoints (`owner*`) enforce `requireOwner`, asserting that the authenticated caller's numeric Telegram ID strictly equals `184202422`. Client-supplied IDs in request payloads or query parameters are ignored.
+- **Server-Side Maintenance Mode:** When maintenance mode is active, all non-owner session mutations are rejected server-side with an operational error, preventing state corruption during maintenance windows.
+- **Atomic Compare-And-Swap (CAS) Queue Claiming:** Recipient batches in broadcast campaigns are claimed atomically via database CAS updates with lease expirations, preventing race conditions or duplicate deliveries across concurrent serverless workers.
+- **Spreadsheet Formula Neutralization:** All CSV exports automatically sanitize leading formula trigger characters (`=`, `+`, `-`, `@`) with prepended apostrophes to prevent CSV injection attacks.
+- **Append-Only Security Audit Trail:** Sensitive administrative operations are recorded in an immutable audit table with actor ID, action type, target entity, timestamp, outcome, and sanitized parameters.
+- **Zero Client-Side Secrets:** No bot tokens, encryption keys, or private database credentials exist in client code or frontend bundles.
+
+---
+
+## 🗺️ Roadmap & Future Work
+
+- [ ] **Multiplayer Room Intelligence:** Support for 4-player lobbies and turn-order ammunition synchronization.
+- [ ] **Custom Presets Editor:** User-defined loadout presets saved to persistent cloud storage.
+- [ ] **Internationalization (i18n):** Multi-language localization packs (Spanish, Russian, Persian, German, Chinese).
+- [ ] **Telegram Stars Integration:** Optional cosmetics and themed capsule skins using Telegram Stars.
 
 ---
 
 ## 🤝 Contributing
 
-We welcome bug fixes and documentation improvements. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request.
+We welcome bug fixes, documentation improvements, and tactical suggestions. Please review [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request.
 
 ---
 
-## 📄 License
+## 📄 License & Credits
 
 This project is open-source software licensed under the [MIT License](LICENSE).  
-Copyright © 2026 **Greenhawk5**.
+Copyright © 2026 **Ali Faniani (Greenhawk5)**.
 
-*Buckshot Roulette is created by Mike Klubnika. Buckshot Tracker is an independent fan-made tactical companion.*
+*Buckshot Roulette is created by Mike Klubnika. Buckshot Tracker is an independent, open-source tactical companion built for educational and utility purposes.*

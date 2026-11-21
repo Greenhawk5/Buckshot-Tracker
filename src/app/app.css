@@ -18,16 +18,26 @@
 
 /* --------------------------------------------------------------------------
    APPLICATION HEADER
+   Responsive Grid:
+   - Mobile (<600px): Two-tier layout.
+     Row 1: Brand (left) + Action buttons (right)
+     Row 2: Operator badge (left) + Sync status (right)
+   - Wide (>=600px): Clean single horizontal composition.
+     Brand (left) + Status (center-right) + Actions (far right)
    -------------------------------------------------------------------------- */
 
 .app-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "brand actions"
+    "status status";
+  row-gap: 10px;
+  column-gap: 12px;
   align-items: center;
-  justify-content: space-between;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--color-border-subtle);
   margin-bottom: 18px;
-  gap: 8px;
   min-width: 0;
   width: 100%;
 }
@@ -63,16 +73,17 @@
 
 /* Brand Identity: Logo + Title + Subtitle */
 .brand {
+  grid-area: brand;
   display: flex;
   align-items: center;
   gap: clamp(8px, 2.5vw, 12px);
   min-width: 0;
-  flex: 1 1 auto;
+  overflow: hidden;
 }
 
 .brand-logo {
-  width: clamp(42px, 11vw, 48px);
-  height: clamp(42px, 11vw, 48px);
+  width: clamp(38px, 10vw, 46px);
+  height: clamp(38px, 10vw, 46px);
   aspect-ratio: 1 / 1;
   border-radius: var(--radius-sm);
   object-fit: contain;
@@ -86,34 +97,41 @@
   flex-direction: column;
   min-width: 0;
   justify-content: center;
+  overflow: hidden;
 }
 
 .brand-title {
   font-family: var(--font-display);
-  font-size: clamp(0.92rem, 4vw, 1.15rem);
+  font-size: clamp(0.88rem, 3.8vw, 1.15rem);
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--color-text);
   line-height: 1.15;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .brand-subtitle {
-  font-size: clamp(0.64rem, 2.2vw, 0.72rem);
+  font-size: clamp(0.62rem, 2vw, 0.72rem);
   letter-spacing: 0.07em;
   color: var(--color-text-muted);
   text-transform: uppercase;
   display: block;
   margin-top: 2px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Header Status Column: Account Indicator + Server Sync Status */
+/* Action Controls: About and Owner Buttons */
 .header-actions {
-  display: flex;
+  grid-area: actions;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  justify-self: end;
   flex-shrink: 0;
 }
 
@@ -133,6 +151,7 @@
   box-shadow: var(--shadow-sm);
   transition: all var(--duration-fast);
   padding: 0;
+  flex-shrink: 0;
 }
 
 .header-icon-btn:hover {
@@ -158,13 +177,15 @@
   color: #fde68a;
 }
 
+/* Telemetry / Status Row: User Identity Badge + Cloud Sync Status */
 .header-status {
+  grid-area: status;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   min-width: 0;
-  flex-shrink: 0;
 }
 
 /* Telegram Account Indicator */
@@ -176,10 +197,11 @@
   border-radius: var(--radius-pill);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  max-width: 125px;
+  max-width: 140px;
   min-width: 0;
   box-shadow: var(--shadow-sm);
   cursor: default;
+  flex-shrink: 1;
 }
 
 .operator-name {
@@ -221,12 +243,13 @@
   font-size: 0.68rem;
   font-family: var(--font-mono);
   color: var(--color-text-dim);
-  max-width: 125px;
+  max-width: 130px;
   min-width: 0;
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
   user-select: none;
   -webkit-user-select: none;
+  flex-shrink: 0;
 }
 
 .sync-status-dot {
@@ -245,6 +268,33 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE ENHANCEMENTS (Tablets & Desktop Web >= 600px)
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 600px) {
+  .app-container {
+    max-width: 560px;
+  }
+
+  .app-header {
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "brand status actions";
+    row-gap: 0;
+    column-gap: 14px;
+  }
+
+  .header-status {
+    width: auto;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .operator-badge {
+    max-width: 160px;
+  }
 }
 
 /* --------------------------------------------------------------------------

@@ -13,7 +13,7 @@ export const APP_CONFIG = {
   githubUrl: 'https://github.com/Greenhawk5/Buckshot-Tracker',
   ownerTelegramId: '184202422',
   description:
-    'Tactical companion for Buckshot Roulette single-player matches. Real-time chamber probability calculations, Burner Phone positional intelligence, Beer Can ejections, and persistent cloud recovery.',
+    'Tactical companion for Buckshot Roulette matches across single-player and multiplayer modes. Real-time chamber probability calculations, Burner Phone positional intelligence, Beer Can ejections, and persistent cloud recovery.',
   techStack: [
     { name: 'React 19', role: 'Reactive UI Framework' },
     { name: 'TypeScript', role: 'Type Safety & API Contracts' },

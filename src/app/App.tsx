@@ -139,6 +139,7 @@ export const App: React.FC = () => {
     <div className="app-container">
       {/* Header */}
       <header className="app-header">
+        {/* Brand Identity: Logo + Title + Subtitle */}
         <div className="brand">
           <img src={botLogo} alt="Buckshot Tracker Logo" className="brand-logo" />
           <div className="brand-text">
@@ -147,6 +148,7 @@ export const App: React.FC = () => {
           </div>
         </div>
 
+        {/* Action Controls: About and Owner Buttons */}
         <div className="header-actions">
           {/* About Button */}
           <button
@@ -177,14 +179,15 @@ export const App: React.FC = () => {
               </svg>
             </button>
           )}
+        </div>
 
-          <div className="header-status">
-            <div className="operator-badge" title={displayName}>
-              <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
-              <span className="operator-name" dir="auto">{displayName}</span>
-            </div>
-            <SyncStatus syncState={syncState} onRetry={retrySync} />
+        {/* Telemetry / Status Row: User Identity Badge + Cloud Sync Status */}
+        <div className="header-status">
+          <div className="operator-badge" title={displayName}>
+            <span className={`status-dot ${isTelegram ? 'status-dot--active' : ''}`} />
+            <span className="operator-name" dir="auto">{displayName}</span>
           </div>
+          <SyncStatus syncState={syncState} onRetry={retrySync} />
         </div>
       </header>
 

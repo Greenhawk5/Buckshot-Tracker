@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './OwnerLayout.css';
+import { OwnerNav } from './components/OwnerNav';
 import { OverviewView } from './views/OverviewView';
 import { AnalyticsView } from './views/AnalyticsView';
 import { UsersView } from './views/UsersView';
@@ -9,6 +10,7 @@ import { SettingsView } from './views/SettingsView';
 import { AuditView } from './views/AuditView';
 import { FeedbackView } from './views/FeedbackView';
 import { ExportsView } from './views/ExportsView';
+import { APP_CONFIG } from '../../config/app.config';
 
 interface OwnerLayoutProps {
   onClose: () => void;
@@ -28,24 +30,25 @@ export type OwnerTab =
 export const OwnerLayout: React.FC<OwnerLayoutProps> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<OwnerTab>('overview');
 
-  const tabs: Array<{ id: OwnerTab; label: string; icon: string }> = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'analytics', label: 'Analytics', icon: '📈' },
-    { id: 'users', label: 'Users', icon: '👥' },
-    { id: 'broadcasts', label: 'Broadcasts', icon: '📢' },
-    { id: 'health', label: 'System Health', icon: '🩺' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' },
-    { id: 'audit', label: 'Audit Logs', icon: '🛡️' },
-    { id: 'feedback', label: 'Feedback', icon: '💬' },
-    { id: 'exports', label: 'Reports Export', icon: '📁' },
-  ];
+  const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const ownerId = user?.id ? String(user.id) : APP_CONFIG.ownerTelegramId;
+
+  const handleBack = () => {
+    window.Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light');
+    onClose();
+  };
 
   return (
     <div className="owner-layout">
       {/* Top Header */}
       <header className="owner-header">
         <div className="owner-header-left">
-          <button type="button" className="owner-back-btn" onClick={onClose} aria-label="Exit Command Center">
+          <button
+            type="button"
+            className="owner-back-btn"
+            onClick={handleBack}
+            aria-label="Exit Command Center"
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <polyline points="15 18 9 12 15 6" />
             </svg>
@@ -53,30 +56,16 @@ export const OwnerLayout: React.FC<OwnerLayoutProps> = ({ onClose }) => {
           </button>
           <div className="owner-brand">
             <span className="owner-title">COMMAND CENTER</span>
-            <span className="owner-badge">OWNER ID: 184202422</span>
+            <span className="owner-badge font-mono">OWNER ID: {ownerId}</span>
           </div>
         </div>
       </header>
 
-      {/* Navigation Tabs Bar */}
-      <nav className="owner-nav-tabs">
-        <div className="nav-tabs-scroll">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`nav-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <span className="nav-tab-icon">{tab.icon}</span>
-              <span className="nav-tab-label">{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </nav>
+      {/* Navigation Tabs Bar with Circular Infinite Scroll */}
+      <OwnerNav activeTab={activeTab} onSelectTab={setActiveTab} />
 
       {/* Main View Area */}
-      <main className="owner-main-body">
+      <main className="owner-main-body" role="region" aria-label="Command Center Content">
         {activeTab === 'overview' && <OverviewView />}
         {activeTab === 'analytics' && <AnalyticsView />}
         {activeTab === 'users' && <UsersView />}
@@ -90,4 +79,3 @@ export const OwnerLayout: React.FC<OwnerLayoutProps> = ({ onClose }) => {
     </div>
   );
 };
-

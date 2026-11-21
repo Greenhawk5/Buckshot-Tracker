@@ -25,7 +25,7 @@ export const ExportsView: React.FC = () => {
       URL.revokeObjectURL(url);
 
       setDownloadSuccess(`Exported ${res.rowCount} rows as ${res.filename}`);
-      setTimeout(() => setDownloadSuccess(null), 4000);
+      setTimeout(() => setDownloadSuccess(null), 4500);
     } catch (err: any) {
       alert(err?.message || 'Failed to generate report export');
     } finally {
@@ -35,11 +35,15 @@ export const ExportsView: React.FC = () => {
 
   return (
     <div className="owner-view exports-view">
-      <h3 className="view-title">Export Telemetry & Operational Data</h3>
-      <p className="view-desc">
-        Download sanitized CSV or JSON exports. CSV output includes automated spreadsheet formula
-        injection neutralization (=, +, -, @).
-      </p>
+      <div className="view-toolbar">
+        <div>
+          <h3 className="view-title">Export Telemetry & Operational Data</h3>
+          <p className="view-desc">
+            Download sanitized CSV or JSON exports. CSV includes automated spreadsheet formula
+            injection neutralization (=, +, -, @).
+          </p>
+        </div>
+      </div>
 
       {downloadSuccess && <div className="status-success-banner">{downloadSuccess}</div>}
 
@@ -47,12 +51,42 @@ export const ExportsView: React.FC = () => {
         <label className="form-label">Select Report Dataset</label>
         <div className="dataset-grid">
           {[
-            { id: 'users', label: 'Registered Users', desc: 'Observed Telegram profiles, timestamps, VIP/restriction status' },
-            { id: 'events', label: 'Activity Events', desc: 'Raw chronological application events and bounded metadata' },
-            { id: 'sessions', label: 'Tracker Sessions', desc: 'Game tracking sessions, initial/remaining counts, outcomes' },
-            { id: 'campaigns', label: 'Broadcast Campaigns', desc: 'Historical campaigns, delivery statistics, and timestamps' },
-            { id: 'audit', label: 'Administrative Audit Logs', desc: 'Immutable security log of all sensitive owner operations' },
-            { id: 'feedback', label: 'Feedback & Bug Reports', desc: 'User submissions, categories, and resolution notes' },
+            {
+              id: 'users',
+              label: 'Registered Users',
+              desc: 'Observed Telegram profiles, timestamps, VIP & restriction status',
+              icon: '👥',
+            },
+            {
+              id: 'events',
+              label: 'Activity Events',
+              desc: 'Chronological telemetry events and bounded event metadata',
+              icon: '📈',
+            },
+            {
+              id: 'sessions',
+              label: 'Tracker Sessions',
+              desc: 'Game tracking rounds, initial/remaining counts, and outcomes',
+              icon: '🎮',
+            },
+            {
+              id: 'campaigns',
+              label: 'Broadcast Campaigns',
+              desc: 'Historical campaigns, delivery statistics, and execution audit',
+              icon: '📢',
+            },
+            {
+              id: 'audit',
+              label: 'Administrative Audit Logs',
+              desc: 'Immutable security log of all sensitive owner operations',
+              icon: '🛡️',
+            },
+            {
+              id: 'feedback',
+              label: 'Feedback & Bug Reports',
+              desc: 'User submissions, categories, and resolution notes',
+              icon: '💬',
+            },
           ].map((item) => (
             <button
               key={item.id}
@@ -60,7 +94,10 @@ export const ExportsView: React.FC = () => {
               className={`dataset-card ${type === item.id ? 'active' : ''}`}
               onClick={() => setType(item.id)}
             >
-              <span className="dataset-title">{item.label}</span>
+              <div className="dataset-header">
+                <span className="dataset-icon">{item.icon}</span>
+                <span className="dataset-title">{item.label}</span>
+              </div>
               <span className="dataset-desc">{item.desc}</span>
             </button>
           ))}
@@ -96,4 +133,3 @@ export const ExportsView: React.FC = () => {
     </div>
   );
 };
-

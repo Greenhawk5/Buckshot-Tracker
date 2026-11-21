@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { fetchOwnerSystemHealth } from '../../../services/owner.api';
+import { CompactMetricCard } from '../components/CompactMetricCard';
 
 export const HealthView: React.FC = () => {
   const [health, setHealth] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pingSpinning, setPingSpinning] = useState(false);
 
   const loadHealth = async () => {
     setLoading(true);
@@ -23,36 +25,82 @@ export const HealthView: React.FC = () => {
     loadHealth();
   }, []);
 
+  const handleManualPing = () => {
+    if (loading || pingSpinning) return;
+    setPingSpinning(true);
+    window.Telegram?.WebApp?.HapticFeedback?.impactOccurred?.('light');
+    loadHealth().finally(() => {
+      setTimeout(() => setPingSpinning(false), 600);
+    });
+  };
+
   return (
     <div className="owner-view health-view">
       <div className="view-toolbar">
-        <h3 className="view-title">System Diagnostics & Storage Health</h3>
-        <button type="button" className="refresh-btn" onClick={loadHealth}>
-          ↻ Ping
+        <div>
+          <h3 className="view-title">System Diagnostics & Storage Health</h3>
+          <p className="view-desc">Real-time isolate latency, SQLite storage metrics, and durable entity volume.</p>
+        </div>
+        <button
+          type="button"
+          className={`refresh-btn ${pingSpinning || loading ? 'is-spinning' : ''}`}
+          onClick={handleManualPing}
+          disabled={loading || pingSpinning}
+          title="Ping Health Telemetry"
+          aria-label="Ping Health Telemetry"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19" />
+          </svg>
         </button>
       </div>
 
-      {loading && <div className="owner-loading">Testing database latency and isolate health...</div>}
-      {error && <div className="owner-error">{error}</div>}
+      {loading && (
+        <div className="owner-loading" role="status">
+          <span className="loading-pulse-dot" /> Testing database latency and isolate health...
+        </div>
+      )}
+      {error && <div className="owner-error" role="alert">{error}</div>}
 
       {health && !loading && (
-        <div className="health-grid">
-          <div className="metric-card metric-card--primary">
-            <span className="metric-label">System Status</span>
-            <span className="metric-value font-mono">
-              {health.status === 'healthy' ? '🟢 OPERATIONAL' : '🟡 DEGRADED'}
-            </span>
-            <span className="metric-sub">Checked at {new Date(health.timestamp).toLocaleTimeString()}</span>
-          </div>
+        <>
+          <div className="metrics-grid">
+            <CompactMetricCard
+              label="System Status"
+              value={health.status === 'healthy' ? 'OPERATIONAL' : 'DEGRADED'}
+              sub={`Checked at ${new Date(health.timestamp).toLocaleTimeString()}`}
+              variant={health.status === 'healthy' ? 'success' : 'warning'}
+              icon={
+                <span
+                  className={`status-pulse-dot ${
+                    health.status === 'healthy' ? 'status-pulse-dot--green' : 'status-pulse-dot--amber'
+                  }`}
+                />
+              }
+            />
 
-          <div className="metric-card">
-            <span className="metric-label">Database Round-Trip</span>
-            <span className="metric-value font-mono">{health.database.latencyMs} ms</span>
-            <span className="metric-sub">SQLite WAL Zero-Contention Mode</span>
+            <CompactMetricCard
+              label="Database Round-Trip"
+              value={`${health.database.latencyMs} ms`}
+              sub="SQLite WAL Zero-Contention"
+              variant="primary"
+            />
           </div>
 
           <div className="section-card">
-            <h4 className="card-heading">Durable Entities Volume</h4>
+            <div className="section-card-header">
+              <h4 className="card-heading">Durable Entities Volume</h4>
+              <span className="section-card-tag font-mono">SQLite Tables</span>
+            </div>
             <div className="anchors-row">
               <div className="anchor-item">
                 <span className="anchor-num font-mono">{health.counts.totalUsers}</span>
@@ -74,7 +122,10 @@ export const HealthView: React.FC = () => {
           </div>
 
           <div className="section-card">
-            <h4 className="card-heading">Queue Telemetry</h4>
+            <div className="section-card-header">
+              <h4 className="card-heading">Queue Telemetry & Ingestion</h4>
+              <span className="section-card-tag font-mono">Workers</span>
+            </div>
             <div className="anchors-row">
               <div className="anchor-item">
                 <span className="anchor-num font-mono">{health.counts.runningCampaigns}</span>
@@ -94,9 +145,8 @@ export const HealthView: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
 };
-

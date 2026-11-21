@@ -3,6 +3,7 @@ import { APP_CONFIG } from '../../../config/app.config';
 
 export const ProjectLinks: React.FC = () => {
   const handleOpenLink = (url: string) => {
+    window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');
     if (window.Telegram?.WebApp?.openLink) {
       window.Telegram.WebApp.openLink(url);
     } else {
@@ -12,10 +13,10 @@ export const ProjectLinks: React.FC = () => {
 
   const links = [
     {
-      title: "Creator Portfolio",
-      description: "Engineering showcase, projects, and contact",
+      title: 'Creator Portfolio',
+      description: 'Engineering showcase, architecture, and professional contact.',
       url: APP_CONFIG.portfolioUrl,
-      displayUrl: "alifaniani.ir",
+      displayUrl: 'alifaniani.ir',
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="link-icon">
           <circle cx="12" cy="12" r="10" />
@@ -25,10 +26,10 @@ export const ProjectLinks: React.FC = () => {
       ),
     },
     {
-      title: "GitHub Repository",
-      description: "Public source code, architecture, and issue tracker",
+      title: 'GitHub Repository',
+      description: 'Public source code, architecture specifications, and issue tracking.',
       url: APP_CONFIG.githubUrl,
-      displayUrl: "github.com/Greenhawk5/Buckshot-Tracker",
+      displayUrl: 'github.com/Greenhawk5/Buckshot-Tracker',
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="link-icon">
           <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
@@ -38,8 +39,11 @@ export const ProjectLinks: React.FC = () => {
   ];
 
   return (
-    <div className="about-section">
-      <h3 className="section-title">Developer & Project Links</h3>
+    <div className="about-section links-section">
+      <div className="section-header-row">
+        <h3 className="section-title">Developer & Project Links</h3>
+        <span className="section-tag-badge">Open Source</span>
+      </div>
       <p className="section-desc">Connect with the creator or inspect the open-source implementation.</p>
       <div className="links-grid">
         {links.map((link) => (
@@ -48,6 +52,7 @@ export const ProjectLinks: React.FC = () => {
             type="button"
             className="link-card"
             onClick={() => handleOpenLink(link.url)}
+            aria-label={`${link.title} — ${link.displayUrl}`}
           >
             <div className="link-card-left">
               <span className="link-card-icon">{link.icon}</span>
@@ -57,7 +62,8 @@ export const ProjectLinks: React.FC = () => {
                 <span className="link-card-desc">{link.description}</span>
               </div>
             </div>
-            <span className="link-card-arrow">
+            {/* External link indicator pinned to top-right */}
+            <span className="link-card-arrow" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                 <polyline points="15 3 21 3 21 9" />
@@ -70,4 +76,3 @@ export const ProjectLinks: React.FC = () => {
     </div>
   );
 };
-

@@ -1,24 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fetchOwnerAnalytics, OwnerOverviewData } from '../../../services/owner.api';
+import { CompactMetricCard } from '../components/CompactMetricCard';
+import { TimeRangeSelector } from '../components/TimeRangeSelector';
+import { CustomDateRangePicker } from '../components/CustomDateRangePicker';
+import { TacticalAreaChart } from '../components/charts/TacticalAreaChart';
+import { TaxonomyDonutChart } from '../components/charts/TaxonomyDonutChart';
 
 export const AnalyticsView: React.FC = () => {
   const [data, setData] = useState<OwnerOverviewData | null>(null);
   const [preset, setPreset] = useState('30d');
-  const [customStart, setCustomStart] = useState('');
-  const [customEnd, setCustomEnd] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Request race condition protection
+  const activeRequestIdRef = useRef(0);
+
   const loadData = async (selectedPreset: string, start?: number, end?: number) => {
+    const currentRequestId = ++activeRequestIdRef.current;
     setLoading(true);
     setError(null);
     try {
       const res = await fetchOwnerAnalytics(selectedPreset, start, end);
-      setData(res);
+      if (currentRequestId === activeRequestIdRef.current) {
+        setData(res);
+      }
     } catch (err: any) {
-      setError(err?.message || 'Failed to fetch analytics');
+      if (currentRequestId === activeRequestIdRef.current) {
+        setError(err?.message || 'Failed to fetch analytics');
+      }
     } finally {
-      setLoading(false);
+      if (currentRequestId === activeRequestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -28,123 +41,132 @@ export const AnalyticsView: React.FC = () => {
     }
   }, [preset]);
 
-  const handleApplyCustom = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customStart || !customEnd) return;
-    const startMs = new Date(customStart).getTime();
-    const endMs = new Date(customEnd).getTime();
+  const handleApplyCustom = (startMs: number, endMs: number) => {
     loadData('custom', startMs, endMs);
+  };
+
+  const formatDelta = (current: number, prior: number) => {
+    const diff = current - prior;
+    if (diff === 0) return { text: '• 0', positive: false, neutral: true };
+    if (diff > 0) return { text: `+${diff.toLocaleString()}`, positive: true, neutral: false };
+    return { text: `${diff.toLocaleString()}`, positive: false, neutral: false };
   };
 
   return (
     <div className="owner-view analytics-view">
-      <div className="view-toolbar">
-        <div className="period-chips">
-          {['24h', '7d', '30d', '90d', '180d', '365d', 'custom'].map((p) => (
-            <button
-              key={p}
-              type="button"
-              className={`period-chip ${preset === p ? 'active' : ''}`}
-              onClick={() => setPreset(p)}
-            >
-              {p.toUpperCase()}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Time-Range Selector with Custom Option & Refresh */}
+      <TimeRangeSelector
+        preset={preset}
+        onChangePreset={setPreset}
+        onRefresh={() => {
+          if (preset !== 'custom') {
+            loadData(preset);
+          }
+        }}
+        includeCustom={true}
+        loading={loading}
+      />
 
+      {/* Custom Date Range Picker */}
       {preset === 'custom' && (
-        <form onSubmit={handleApplyCustom} className="custom-range-form">
-          <div className="range-inputs">
-            <input
-              type="date"
-              className="range-date-input"
-              value={customStart}
-              onChange={(e) => setCustomStart(e.target.value)}
-              required
-            />
-            <span className="range-sep">to</span>
-            <input
-              type="date"
-              className="range-date-input"
-              value={customEnd}
-              onChange={(e) => setCustomEnd(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="range-apply-btn">
-            Apply Range
-          </button>
-        </form>
+        <CustomDateRangePicker onApply={handleApplyCustom} loading={loading} />
       )}
 
-      {loading && <div className="owner-loading">Computing analytics aggregates...</div>}
-      {error && <div className="owner-error">{error}</div>}
+      {loading && (
+        <div className="owner-loading" role="status">
+          <span className="loading-pulse-dot" /> Computing analytics aggregates...
+        </div>
+      )}
+
+      {error && <div className="owner-error" role="alert">{error}</div>}
 
       {data && !loading && (
         <>
-          {/* Comparison Card */}
+          {/* High-Density 2-Column KPI Comparison Grid */}
           <div className="metrics-grid">
-            <div className="metric-card">
-              <span className="metric-label">New Users in Window</span>
-              <span className="metric-value font-mono">{data.totals.newUsers}</span>
-              <span className="metric-sub">
-                vs {data.comparison.priorNewUsers} in prior equivalent period
-              </span>
-            </div>
+            {(() => {
+              const delta = formatDelta(data.totals.newUsers, data.comparison.priorNewUsers);
+              return (
+                <CompactMetricCard
+                  label="New Users in Window"
+                  value={data.totals.newUsers}
+                  sub={`vs ${data.comparison.priorNewUsers} prior`}
+                  trend={{
+                    value: delta.text,
+                    positive: delta.positive,
+                    neutral: delta.neutral,
+                  }}
+                />
+              );
+            })()}
 
-            <div className="metric-card">
-              <span className="metric-label">Active Users in Window</span>
-              <span className="metric-value font-mono">{data.totals.activeUsers}</span>
-              <span className="metric-sub">
-                vs {data.comparison.priorActiveUsers} in prior equivalent period
-              </span>
-            </div>
+            {(() => {
+              const delta = formatDelta(data.totals.activeUsers, data.comparison.priorActiveUsers);
+              return (
+                <CompactMetricCard
+                  label="Active Users in Window"
+                  value={data.totals.activeUsers}
+                  sub={`vs ${data.comparison.priorActiveUsers} prior`}
+                  trend={{
+                    value: delta.text,
+                    positive: delta.positive,
+                    neutral: delta.neutral,
+                  }}
+                />
+              );
+            })()}
 
-            <div className="metric-card">
-              <span className="metric-label">Total Events</span>
-              <span className="metric-value font-mono">{data.totals.totalEvents}</span>
-              <span className="metric-sub">
-                vs {data.comparison.priorEvents} in prior period
-              </span>
-            </div>
+            {(() => {
+              const delta = formatDelta(data.totals.totalEvents, data.comparison.priorEvents);
+              return (
+                <CompactMetricCard
+                  label="Total Events"
+                  value={data.totals.totalEvents.toLocaleString()}
+                  sub={`vs ${data.comparison.priorEvents.toLocaleString()} prior`}
+                  trend={{
+                    value: delta.text,
+                    positive: delta.positive,
+                    neutral: delta.neutral,
+                  }}
+                />
+              );
+            })()}
 
-            <div className="metric-card">
-              <span className="metric-label">App Launches (Opens)</span>
-              <span className="metric-value font-mono">{data.totals.appOpens}</span>
-              <span className="metric-sub">
-                vs {data.comparison.priorAppOpens} in prior period
-              </span>
-            </div>
+            {(() => {
+              const delta = formatDelta(data.totals.appOpens, data.comparison.priorAppOpens);
+              return (
+                <CompactMetricCard
+                  label="App Launches (Opens)"
+                  value={data.totals.appOpens.toLocaleString()}
+                  sub={`vs ${data.comparison.priorAppOpens.toLocaleString()} prior`}
+                  trend={{
+                    value: delta.text,
+                    positive: delta.positive,
+                    neutral: delta.neutral,
+                  }}
+                />
+              );
+            })()}
           </div>
 
-          {/* Event Breakdown */}
-          <div className="section-card">
-            <h4 className="card-heading">Event Taxonomy Breakdown</h4>
-            <div className="event-breakdown-list">
-              {Object.entries(data.eventBreakdown).length === 0 && (
-                <div className="empty-sub">No events recorded in this interval.</div>
-              )}
-              {Object.entries(data.eventBreakdown).map(([type, count]) => {
-                const total = Math.max(1, data.totals.totalEvents);
-                const pct = Math.round((count / total) * 100);
-                return (
-                  <div key={type} className="event-row">
-                    <div className="event-meta">
-                      <span className="event-type-name font-mono">{type}</span>
-                      <span className="event-type-count font-mono">{count} ({pct}%)</span>
-                    </div>
-                    <div className="event-bar-bg">
-                      <div className="event-bar-fill" style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {/* Tactical Area Progression Curve */}
+          <TacticalAreaChart
+            title={`Progression Trend (${data.window.periodLabel})`}
+            data={data.timeSeries.map((t) => ({
+              label: t.label,
+              value: t.eventsCount,
+            }))}
+            metricLabel="Actions"
+          />
+
+          {/* Event Taxonomy Donut Chart */}
+          <TaxonomyDonutChart
+            title="Event Taxonomy Breakdown"
+            breakdown={data.eventBreakdown}
+            totalEvents={data.totals.totalEvents}
+          />
         </>
       )}
     </div>
   );
 };
-

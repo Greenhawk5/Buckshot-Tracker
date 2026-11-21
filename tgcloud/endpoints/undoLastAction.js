@@ -1,9 +1,15 @@
 import { db, EndpointError } from 'sdk';
 import { eq, and } from 'sdk/db';
 import { trackerSessions, processedOperations } from '../schema.js';
-import { getAuthenticatedUserId, formatSessionRow } from '../lib/session-helper.js';
+import {
+  getAuthenticatedUserId,
+  formatSessionRow,
+  trackUserAndActivity,
+  checkMaintenanceAccess,
+} from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
+  await checkMaintenanceAccess(ctx);
   const userId = getAuthenticatedUserId(ctx);
   const { sessionId, expectedVersion, operationId } = input || {};
 
@@ -122,6 +128,13 @@ export default async function (input, ctx) {
       createdAt: now,
     }).run();
   }
+
+  await trackUserAndActivity(ctx, {
+    eventType: 'undo_executed',
+    sessionId,
+    metadata: { undoneType: lastEvent.type, undoneShell: lastEvent.shell },
+    eventId: operationId ? `ev_undo_${operationId}` : null,
+  });
 
   const updated = await db
     .select()

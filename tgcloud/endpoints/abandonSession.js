@@ -1,9 +1,14 @@
 import { db, EndpointError } from 'sdk';
 import { eq, and } from 'sdk/db';
 import { trackerSessions } from '../schema.js';
-import { getAuthenticatedUserId } from '../lib/session-helper.js';
+import {
+  getAuthenticatedUserId,
+  trackUserAndActivity,
+  checkMaintenanceAccess,
+} from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
+  await checkMaintenanceAccess(ctx);
   const userId = getAuthenticatedUserId(ctx);
   const { sessionId, expectedVersion } = input || {};
 
@@ -34,6 +39,11 @@ export default async function (input, ctx) {
     })
     .where(eq(trackerSessions.id, sessionId))
     .run();
+
+  await trackUserAndActivity(ctx, {
+    eventType: 'session_abandoned',
+    sessionId,
+  });
 
   return {
     ok: true,

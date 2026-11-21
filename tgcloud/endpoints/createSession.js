@@ -1,9 +1,15 @@
 import { db, EndpointError } from 'sdk';
 import { eq, and } from 'sdk/db';
 import { trackerSessions, processedOperations } from '../schema.js';
-import { getAuthenticatedUserId, formatSessionRow } from '../lib/session-helper.js';
+import {
+  getAuthenticatedUserId,
+  formatSessionRow,
+  trackUserAndActivity,
+  checkMaintenanceAccess,
+} from '../lib/session-helper.js';
 
 export default async function (input, ctx) {
+  await checkMaintenanceAccess(ctx);
   const userId = getAuthenticatedUserId(ctx);
   const { initialLive, initialBlank, operationId } = input || {};
 
@@ -72,6 +78,14 @@ export default async function (input, ctx) {
       createdAt: now,
     }).run();
   }
+
+  // Record session_created event and update user registry
+  await trackUserAndActivity(ctx, {
+    eventType: 'session_created',
+    sessionId,
+    metadata: { initialLive, initialBlank },
+    eventId: operationId ? `ev_sess_${operationId}` : null,
+  });
 
   const inserted = await db
     .select()

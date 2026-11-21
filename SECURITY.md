@@ -6,8 +6,8 @@ Only the latest stable release of **Buckshot Tracker** receives active security 
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
-| < 1.0.0 | :x:                |
+| 1.2.x   | :white_check_mark: |
+| < 1.2.0 | :x:                |
 
 ---
 

@@ -1,10 +1,20 @@
 import { api } from 'sdk';
+import { upsertObservedUser } from '../lib/users/user-service.js';
 
 export default async function (message, ctx) {
   if (!message || !message.chat) return;
 
   const text = (message.text || '').trim();
   const chatId = message.chat.id;
+
+  // Record/update user in registry from Telegram Message
+  if (message.from) {
+    try {
+      await upsertObservedUser(message.from);
+    } catch {
+      // ignore
+    }
+  }
 
   let miniAppUrl = 'https://app9258143432.tgcloud.ai/';
   try {

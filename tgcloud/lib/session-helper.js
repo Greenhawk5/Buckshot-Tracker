@@ -1,12 +1,75 @@
 import { EndpointError } from 'sdk';
+import { upsertObservedUser, checkUserRestriction, OWNER_TELEGRAM_ID } from './users/user-service.js';
+import { recordActivityEvent } from './analytics/event-service.js';
+import { getSystemSettings } from './settings/settings-service.js';
 
-export function getAuthenticatedUserId(ctx) {
+export function getAuthenticatedUser(ctx) {
   const user = ctx?.initData?.user;
   if (!user || user.id === undefined || user.id === null) {
     throw new EndpointError('Unauthorized: Telegram user context is required.', {
       code: 'UNAUTHORIZED',
     });
   }
+  return user;
+}
+
+export function getAuthenticatedUserId(ctx) {
+  const user = getAuthenticatedUser(ctx);
+  return String(user.id);
+}
+
+/**
+ * Validates that the application is not currently under maintenance for normal players.
+ * The Owner (Telegram ID 184202422) always retains full access and is never blocked.
+ */
+export async function checkMaintenanceAccess(ctx) {
+  const user = getAuthenticatedUser(ctx);
+  const userIdStr = String(user.id);
+  if (userIdStr === OWNER_TELEGRAM_ID) {
+    return; // Owner always retains access
+  }
+
+  const settings = await getSystemSettings();
+  if (settings.maintenanceMode) {
+    throw new EndpointError(
+      settings.maintenanceMessage || 'Buckshot Tracker is currently under scheduled maintenance. Please check back shortly.',
+      {
+        code: 'MAINTENANCE_MODE',
+        maintenance: true,
+      }
+    );
+  }
+}
+
+/**
+ * Tracks user activity, validates restriction status, updates registry,
+ * and records domain activity events.
+ */
+export async function trackUserAndActivity(ctx, {
+  eventType = null,
+  eventCategory = 'tracker',
+  sessionId = null,
+  metadata = null,
+  eventId = null,
+} = {}) {
+  const user = getAuthenticatedUser(ctx);
+  await checkUserRestriction(user.id);
+  await upsertObservedUser(user, {
+    isSessionCreated: eventType === 'session_created',
+    isAppOpen: eventType === 'app_opened',
+  });
+
+  if (eventType) {
+    await recordActivityEvent({
+      telegramUserId: user.id,
+      eventType,
+      eventCategory,
+      sessionId,
+      metadata,
+      eventId,
+    });
+  }
+
   return String(user.id);
 }
 
